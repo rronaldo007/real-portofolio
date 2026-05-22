@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 from django.templatetags.static import static
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -152,6 +153,59 @@ UNFOLD = {
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
     "STYLES": [lambda request: static("css/admin.css")],
+    "DASHBOARD_CALLBACK": "pages.dashboard.dashboard_callback",
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "Content",
+                "separator": False,
+                "items": [
+                    {"title": "Dashboard", "icon": "dashboard",
+                     "link": reverse_lazy("admin:index")},
+                    {"title": "Projects", "icon": "deployed_code",
+                     "link": reverse_lazy("admin:pages_project_changelist"),
+                     "badge": "pages.dashboard.project_count"},
+                    {"title": "Experience", "icon": "timeline",
+                     "link": reverse_lazy("admin:pages_experience_changelist"),
+                     "badge": "pages.dashboard.experience_count"},
+                    {"title": "Skills", "icon": "bolt",
+                     "link": reverse_lazy("admin:pages_skill_changelist"),
+                     "badge": "pages.dashboard.skill_count"},
+                    {"title": "Testimonials", "icon": "format_quote",
+                     "link": reverse_lazy("admin:pages_testimonial_changelist"),
+                     "badge": "pages.dashboard.testimonial_count"},
+                ],
+            },
+            {
+                "title": "Site",
+                "separator": True,
+                "items": [
+                    {"title": "Profile", "icon": "person",
+                     "link": reverse_lazy("admin:pages_siteprofile_changelist")},
+                    {"title": "Hero copy", "icon": "article",
+                     "link": reverse_lazy("admin:pages_siteprofile_changelist")},
+                    {"title": "Contact & socials", "icon": "alternate_email",
+                     "link": reverse_lazy("admin:pages_siteprofile_changelist")},
+                    {"title": "Theme & branding", "icon": "palette",
+                     "link": reverse_lazy("admin:pages_siteprofile_changelist")},
+                    {"title": "Resume / CV", "icon": "description",
+                     "link": reverse_lazy("admin:pages_siteprofile_changelist")},
+                ],
+            },
+            {
+                "title": "System",
+                "separator": True,
+                "items": [
+                    {"title": "Users", "icon": "group",
+                     "link": reverse_lazy("admin:auth_user_changelist")},
+                    {"title": "Activity Log", "icon": "history",
+                     "link": reverse_lazy("admin:admin_logentry_changelist")},
+                ],
+            },
+        ],
+    },
     "COLORS": {
         # Accent — Tailwind "purple" ramp (purple-400 = #c084fc, the brand accent).
         "primary": {

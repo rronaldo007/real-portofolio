@@ -18,7 +18,7 @@
 ## Structure
 
 - `config/` — Django project: `settings.py`, `urls.py`, `wsgi.py`, `asgi.py`.
-- `pages/` — the single app. `urls.py` maps URLs to templates via `TemplateView` (namespace `pages:`). No models/views logic yet.
+- `pages/` — the single app. `urls.py` maps public URLs to templates via `TemplateView` (namespace `pages:`). `models.py` holds the content models (Project, Experience, Skill, Testimonial, SiteProfile singleton); `admin.py` registers themed Unfold ModelAdmins + a read-only LogEntry; `dashboard.py` has the Unfold sidebar badges + dashboard callback.
 - `templates/pages/` — page templates (`home_atelier.html` = `/`, plus `home_etudes`, `project`, `admin`, `design_system`, `nav_options`).
 - `static/css/shared.css` — the design system: tokens, theming, cursor, reveal animations.
 - `static/js/shared.js` — shared interactions wired via `data-*` attributes; `static/js/image-slot.js` helper.

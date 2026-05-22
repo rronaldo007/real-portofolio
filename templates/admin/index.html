@@ -1,0 +1,77 @@
+{% extends "unfold/layouts/base_simple.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+  <h1 class="text-3xl text-font-important-light dark:text-font-important-dark"
+      style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;letter-spacing:-0.015em;">
+    Tableau de bord.
+  </h1>
+  <p class="text-sm text-base-500 mt-1">Vue d’ensemble du portfolio.</p>
+</div>
+
+{# ─── Stat cards ─── #}
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+  {% for s in stats %}
+  <div class="rounded-xl border border-base-200 dark:border-base-800 bg-white dark:bg-base-900 p-5">
+    <div class="flex items-start justify-between mb-3">
+      <span class="text-[10px] uppercase tracking-widest text-base-400 font-mono">{{ s.label }}</span>
+      <span class="material-symbols-outlined text-primary-500 text-xl">{{ s.icon }}</span>
+    </div>
+    <div class="text-font-important-light dark:text-font-important-dark"
+         style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:42px;line-height:1;">
+      {{ s.value }}
+    </div>
+    <div class="text-xs text-base-500 mt-2 font-mono">{{ s.sub }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+  {# ─── Recent activity ─── #}
+  <div class="lg:col-span-2 rounded-xl border border-base-200 dark:border-base-800 bg-white dark:bg-base-900 p-5">
+    <h2 class="text-sm font-semibold mb-4 text-font-important-light dark:text-font-important-dark">Activité récente</h2>
+    <div class="flex flex-col gap-4">
+      {% for log in recent_activity %}
+      <div class="flex gap-3 items-start">
+        <span class="mt-1.5 w-2 h-2 rounded-full flex-shrink-0
+          {% if log.is_addition %}bg-green-400{% elif log.is_deletion %}bg-red-400{% else %}bg-primary-500{% endif %}"></span>
+        <div class="flex-1 min-w-0">
+          <div class="text-[13px] text-font-default-light dark:text-font-default-dark">
+            <b class="font-medium">{{ log.object_repr }}</b>
+            <span class="text-base-500">
+              {% if log.is_addition %}créé{% elif log.is_deletion %}supprimé{% else %}modifié{% endif %}
+              · {{ log.content_type }}
+            </span>
+          </div>
+          <div class="text-[10px] text-base-400 font-mono mt-0.5">
+            {{ log.action_time|date:"d M Y · H:i" }}{% if log.user %} · {{ log.user }}{% endif %}
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-sm text-base-500">Aucune activité pour l’instant. Modifiez du contenu pour la voir apparaître ici.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# ─── Quick links ─── #}
+  <div class="rounded-xl border border-base-200 dark:border-base-800 bg-white dark:bg-base-900 p-5">
+    <h2 class="text-sm font-semibold mb-4 text-font-important-light dark:text-font-important-dark">Raccourcis</h2>
+    <div class="grid grid-cols-1 gap-2">
+      {% for q in quick_links %}
+      <a href="{{ q.link }}"
+         class="flex items-start gap-3 p-3 rounded-lg border border-transparent bg-base-50 dark:bg-base-800/40 hover:border-primary-500 transition-colors">
+        <span class="material-symbols-outlined text-primary-500 text-lg">{{ q.icon }}</span>
+        <span class="flex flex-col">
+          <b class="text-[13px] font-medium text-font-default-light dark:text-font-default-dark">{{ q.title }}</b>
+          <span class="text-[11px] text-base-500">{{ q.desc }}</span>
+        </span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

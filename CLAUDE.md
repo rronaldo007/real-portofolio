@@ -26,13 +26,26 @@ No automated test/lint pipeline yet. `manage.py check` validates config.
 
 ```
 config/             Django project (settings, urls, wsgi/asgi)
-pages/              The one app — URL routes only; pages are rendered via TemplateView
-templates/pages/    The page templates (the design system, see below)
-static/css|js/      shared.css, shared.js, image-slot.js
-reference/          design-canvas.jsx + scraps/ — design sketches, NOT served
+pages/              The one app
+  models.py         Project, Experience, Skill, Testimonial, SiteProfile (singleton)
+  admin.py          Unfold ModelAdmins (themed) + read-only LogEntry (Activity Log)
+  dashboard.py      Unfold sidebar badge callbacks + DASHBOARD_CALLBACK
+  urls.py           Public routes (TemplateView → templates/pages/*)
+  migrations/       0001 schema, 0002 seed content
+templates/pages/    Public page templates (the design system, see below)
+templates/admin/    index.html — custom Unfold dashboard
+static/css|js/      shared.css, shared.js, image-slot.js, admin.css (Unfold theme)
+reference/          admin.html (admin design spec) + design-canvas.jsx + scraps/ — NOT served
 data/               SQLite DB (gitignored; Docker volume mount point)
 Dockerfile, docker-compose.yml, .dockerignore, requirements.txt
 ```
+
+### Admin (Unfold)
+
+The Django admin at `/admin/` is a full content system themed to `reference/admin.html`:
+sidebar nav groups (Content / Site / System), a custom dashboard (stat cards, quick
+links, recent activity), and themed Project/Experience/Skill/Testimonial/SiteProfile
+editors. Config lives in `UNFOLD` (`config/settings.py`) + `pages/dashboard.py`.
 
 ### Routes (`pages/urls.py`, namespace `pages:`)
 
@@ -83,7 +96,7 @@ The custom cursor and hover effects are disabled on touch devices (`@media (hove
 ## Notes
 
 - `.claude/STATUS.md` is auto-generated — don't hand-edit it.
-- The app has no models yet — `pages` only maps URLs to templates. The DB exists for Django's built-in apps (admin/sessions). Add models when content becomes dynamic.
+- Content models exist (`pages/models.py`) and are fully editable in the Unfold admin, seeded with sample data (migration `0002`). **Not yet wired to the public templates** — `templates/pages/*.html` still render hardcoded content. Next step for "everything customisable": drive those templates from the models via the views.
 - Static is collected at image build (`collectstatic`) and served by WhiteNoise with hashed filenames; `migrate` runs on container start.
 - Config is environment-driven: `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS` (see `config/settings.py` and `docker-compose.yml`). Set a real secret key in production.
 - The portfolio content (projects, experience, testimonials) is currently hardcoded placeholder data in the templates. **Direction:** everything will become customisable — model the content and edit it via the Unfold admin, then drive the templates from the DB.
