@@ -11,5 +11,14 @@ Thumbs.db
 **/.claude/STATUS.md
 **/.claude/settings.local.json
 
+# Python / Django
+.venv/
+__pycache__/
+*.py[cod]
+db.sqlite3
+data/*.sqlite3
+staticfiles/
+.env
+
 # Logs / temp
 *.log

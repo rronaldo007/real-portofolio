@@ -1,10 +1,11 @@
+{% load static %}
 <!doctype html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=1440" />
 <title>Admin · Rukundo Ronaldo</title>
-<link rel="stylesheet" href="shared.css" />
+<link rel="stylesheet" href="{% static 'css/shared.css' %}" />
 <style>
   /* ── Unfold-style admin chrome ─────────────────── */
   body {
@@ -1418,7 +1419,7 @@
             <div class="act-row">
               <div class="dot gray"></div>
               <div class="body">
-                <div class="t"><b>New message</b> <span>from <i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3e5b525b505f7e4d4a4b5a57514d4b4c10574d">[email&#160;protected]</a></i> via contact form</span></div>
+                <div class="t"><b>New message</b> <span>from <i>elena@studio.dev</i> via contact form</span></div>
                 <div class="time">22 MAY · 11:42</div>
               </div>
             </div>
@@ -1482,7 +1483,7 @@
   </main>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   // sidebar nav view switching
   document.querySelectorAll('.nav-item[data-view]').forEach(el => {
     el.addEventListener('click', (e) => {

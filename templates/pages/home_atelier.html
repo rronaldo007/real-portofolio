@@ -1,10 +1,11 @@
+{% load static %}
 <!doctype html>
 <html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=1440" />
 <title>Rukundo Ronaldo — Atelier</title>
-<link rel="stylesheet" href="shared.css" />
+<link rel="stylesheet" href="{% static 'css/shared.css' %}" />
 <style>
   /* ── Atelier-specific layout ───────────────────── */
   body {
@@ -910,7 +911,7 @@
   </a>
   <div class="sep"></div>
   <a href="#contact" class="cta" data-hover>
-    <span class="__cf_email__" data-cfemail="7c14191010133c0e0917091218135218190a">[email&#160;protected]</span>
+    hello@rukundo.dev
     <svg class="ic" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg>
   </a>
 </nav>
@@ -1012,7 +1013,7 @@
     <div class="count reveal reveal-delay-1" data-reveal-once>06 projets · 2022–2026</div>
   </div>
   <div class="proj-grid">
-    <a class="proj reveal" data-reveal-once href="project.html" data-transition data-hover>
+    <a class="proj reveal" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
       <div class="img img-mosaic">
         <div class="bg"></div>
         <div class="overlay"></div>
@@ -1030,7 +1031,7 @@
       <div class="tags"><span class="tag">Django</span><span class="tag">Postgres</span><span class="tag">HTMX</span></div>
     </a>
 
-    <a class="proj reveal reveal-delay-1" data-reveal-once href="project.html" data-transition data-hover>
+    <a class="proj reveal reveal-delay-1" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
       <div class="img img-ledger">
         <div class="bg"></div>
         <div class="overlay"></div>
@@ -1048,7 +1049,7 @@
       <div class="tags"><span class="tag">Django</span><span class="tag">Chart.js</span><span class="tag">Tailwind</span></div>
     </a>
 
-    <a class="proj reveal" data-reveal-once href="project.html" data-transition data-hover>
+    <a class="proj reveal" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
       <div class="img img-roost">
         <div class="bg"></div>
         <div class="overlay"></div>
@@ -1066,7 +1067,7 @@
       <div class="tags"><span class="tag">Django</span><span class="tag">Unfold</span><span class="tag">OSS</span></div>
     </a>
 
-    <a class="proj reveal reveal-delay-1" data-reveal-once href="project.html" data-transition data-hover>
+    <a class="proj reveal reveal-delay-1" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
       <div class="img img-drift">
         <div class="bg"></div>
         <div class="overlay"></div>
@@ -1084,7 +1085,7 @@
       <div class="tags"><span class="tag">Node</span><span class="tag">Socket.io</span><span class="tag">React</span></div>
     </a>
 
-    <a class="proj reveal" data-reveal-once href="project.html" data-transition data-hover>
+    <a class="proj reveal" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
       <div class="img img-quill">
         <div class="bg"></div>
         <div class="overlay"></div>
@@ -1102,7 +1103,7 @@
       <div class="tags"><span class="tag">Next.js</span><span class="tag">OpenAI</span><span class="tag">Postgres</span></div>
     </a>
 
-    <a class="proj reveal reveal-delay-1" data-reveal-once href="project.html" data-transition data-hover>
+    <a class="proj reveal reveal-delay-1" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
       <div class="img img-atlas">
         <div class="bg"></div>
         <div class="overlay"></div>
@@ -1320,7 +1321,7 @@
     </form>
 
     <aside class="contact-side reveal reveal-delay-1" data-reveal-once>
-      <a href="/cdn-cgi/l/email-protection#78101d141417380a0d130d161c17561c1d0e" class="big-email" data-hover><span class="__cf_email__" data-cfemail="6b030e0707042b191e001e050f04450f0e1d">[email&#160;protected]</span><span style="color: var(--accent);">.</span></a>
+      <a href="mailto:hello@rukundo.dev" class="big-email" data-hover>hello@rukundo.dev<span style="color: var(--accent);">.</span></a>
 
       <div class="quick-links">
         <a href="#" class="ql" data-hover>
@@ -1362,8 +1363,8 @@
   <span>v 1.0 / 06.MMXXVI</span>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="shared.js"></script>
-<script src="image-slot.js"></script>
+<script src="{% static 'js/shared.js' %}"></script>
+<script src="{% static 'js/image-slot.js' %}"></script>
 <script>
   // Hero — cycling variations every ~5s with sequenced reveal
   (function () {

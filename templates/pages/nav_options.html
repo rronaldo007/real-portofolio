@@ -1,10 +1,11 @@
+{% load static %}
 <!doctype html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=1440" />
 <title>Burger nav explorations</title>
-<link rel="stylesheet" href="shared.css" />
+<link rel="stylesheet" href="{% static 'css/shared.css' %}" />
 <style>
   body { --pad-x: 88px; overflow-x: hidden; }
   html[data-theme="dark"] body { background: #0a0908; }
@@ -459,7 +460,7 @@
       <div>
         <h3>— Get in touch</h3>
         <div class="contact">
-          <a href="/cdn-cgi/l/email-protection#375f525b5b587745425c4259535819535241" class="link-u"><span class="__cf_email__" data-cfemail="234b464f4f4c63515648564d474c0d474655">[email&#160;protected]</span></a>
+          <a href="mailto:hello@rukundo.dev" class="link-u">hello@rukundo.dev</a>
           <a href="#" class="link-u">+250 78 123 4567</a>
           <a href="#" class="link-u">Schedule a call ↗</a>
         </div>
@@ -498,7 +499,7 @@
   Two thin lines, no frame. Name top-left, burger top-right. Lines shift on hover, fold to X on open. Quietest option.
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="shared.js"></script>
+<script src="{% static 'js/shared.js' %}"></script>
 <script>
   const body = document.body;
   const overlay = document.getElementById('menuOverlay');

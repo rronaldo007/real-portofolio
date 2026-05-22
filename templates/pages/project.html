@@ -1,10 +1,11 @@
+{% load static %}
 <!doctype html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=1440" />
 <title>Mosaic — Rukundo Ronaldo</title>
-<link rel="stylesheet" href="shared.css" />
+<link rel="stylesheet" href="{% static 'css/shared.css' %}" />
 <style>
   body { --pad-x: 88px; overflow-x: hidden; }
   html[data-theme="dark"] body { background: #0a0908; }
@@ -600,9 +601,9 @@
 
 <!-- TOPBAR ─────────────────────────────────────── -->
 <div class="topbar" data-screen-label="05 Project · Mosaic">
-  <a href="home-atelier.html" class="brand" data-transition>Rukundo Ronaldo<sup>RR · 2026</sup></a>
+  <a href="{% url 'pages:home' %}" class="brand" data-transition>Rukundo Ronaldo<sup>RR · 2026</sup></a>
   <div class="right">
-    <a href="home-atelier.html" class="back-link" data-transition data-hover>
+    <a href="{% url 'pages:home' %}" class="back-link" data-transition data-hover>
       <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 3L3 8M3 5v3h3"/></svg>
       Back · All work
     </a>
@@ -872,7 +873,7 @@
     <span>— Next project</span>
     <span>02 / 06</span>
   </div>
-  <a href="project.html" class="next-card" data-transition data-hover>
+  <a href="{% url 'pages:project' %}" class="next-card" data-transition data-hover>
     <div class="img img-drift"></div>
     <div class="info">
       <div class="meta-row">
@@ -894,9 +895,9 @@
 <div class="ph-foot">
   <span>© 2026 Rukundo Ronaldo · Case study · N° 01</span>
   <span><span class="status-dot"></span>Mosaic · v 1.4.2 · live</span>
-  <span>← Back to <a href="home-atelier.html" class="link-u" style="color: var(--ink);" data-transition>All work</a></span>
+  <span>← Back to <a href="{% url 'pages:home' %}" class="link-u" style="color: var(--ink);" data-transition>All work</a></span>
 </div>
 
-<script src="shared.js"></script>
+<script src="{% static 'js/shared.js' %}"></script>
 </body>
 </html>

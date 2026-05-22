@@ -1,37 +1,51 @@
 # CLAUDE.md
 
-Personal portfolio for **Rukundo Ronaldo** — a fullstack developer (Django-focused). The site is an editorial, magazine-style portfolio built as **static HTML + CSS + vanilla JS**. No build step, no framework, no package manager. Copy in French (`lang="fr"`).
+Personal portfolio for **Rukundo Ronaldo** — a fullstack developer (Django-focused). An editorial, magazine-style portfolio. The pages are **HTML/CSS/vanilla-JS** served by **Django 5.0** as templates; copy is in French (`lang="fr"`). Static assets are served by WhiteNoise; the app runs under Gunicorn in Docker.
 
 ## How to run
 
-Open any HTML file directly, or serve the folder for correct relative paths:
+**Docker (recommended — mirrors production):**
 
 ```bash
-cd design-system && python3 -m http.server 8000
-# then visit http://localhost:8000/home-atelier.html
+docker compose up --build
+# → http://localhost:8000   (DEBUG=False, Gunicorn, WhiteNoise static)
 ```
 
-There is no build, lint, or test pipeline. Edit a file, refresh the browser.
+**Local (Django dev server):**
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+.venv/bin/python manage.py migrate
+.venv/bin/python manage.py runserver
+# → http://127.0.0.1:8000
+```
+
+No automated test/lint pipeline yet. `manage.py check` validates config.
 
 ## Layout
 
-Everything lives in `design-system/`:
+```
+config/             Django project (settings, urls, wsgi/asgi)
+pages/              The one app — URL routes only; pages are rendered via TemplateView
+templates/pages/    The page templates (the design system, see below)
+static/css|js/      shared.css, shared.js, image-slot.js
+reference/          design-canvas.jsx + scraps/ — design sketches, NOT served
+data/               SQLite DB (gitignored; Docker volume mount point)
+Dockerfile, docker-compose.yml, .dockerignore, requirements.txt
+```
 
-| File | Purpose |
-|------|---------|
-| `home-atelier.html` | Primary home page variant — hero, about, projects, experience, skills, testimonials, contact. Floating dock nav. |
-| `home-etudes.html` | Alternate home page layout (variant under exploration). |
-| `project.html` | Project / case-study detail page. |
-| `admin.html` | Admin / dashboard mockup screen. |
-| `design-system.html` | Living style guide — tokens, type scale, components. |
-| `nav-options.html` | Navigation pattern explorations. |
-| `shared.css` | **The design system.** CSS custom-property tokens, theming, cursor, reveal animations. Imported by every page. |
-| `shared.js` | **Shared interactions.** Theme toggle, custom cursor, split-text, scroll reveals, hover preview, magnetic hover, page-transition curtain, marquee. Imported by every page. |
-| `image-slot.js` | Image placeholder / slot helper. |
-| `design-canvas (1).jsx` | A React design sketch (reference only — the site itself is not React). |
-| `scraps/` | Throwaway sketches and experiments. Not part of the site. |
+### Routes (`pages/urls.py`, namespace `pages:`)
 
-Page-specific CSS lives in a `<style>` block inside each HTML file; anything reusable belongs in `shared.css`.
+| URL | Template | name |
+|-----|----------|------|
+| `/` | `home_atelier.html` | `home` — primary home: hero, about, projects, experience, skills, contact + floating dock |
+| `/etudes/` | `home_etudes.html` | `home_etudes` — alternate home layout |
+| `/project/` | `project.html` | `project` — case-study detail page |
+| `/dashboard/` | `admin.html` | `admin_demo` — dashboard mockup (note: Django admin is at `/admin/`) |
+| `/design-system/` | `design_system.html` | `design_system` — living style guide |
+| `/nav-options/` | `nav_options.html` | `nav_options` — nav pattern explorations |
+
+Templates reference assets with `{% static %}` and link between pages with `{% url 'pages:...' %}`. Page-specific CSS lives in a `<style>` block inside each template; anything reusable belongs in `static/css/shared.css`. New templates need `{% load static %}` on the first line.
 
 ## Design system (the important part)
 
@@ -69,5 +83,7 @@ The custom cursor and hover effects are disabled on touch devices (`@media (hove
 ## Notes
 
 - `.claude/STATUS.md` is auto-generated — don't hand-edit it.
-- Not a git repository yet.
+- The app has no models yet — `pages` only maps URLs to templates. The DB exists for Django's built-in apps (admin/sessions). Add models when content becomes dynamic.
+- Static is collected at image build (`collectstatic`) and served by WhiteNoise with hashed filenames; `migrate` runs on container start.
+- Config is environment-driven: `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS` (see `config/settings.py` and `docker-compose.yml`). Set a real secret key in production.
 - The portfolio content (projects, experience, testimonials) is currently placeholder/sample data to be replaced with real entries.

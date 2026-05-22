@@ -1,0 +1,18 @@
+services:
+  web:
+    build: .
+    image: rr-portfolio
+    ports:
+      - "8000:8000"
+    environment:
+      # Override these in production (e.g. via an .env file or your host).
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-only-change-me}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-False}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0}
+    volumes:
+      # Persist the SQLite database across container restarts.
+      - sqlite_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  sqlite_data:

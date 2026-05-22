@@ -4,22 +4,26 @@
 
 ## Stack
 
-- **Static site** — hand-written HTML, CSS, vanilla JS. No framework, no build step, no package manager.
-- **CSS:** plain CSS with custom properties (design tokens) in `design-system/shared.css`.
-- **JS:** a single vanilla-JS IIFE in `design-system/shared.js`. No bundler, no dependencies.
-- **Fonts:** Instrument Serif, Geist, Geist Mono — loaded from Google Fonts via `@import` in `shared.css`.
-- **Lang:** copy is French (`<html lang="fr">`).
-- **Serve:** `cd design-system && python3 -m http.server 8000`. No tests/lint/CI.
+- **Django 5.0** (Python 3.13) serves the pages as templates. Pages are static HTML/CSS/vanilla-JS — no frontend framework, no bundler.
+- **Gunicorn** as the WSGI server; **WhiteNoise** serves hashed static files from the app.
+- **SQLite** (in `data/`) — only for Django's built-in apps; no project models yet.
+- **CSS:** plain CSS with custom-property design tokens in `static/css/shared.css`.
+- **JS:** a single vanilla-JS IIFE in `static/js/shared.js`. No dependencies.
+- **Fonts:** Instrument Serif, Geist, Geist Mono — from Google Fonts via `@import` in `shared.css`.
+- **Lang:** copy is French (`<html lang="fr">`, `LANGUAGE_CODE = "fr"`, `TIME_ZONE = "Europe/Paris"`).
+- **Run:** `docker compose up --build` (prod-like) or `manage.py runserver` (local). No tests/lint/CI yet.
+- **Config via env:** `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`.
 
 ## Structure
 
-- `design-system/` — all site files (every page is a standalone `.html`).
-  - `shared.css` — the design system: tokens, theming, cursor, reveal animations. Imported by every page.
-  - `shared.js` — shared interactions wired via `data-*` attributes. Imported by every page.
-  - `home-atelier.html` (primary) / `home-etudes.html` (alt) — home page variants.
-  - `project.html`, `admin.html`, `design-system.html` (style guide), `nav-options.html`.
-  - `image-slot.js`, `design-canvas (1).jsx` (React reference sketch, not used by the site).
-  - `scraps/` — throwaway experiments, not part of the site.
+- `config/` — Django project: `settings.py`, `urls.py`, `wsgi.py`, `asgi.py`.
+- `pages/` — the single app. `urls.py` maps URLs to templates via `TemplateView` (namespace `pages:`). No models/views logic yet.
+- `templates/pages/` — page templates (`home_atelier.html` = `/`, plus `home_etudes`, `project`, `admin`, `design_system`, `nav_options`).
+- `static/css/shared.css` — the design system: tokens, theming, cursor, reveal animations.
+- `static/js/shared.js` — shared interactions wired via `data-*` attributes; `static/js/image-slot.js` helper.
+- `reference/` — `design-canvas.jsx` + `scraps/`: design sketches, not served, not part of the app.
+- `data/` — SQLite DB (gitignored; Docker volume mount point).
+- `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `requirements.txt` at root.
 - `.claude/` — project docs/rules. `CLAUDE.md` at root is the entry point.
 
 ## Coding Standards
@@ -37,9 +41,13 @@
 - **Editorial aesthetic:** large italic serif display type, mono uppercase labels with letter-spacing, generous whitespace, restrained purple accent.
 - **Project status pills:** `status-live`, `status-beta`, `status-working`, `status-oss`, `status-archived`.
 
+- **Templates** reference assets with `{% static %}` and link pages with `{% url 'pages:...' %}`; first line is `{% load static %}`. Add a new page = template in `templates/pages/` + a route in `pages/urls.py`.
+
 ## Patterns to Avoid
 
-- No build tooling / npm dependencies — adding a bundler breaks the "open the file and it works" model.
-- No per-page duplication of tokens or interactions — extend the shared files instead.
+- No frontend framework / bundler / npm — the pages stay hand-written HTML/CSS/JS rendered by Django.
+- No hardcoded asset paths or inter-page links in templates — always `{% static %}` / `{% url %}`.
+- No per-page duplication of tokens or interactions — extend `shared.css` / `shared.js` instead.
 - Don't disable the touch fallback: the custom cursor and hover effects must stay off under `@media (hover: none)`.
 - Don't add motion without honoring `prefers-reduced-motion`.
+- Don't commit secrets — `SECRET_KEY` and hosts come from env (`DJANGO_*`).

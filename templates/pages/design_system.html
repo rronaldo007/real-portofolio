@@ -1,10 +1,11 @@
+{% load static %}
 <!doctype html>
 <html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=1440" />
 <title>Rukundo Ronaldo — Système</title>
-<link rel="stylesheet" href="shared.css" />
+<link rel="stylesheet" href="{% static 'css/shared.css' %}" />
 <style>
   body {
     --pad-x: 88px;
@@ -991,7 +992,7 @@
 
 <!-- TOPBAR ──────────────────────────────────────── -->
 <div class="topbar" data-screen-label="07 Système · Design System">
-  <a href="home-atelier.html" class="brand" data-transition>Rukundo Ronaldo<sup>SYS · MMXXVI</sup></a>
+  <a href="{% url 'pages:home' %}" class="brand" data-transition>Rukundo Ronaldo<sup>SYS · MMXXVI</sup></a>
   <div class="right">
     <span class="status-pill" data-hover>Système · v 1.0</span>
     <button class="theme-toggle" data-theme-toggle data-hover>
@@ -1044,7 +1045,7 @@
   </a>
   <div class="sep"></div>
   <a href="home-atelier.html#contact" class="cta" data-transition data-hover>
-    <span class="__cf_email__" data-cfemail="422a272e2e2d02303729372c262d6c262734">[email&#160;protected]</span>
+    hello@rukundo.dev
     <svg class="ic" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg>
   </a>
 </nav>
@@ -1433,7 +1434,7 @@
       <div class="head"><h4>Boutons.</h4><span class="num">— 06 / b</span></div>
       <div class="stage">
         <button class="ds-btn-cta" data-hover>
-          <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d8b0bdb4b4b798aaadb3adb6bcb7f6bcbdae">[email&#160;protected]</a>
+          <a href="mailto:hello@rukundo.dev">hello@rukundo.dev</a>
           <svg class="ic" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg>
         </button>
         <button class="ds-btn-ghost" data-hover>Télécharger CV ↓</button>
@@ -1528,7 +1529,7 @@
           </a>
           <div class="sep"></div>
           <a href="#" class="cta" data-hover>
-            <span class="__cf_email__" data-cfemail="c9a1aca5a5a689bbbca2bca7ada6e7adacbf">[email&#160;protected]</span>
+            hello@rukundo.dev
             <svg class="ic" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg>
           </a>
         </nav>
@@ -1653,10 +1654,10 @@
 <footer class="footer-bar">
   <span>© MMXXVI · Rukundo Ronaldo · Système éditorial</span>
   <span>— v 1.0 · 14 tokens · 09 composants · 04 courbes</span>
-  <span>↘ <a href="home-atelier.html" class="link-u" data-transition data-hover>Retour à l’atelier</a></span>
+  <span>↘ <a href="{% url 'pages:home' %}" class="link-u" data-transition data-hover>Retour à l’atelier</a></span>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="shared.js"></script>
+<script src="{% static 'js/shared.js' %}"></script>
 <script>
   // ── Chapter index + pager : highlight on scroll ──
   (function () {
