@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 # Start the portfolio in Docker (detached). Builds the image on first run.
 set -euo pipefail
-cd "$(dirname "$0")/.."
+source "$(dirname "$0")/_common.sh"
 
+banner
+require_docker
+
+info "Starting the portfolio container…"
 docker compose up -d
-echo "▸ Portfolio running at http://localhost:8000"
-docker compose ps
+
+ok "Up and running at ${BOLD}${BASE_URL}${RESET}"
+printf '\n'
+print_routes live
+hint
