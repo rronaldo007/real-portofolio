@@ -70,7 +70,9 @@ class Project(TimeStamped):
     # Settings / status
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)
     badge = models.CharField(max_length=20, choices=Badge.choices, default=Badge.WORKING)
-    featured = models.BooleanField(default=False)
+    featured = models.BooleanField(default=False, help_text="Featured on home")
+    show_in_index = models.BooleanField(default=True, help_text="Show in the work index")
+    open_source = models.BooleanField(default=False)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -90,6 +92,22 @@ class Project(TimeStamped):
     @property
     def tech_list(self):
         return _csv_list(self.tech_stack)
+
+
+class ProjectMetric(models.Model):
+    """A concrete outcome shown in the case-study hero (e.g. “14 teams”)."""
+
+    project = models.ForeignKey(Project, related_name="metrics", on_delete=models.CASCADE)
+    label = models.CharField(max_length=80)
+    value = models.CharField(max_length=40)
+    unit = models.CharField(max_length=40, blank=True, help_text="Suffix, e.g. ms, teams")
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return f"{self.label}: {self.value}{self.unit}"
 
 
 class Experience(TimeStamped):
@@ -168,8 +186,33 @@ class Testimonial(TimeStamped):
         return self.author
 
 
+class ContactMessage(TimeStamped):
+    """A submission from the public contact form."""
+
+    name = models.CharField(max_length=120)
+    email = models.EmailField()
+    subject = models.CharField(max_length=160, blank=True)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.name} <{self.email}>"
+
+
 class SiteProfile(TimeStamped):
     """Singleton holding profile, hero copy, contact, branding and resume."""
+
+    class Theme(models.TextChoices):
+        DARK = "dark", "Dark"
+        LIGHT = "light", "Light"
+        SYSTEM = "system", "System"
+
+    class HomeVariant(models.TextChoices):
+        ATELIER = "atelier", "Atelier · editorial"
+        ETUDES = "etudes", "Études · grid"
 
     # Profile
     name = models.CharField(max_length=120, default="Rukundo Ronaldo")
@@ -193,6 +236,11 @@ class SiteProfile(TimeStamped):
 
     # Theme & branding
     accent_color = models.CharField(max_length=9, default="#c084fc", help_text="Hex")
+    default_theme = models.CharField(max_length=10, choices=Theme.choices, default=Theme.DARK)
+    home_variant = models.CharField(
+        max_length=10, choices=HomeVariant.choices, default=HomeVariant.ATELIER,
+        help_text="Which home layout to serve at /",
+    )
 
     # Resume / CV
     resume_url = models.URLField(blank=True)

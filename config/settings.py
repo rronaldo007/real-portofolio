@@ -176,6 +176,9 @@ UNFOLD = {
                     {"title": "Testimonials", "icon": "format_quote",
                      "link": reverse_lazy("admin:pages_testimonial_changelist"),
                      "badge": "pages.dashboard.testimonial_count"},
+                    {"title": "Messages", "icon": "inbox",
+                     "link": reverse_lazy("admin:pages_contactmessage_changelist"),
+                     "badge": "pages.dashboard.message_count"},
                 ],
             },
             {

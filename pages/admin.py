@@ -1,10 +1,18 @@
 from django.contrib import admin
 from django.contrib.admin.models import LogEntry
-from django.utils.html import format_html
-from unfold.admin import ModelAdmin
-from unfold.decorators import display
+from django.utils.html import format_html, format_html_join
+from unfold.admin import ModelAdmin, TabularInline
+from unfold.decorators import action, display
 
-from .models import Experience, Project, Skill, SiteProfile, Testimonial
+from .models import (
+    ContactMessage,
+    Experience,
+    Project,
+    ProjectMetric,
+    Skill,
+    SiteProfile,
+    Testimonial,
+)
 
 # Status pill colors (mirrors the design's status-* / pill colors).
 _STATUS_COLORS = {
@@ -19,6 +27,15 @@ _BADGE_COLORS = {
     "oss": "#93c5fd",
     "archived": "#8a8378",
 }
+# Representative color per card gradient style (from shared.css).
+_CARD_COLORS = {
+    "mosaic": "#7c3aed",
+    "ledger": "#4d7cfe",
+    "roost": "#a8633a",
+    "drift": "#0e7490",
+    "quill": "#a21caf",
+    "atlas": "#0f9d6e",
+}
 
 
 def _pill(label, color):
@@ -32,16 +49,24 @@ def _pill(label, color):
     )
 
 
+class ProjectMetricInline(TabularInline):
+    model = ProjectMetric
+    extra = 0
+    fields = ("label", "value", "unit", "order")
+    ordering = ("order",)
+
+
 @admin.register(Project)
 class ProjectAdmin(ModelAdmin):
-    list_display = ("title", "year", "status_pill", "badge_pill", "featured", "order")
-    list_display_links = ("title",)
+    list_display = ("cover", "project_cell", "stack_tags", "year", "status_pill", "featured", "order")
+    list_display_links = ("project_cell",)
     list_editable = ("order",)
-    list_filter = ("status", "badge", "featured", "card_style", "year")
+    list_filter = ("status", "badge", "featured", "open_source", "card_style", "year")
     search_fields = ("title", "short_description", "tech_stack", "client")
     prepopulated_fields = {"slug": ("title",)}
     ordering = ("order", "-year")
     list_per_page = 25
+    inlines = [ProjectMetricInline]
 
     fieldsets = (
         (
@@ -73,9 +98,48 @@ class ProjectAdmin(ModelAdmin):
         ),
         (
             "Settings",
-            {"classes": ["tab"], "fields": (("status", "badge"), "featured", "order")},
+            {
+                "classes": ["tab"],
+                "fields": (
+                    ("status", "badge"),
+                    ("featured", "show_in_index", "open_source"),
+                    "order",
+                ),
+            },
         ),
     )
+
+    @display(description="")
+    def cover(self, obj):
+        color = _CARD_COLORS.get(obj.card_style, "#7c3aed")
+        return format_html(
+            '<span style="display:block;width:34px;height:26px;border-radius:5px;'
+            'background:linear-gradient(135deg,{0},rgba(14,13,12,.9));'
+            'border:1px solid rgba(245,242,236,.12);"></span>',
+            color,
+        )
+
+    @display(description="Project")
+    def project_cell(self, obj):
+        return format_html(
+            '<div style="display:flex;flex-direction:column;gap:2px;">'
+            '<b>{0}</b>'
+            '<span style="font-size:11px;color:#8a8378;font-family:ui-monospace,monospace;">'
+            '/work/{1} · {2}</span></div>',
+            obj.title,
+            obj.slug,
+            (obj.short_description[:48] + "…") if len(obj.short_description) > 48 else obj.short_description,
+        )
+
+    @display(description="Stack")
+    def stack_tags(self, obj):
+        chips = format_html_join(
+            " ",
+            '<span style="font-size:10px;font-family:ui-monospace,monospace;color:#8a8378;'
+            'border:1px solid rgba(245,242,236,.14);padding:2px 7px;border-radius:999px;">{}</span>',
+            ((t,) for t in obj.tech_list[:4]),
+        )
+        return chips or "—"
 
     @display(description="Status")
     def status_pill(self, obj):
@@ -129,6 +193,40 @@ class TestimonialAdmin(ModelAdmin):
         return (obj.quote[:70] + "…") if len(obj.quote) > 70 else obj.quote
 
 
+@admin.register(ContactMessage)
+class ContactMessageAdmin(ModelAdmin):
+    """Inbox for public contact-form submissions."""
+
+    list_display = ("name", "email", "subject", "preview", "read_pill", "created_at")
+    list_filter = ("is_read", "created_at")
+    search_fields = ("name", "email", "subject", "message")
+    readonly_fields = ("name", "email", "subject", "message", "created_at")
+    ordering = ("-created_at",)
+    actions = ["mark_read", "mark_unread"]
+
+    fieldsets = (("Message", {"fields": (("name", "email"), "subject", "message",
+                                         "is_read", "created_at")}),)
+
+    def has_add_permission(self, request):
+        return False  # messages arrive via the public form
+
+    @display(description="Message")
+    def preview(self, obj):
+        return (obj.message[:60] + "…") if len(obj.message) > 60 else obj.message
+
+    @display(description="State")
+    def read_pill(self, obj):
+        return _pill("Lu", "#8a8378") if obj.is_read else _pill("Nouveau", "#c084fc")
+
+    @action(description="Marquer comme lu")
+    def mark_read(self, request, queryset):
+        queryset.update(is_read=True)
+
+    @action(description="Marquer comme non lu")
+    def mark_unread(self, request, queryset):
+        queryset.update(is_read=False)
+
+
 @admin.register(SiteProfile)
 class SiteProfileAdmin(ModelAdmin):
     fieldsets = (
@@ -138,7 +236,8 @@ class SiteProfileAdmin(ModelAdmin):
         ("Contact & socials", {"classes": ["tab"], "fields": ("email", "github_url",
                                                               "linkedin_url", "twitter_url",
                                                               "dribbble_url")}),
-        ("Theme & branding", {"classes": ["tab"], "fields": ("accent_color",)}),
+        ("Theme & branding", {"classes": ["tab"], "fields": ("accent_color", "default_theme",
+                                                             "home_variant")}),
         ("Resume / CV", {"classes": ["tab"], "fields": ("resume_url",)}),
     )
 

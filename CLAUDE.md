@@ -27,7 +27,7 @@ No automated test/lint pipeline yet. `manage.py check` validates config.
 ```
 config/             Django project (settings, urls, wsgi/asgi)
 pages/              The one app
-  models.py         Project, Experience, Skill, Testimonial, SiteProfile (singleton)
+  models.py         Project (+ProjectMetric), Experience, Skill, Testimonial, ContactMessage, SiteProfile (singleton)
   admin.py          Unfold ModelAdmins (themed) + read-only LogEntry (Activity Log)
   dashboard.py      Unfold sidebar badge callbacks + DASHBOARD_CALLBACK
   urls.py           Public routes (TemplateView → templates/pages/*)
@@ -42,10 +42,15 @@ Dockerfile, docker-compose.yml, .dockerignore, requirements.txt
 
 ### Admin (Unfold)
 
-The Django admin at `/admin/` is a full content system themed to `reference/admin.html`:
-sidebar nav groups (Content / Site / System), a custom dashboard (stat cards, quick
-links, recent activity), and themed Project/Experience/Skill/Testimonial/SiteProfile
-editors. Config lives in `UNFOLD` (`config/settings.py`) + `pages/dashboard.py`.
+The Django admin at `/admin/` realizes `reference/admin.html` as a full content system:
+- **Sidebar** nav groups (Content / Site / System) with live count badges, incl. Messages.
+- **Dashboard** (`templates/admin/index.html` + `DASHBOARD_CALLBACK`): greeting, stat cards,
+  a real "projets par année" chart, quick actions, recent activity, and a Theme & site panel.
+- **Editors**: Project (tabbed fieldsets, status pills, `ProjectMetric` inline, flags
+  featured/show_in_index/open_source), Experience, Skill, Testimonial, SiteProfile (singleton:
+  profile/hero/contact/theme/resume), a ContactMessage inbox (read/unread), read-only Activity Log.
+
+Config lives in `UNFOLD` (`config/settings.py`) + `pages/dashboard.py`.
 
 ### Routes (`pages/urls.py`, namespace `pages:`)
 
