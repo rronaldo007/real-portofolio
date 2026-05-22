@@ -86,4 +86,5 @@ The custom cursor and hover effects are disabled on touch devices (`@media (hove
 - The app has no models yet — `pages` only maps URLs to templates. The DB exists for Django's built-in apps (admin/sessions). Add models when content becomes dynamic.
 - Static is collected at image build (`collectstatic`) and served by WhiteNoise with hashed filenames; `migrate` runs on container start.
 - Config is environment-driven: `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS` (see `config/settings.py` and `docker-compose.yml`). Set a real secret key in production.
-- The portfolio content (projects, experience, testimonials) is currently placeholder/sample data to be replaced with real entries.
+- The portfolio content (projects, experience, testimonials) is currently hardcoded placeholder data in the templates. **Direction:** everything will become customisable — model the content and edit it via the Unfold admin, then drive the templates from the DB.
+- Admin theme: Unfold is brand-matched to `reference/admin.html` — purple accent + warm-dark palette via `UNFOLD["COLORS"]` in `config/settings.py`, editorial fonts via `static/css/admin.css`. `reference/admin.html` is the design spec (not served).

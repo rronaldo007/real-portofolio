@@ -1,0 +1,45 @@
+/* Unfold admin — editorial typography to match reference/admin.html.
+   Colors (purple accent + warm near-black base) come from UNFOLD["COLORS"]
+   in settings.py; this file only layers on the fonts and a few accents. */
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
+
+:root {
+  --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* Body / UI text → Geist. Most Unfold elements inherit family from body. */
+body,
+body.unfold,
+.unfold input,
+.unfold select,
+.unfold textarea,
+.unfold button {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Monospace utilities (labels, breadcrumbs, kbd) → Geist Mono. */
+.font-mono,
+code, kbd, pre, samp {
+  font-family: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace !important;
+}
+
+/* Editorial display: page titles and the sidebar brand in Instrument Serif italic. */
+#content h1,
+.unfold h1,
+h1.text-font-important-color,
+a.font-semibold[href="/admin/"],
+#nav-sidebar .font-semibold:first-child {
+  font-family: "Instrument Serif", Georgia, "Times New Roman", serif !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.015em;
+}
+
+/* Primary buttons: brand purple already comes from COLORS; keep dark ink on it
+   (matches .btn-primary color: #15110a in the design). */
+.unfold button[type="submit"].bg-primary-600,
+.unfold .bg-primary-600 {
+  color: #15110a;
+}

@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+from django.templatetags.static import static
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -139,7 +141,9 @@ STORAGES = {
     },
 }
 
-# Unfold admin theme
+# Unfold admin theme — brand-matched to the editorial admin design
+# (reference/admin.html): purple accent, warm near-black dark palette,
+# Instrument Serif / Geist / Geist Mono fonts via static/css/admin.css.
 # https://unfoldadmin.com/docs/configuration/
 UNFOLD = {
     "SITE_TITLE": "Rukundo Ronaldo — Admin",
@@ -147,6 +151,38 @@ UNFOLD = {
     "SITE_SUBHEADER": "Portfolio",
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
+    "STYLES": [lambda request: static("css/admin.css")],
+    "COLORS": {
+        # Accent — Tailwind "purple" ramp (purple-400 = #c084fc, the brand accent).
+        "primary": {
+            "50": "250 245 255",
+            "100": "243 232 255",
+            "200": "233 213 255",
+            "300": "216 180 254",
+            "400": "192 132 252",
+            "500": "168 85 247",
+            "600": "147 51 234",
+            "700": "126 34 206",
+            "800": "107 33 168",
+            "900": "88 28 135",
+            "950": "59 7 100",
+        },
+        # Base — warm near-black grays from shared.css (--bg / --ink family),
+        # so dark mode reads as the editorial #0e0d0c rather than cold gray.
+        "base": {
+            "50": "245 242 236",
+            "100": "235 231 223",
+            "200": "214 210 200",
+            "300": "176 170 160",
+            "400": "138 131 120",
+            "500": "109 103 96",
+            "600": "74 70 65",
+            "700": "42 39 34",
+            "800": "29 28 26",
+            "900": "22 21 19",
+            "950": "14 13 12",
+        },
+    },
 }
 
 
