@@ -1,0 +1,15 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Auto-generated
+**/.claude/STATUS.md
+**/.claude/settings.local.json
+
+# Logs / temp
+*.log

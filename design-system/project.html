@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Mosaic — Rukundo Ronaldo</title>
+<link rel="stylesheet" href="shared.css" />
+<style>
+  body { --pad-x: 88px; overflow-x: hidden; }
+  html[data-theme="dark"] body { background: #0a0908; }
+  html[data-theme="dark"] { --bg: #0a0908; --bg-2: #131210; }
+
+  /* ── Topbar + dock (same as home) ── */
+  .topbar {
+    position: fixed; top: 28px; left: 36px; right: 36px;
+    z-index: 100;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    pointer-events: none;
+  }
+  .topbar > * { pointer-events: auto; }
+  .topbar .brand {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 32px; letter-spacing: -0.01em;
+    color: var(--ink); line-height: 1;
+    display: inline-flex; align-items: flex-start; gap: 12px;
+    padding: 6px 14px;
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 14px;
+  }
+  .topbar .brand sup {
+    font-family: var(--font-mono); font-style: normal;
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-top: 8px;
+  }
+  .topbar .right { display: flex; align-items: center; gap: 10px; }
+  .topbar .back-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-2);
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .topbar .back-link:hover { color: var(--accent); border-color: var(--accent); }
+  .topbar .theme-toggle {
+    padding: 8px 12px;
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  /* image gradients (matching home) */
+  .img-mosaic { background: radial-gradient(at 30% 30%, #2d1b4e, #0a0908 70%); position: relative; }
+  .img-mosaic::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(192,132,252,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(192,132,252,.16) 1px, transparent 1px); background-size: 40px 40px; }
+  .img-mosaic-dense { background: radial-gradient(at 60% 40%, #2d1b4e, #0a0908 70%); position: relative; }
+  .img-mosaic-dense::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(192,132,252,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(192,132,252,.18) 1px, transparent 1px); background-size: 20px 20px; }
+  .img-drift { background: linear-gradient(135deg, #0c2236, #061018); position: relative; }
+  .img-drift::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 70% 40%, rgba(110,231,183,0.3), transparent 50%), radial-gradient(circle at 30% 70%, rgba(192,132,252,0.25), transparent 50%); }
+  .img-roost { background: linear-gradient(180deg, #2a1810, #0a0605); position: relative; }
+  .img-roost::after { content: "R"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-style: italic; font-size: 300px; color: rgba(245,242,236,0.05); line-height: 0.8; }
+
+  /* ─── HERO ─── */
+  .ph-hero {
+    padding: 240px var(--pad-x) 80px;
+    position: relative;
+  }
+  .ph-hero .eyebrow {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 80px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  }
+  .ph-hero .eyebrow .num { color: var(--ink); }
+  .ph-hero .eyebrow .tags { display: flex; gap: 24px; }
+  .ph-hero .eyebrow .tags .dot { color: var(--accent); }
+
+  .ph-hero h1 {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(120px, 18vw, 280px);
+    line-height: 0.86; letter-spacing: -0.04em;
+    font-weight: 400; color: var(--ink);
+    margin-bottom: 60px;
+  }
+  .ph-hero h1 .ac { color: var(--accent); }
+
+  .ph-hero .lede {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(28px, 3vw, 40px);
+    line-height: 1.25; letter-spacing: -0.015em;
+    color: var(--ink); max-width: 30ch;
+    margin-bottom: 80px;
+  }
+
+  /* quick facts row */
+  .ph-facts {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 32px;
+    padding: 32px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .ph-facts dt {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 10px;
+  }
+  .ph-facts dd {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 22px; line-height: 1.1;
+    letter-spacing: -0.01em; color: var(--ink);
+  }
+  .ph-facts dd .sub {
+    display: block;
+    font-family: var(--font-mono); font-style: normal;
+    font-size: 11px; letter-spacing: 0.04em;
+    color: var(--muted); margin-top: 4px;
+  }
+  .ph-facts .pill-row {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: 4px;
+  }
+  .ph-facts .pill-row span {
+    font-family: var(--font-mono); font-style: normal;
+    font-size: 10px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted);
+    padding: 3px 8px; border: 1px solid var(--line); border-radius: 999px;
+  }
+
+  /* ─── Cover image ─── */
+  .ph-cover {
+    margin: 0 var(--pad-x);
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    position: relative;
+  }
+  .ph-cover .label-tl {
+    position: absolute; top: 18px; left: 18px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255,255,255,0.85); mix-blend-mode: difference;
+    z-index: 2;
+  }
+  .ph-cover .label-br {
+    position: absolute; bottom: 18px; right: 18px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.7); mix-blend-mode: difference;
+    z-index: 2;
+  }
+
+  /* ─── The brief ─── */
+  .ph-brief {
+    padding: 140px var(--pad-x);
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .ph-brief .section-num {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    position: sticky; top: 100px;
+  }
+  .ph-brief .section-num::before {
+    content: ""; display: inline-block;
+    width: 28px; height: 1px;
+    background: var(--muted);
+    vertical-align: middle; margin-right: 10px;
+  }
+  .ph-brief .body {
+    max-width: 60ch;
+  }
+  .ph-brief .body .pull-lede {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 38px; line-height: 1.15;
+    color: var(--ink); letter-spacing: -0.02em;
+    margin-bottom: 48px;
+  }
+  .ph-brief .body p {
+    font-size: 16.5px; line-height: 1.75;
+    color: var(--ink-2);
+    margin-bottom: 1em;
+    max-width: 56ch;
+  }
+  .ph-brief .body .drop {
+    font-family: var(--font-display); font-style: italic;
+    float: left; font-size: 96px; line-height: 0.85;
+    margin: 8px 14px -6px 0;
+    color: var(--accent);
+  }
+
+  /* ─── Metrics ─── */
+  .ph-metrics {
+    padding: 0 var(--pad-x) 140px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .ph-metric {
+    padding: 32px 28px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg-2);
+    position: relative;
+    transition: border-color 0.3s, transform 0.4s var(--ease-out);
+  }
+  .ph-metric:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .ph-metric .label {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 36px;
+  }
+  .ph-metric .num {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 88px; line-height: 0.9;
+    letter-spacing: -0.03em; color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .ph-metric .num .unit {
+    font-family: var(--font-mono); font-style: normal;
+    font-size: 20px; color: var(--muted);
+    letter-spacing: 0.02em; margin-left: 6px;
+    vertical-align: top; padding-top: 16px;
+    display: inline-block;
+  }
+  .ph-metric .desc {
+    font-size: 13px; color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .ph-metric .badge {
+    position: absolute; top: 20px; right: 20px;
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: #6ee7b7;
+  }
+
+  /* ─── Process chapters ─── */
+  .ph-chapter {
+    padding: 140px var(--pad-x);
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .ph-chapter.flip > .text { order: 2; }
+  .ph-chapter .text .chap-num {
+    display: flex; align-items: baseline; gap: 16px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 32px;
+  }
+  .ph-chapter .text .chap-num .big {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 64px; line-height: 1;
+    color: var(--accent); letter-spacing: -0.02em;
+  }
+  .ph-chapter .text h3 {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 56px; line-height: 1.05; letter-spacing: -0.025em;
+    color: var(--ink); font-weight: 400;
+    margin-bottom: 32px;
+  }
+  .ph-chapter .text p {
+    font-size: 15.5px; line-height: 1.7;
+    color: var(--ink-2); max-width: 42ch;
+    margin-bottom: 1em;
+  }
+  .ph-chapter .text .bullets {
+    list-style: none; margin-top: 32px;
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+  }
+  .ph-chapter .text .bullets li {
+    display: flex; gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line);
+    font-size: 14px; color: var(--ink-2);
+  }
+  .ph-chapter .text .bullets li b {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; color: var(--accent);
+    text-transform: uppercase; font-weight: 500;
+    min-width: 60px;
+  }
+  .ph-chapter .visual {
+    aspect-ratio: 4 / 5;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    position: relative;
+  }
+  .ph-chapter .visual .corner {
+    position: absolute; top: 16px; left: 16px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.8); mix-blend-mode: difference;
+    z-index: 2;
+  }
+  .ph-chapter .visual .caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 16px 20px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+    color: #fff;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    display: flex; justify-content: space-between;
+  }
+
+  /* visualizations: wireframe-y screenshots inside .visual */
+  .vis-wires { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 32px; height: 100%; }
+  .vis-wires .col { display: flex; flex-direction: column; gap: 10px; }
+  .vis-wires .row {
+    background: rgba(245,242,236,0.06);
+    border-radius: 3px;
+    height: 12px;
+  }
+  .vis-wires .row.big { height: 40px; }
+  .vis-wires .row.med { height: 24px; }
+  .vis-wires .row.short { width: 60%; }
+  .vis-wires .row.shorter { width: 40%; }
+  .vis-wires .row.accent { background: rgba(192,132,252,0.4); }
+
+  .vis-board {
+    padding: 28px;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1428, #0a0908);
+    position: relative;
+    overflow: hidden;
+  }
+  .vis-board::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(192,132,252,0.06) 1px, transparent 1px),
+                       linear-gradient(90deg, rgba(192,132,252,0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .vis-board .swim {
+    position: relative;
+    display: grid; grid-template-rows: 28px 1fr; gap: 12px;
+    height: 100%;
+    z-index: 1;
+  }
+  .vis-board .swim-head {
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px;
+  }
+  .vis-board .swim-head span {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(245,242,236,0.6);
+    padding: 6px 10px;
+    background: rgba(245,242,236,0.04);
+    border-radius: 3px;
+  }
+  .vis-board .swim-cols {
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px;
+    align-items: start;
+  }
+  .vis-board .card {
+    background: rgba(245,242,236,0.05);
+    border: 1px solid rgba(245,242,236,0.08);
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  .vis-board .card .ttl {
+    height: 6px; background: rgba(245,242,236,0.4);
+    border-radius: 2px; margin-bottom: 6px;
+  }
+  .vis-board .card .ttl.short { width: 60%; }
+  .vis-board .card .meta {
+    display: flex; gap: 4px;
+  }
+  .vis-board .card .meta b {
+    width: 14px; height: 4px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .vis-board .card.featured {
+    border-color: var(--accent);
+    background: rgba(192,132,252,0.1);
+  }
+
+  .vis-stack {
+    padding: 40px;
+    height: 100%;
+    display: flex; flex-direction: column; gap: 12px;
+    background: linear-gradient(135deg, #0c1c2e, #0a0908);
+  }
+  .vis-stack .layer {
+    padding: 14px 18px;
+    border-radius: 4px;
+    background: rgba(245,242,236,0.04);
+    border: 1px solid rgba(245,242,236,0.08);
+    display: flex; justify-content: space-between; align-items: center;
+    color: #fff;
+  }
+  .vis-stack .layer.acc { background: rgba(192,132,252,0.12); border-color: rgba(192,132,252,0.3); }
+  .vis-stack .layer .name {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 22px; line-height: 1;
+  }
+  .vis-stack .layer .tag {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(245,242,236,0.5);
+  }
+
+  /* ─── Gallery ─── */
+  .ph-gallery {
+    padding: 140px var(--pad-x);
+    border-top: 1px solid var(--line);
+  }
+  .ph-gallery-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 24px; border-bottom: 1px solid var(--line);
+    margin-bottom: 60px;
+  }
+  .ph-gallery-head h3 {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(56px, 7vw, 96px);
+    line-height: 0.95; letter-spacing: -0.025em;
+    font-weight: 400; color: var(--ink);
+  }
+  .ph-gallery-head .count {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  }
+  .ph-gallery-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 12px;
+  }
+  .ph-gallery-tile {
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    aspect-ratio: 4/3;
+    position: relative;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .ph-gallery-tile:hover { transform: translateY(-4px); }
+  .ph-gallery-tile.wide { grid-row: span 2; aspect-ratio: auto; }
+  .ph-gallery-tile .corner {
+    position: absolute; top: 14px; left: 14px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.85); mix-blend-mode: difference;
+    z-index: 2;
+  }
+
+  /* ─── Pull quote ─── */
+  .ph-quote {
+    padding: 160px var(--pad-x);
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .ph-quote .lab {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    position: sticky; top: 100px;
+  }
+  .ph-quote .lab::before {
+    content: ""; display: inline-block;
+    width: 28px; height: 1px;
+    background: var(--muted);
+    vertical-align: middle; margin-right: 10px;
+  }
+  .ph-quote .body {
+    max-width: 60ch;
+  }
+  .ph-quote .body .marks {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 120px; line-height: 0.3;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: block;
+  }
+  .ph-quote .body blockquote {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.2; letter-spacing: -0.015em;
+    color: var(--ink); font-weight: 400;
+    margin-bottom: 40px;
+  }
+  .ph-quote .body .who {
+    display: flex; align-items: center; gap: 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .ph-quote .body .who .av {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d97706, #c084fc);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-style: italic;
+    font-size: 22px;
+  }
+  .ph-quote .body .who .meta {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .ph-quote .body .who .meta span {
+    color: var(--muted); display: block; margin-top: 4px;
+  }
+
+  /* ─── Next project ─── */
+  .ph-next {
+    padding: 140px var(--pad-x);
+    border-top: 1px solid var(--line);
+  }
+  .ph-next .head {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 40px;
+    display: flex; justify-content: space-between;
+  }
+  .ph-next a.next-card {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 60px;
+    align-items: center;
+    cursor: none;
+  }
+  .ph-next a.next-card .img {
+    aspect-ratio: 4 / 3;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    position: relative;
+    transition: transform 0.7s var(--ease-out);
+  }
+  .ph-next a.next-card:hover .img { transform: scale(1.02); }
+  .ph-next a.next-card .info .meta-row {
+    display: flex; gap: 24px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 18px;
+  }
+  .ph-next a.next-card .info .meta-row .acc { color: var(--accent); }
+  .ph-next a.next-card .info h4 {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(80px, 10vw, 144px);
+    line-height: 0.95; letter-spacing: -0.025em;
+    color: var(--ink); font-weight: 400;
+    margin-bottom: 24px;
+    transition: color 0.3s;
+  }
+  .ph-next a.next-card:hover .info h4 { color: var(--accent); }
+  .ph-next a.next-card .info p {
+    font-size: 15px; line-height: 1.65;
+    color: var(--ink-2); max-width: 44ch;
+    margin-bottom: 24px;
+  }
+  .ph-next a.next-card .info .arrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono); font-size: 12px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink);
+  }
+  .ph-next a.next-card .info .arrow svg {
+    transition: transform 0.4s var(--ease-out);
+  }
+  .ph-next a.next-card:hover .info .arrow svg {
+    transform: translate(6px, -6px);
+  }
+
+  /* footer */
+  .ph-foot {
+    padding: 40px var(--pad-x);
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  }
+
+  /* fade-in reveal */
+  .reveal.in { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR ─────────────────────────────────────── -->
+<div class="topbar" data-screen-label="05 Project · Mosaic">
+  <a href="home-atelier.html" class="brand" data-transition>Rukundo Ronaldo<sup>RR · 2026</sup></a>
+  <div class="right">
+    <a href="home-atelier.html" class="back-link" data-transition data-hover>
+      <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 3L3 8M3 5v3h3"/></svg>
+      Back · All work
+    </a>
+    <button class="theme-toggle" data-theme-toggle data-hover>
+      <svg class="sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3" stroke-linecap="round"/></svg>
+      <svg class="moon" viewBox="0 0 16 16" fill="currentColor"><path d="M12 9a4 4 0 11-5-5 5 5 0 005 5z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- HERO ──────────────────────────────────────── -->
+<section class="ph-hero">
+  <div class="eyebrow">
+    <span><span class="num">N° 01</span> · Case study</span>
+    <div class="tags">
+      <span><span class="dot">●</span> Live · v 1.4.2</span>
+      <span>Featured</span>
+      <span>Self-hostable</span>
+    </div>
+    <span>06 / MMXXVI</span>
+  </div>
+
+  <h1>Mosaic<span class="ac">.</span></h1>
+
+  <p class="lede">Project management built for distributed teams who don’t live in their inbox — self-hostable, snappy, real-time.</p>
+
+  <dl class="ph-facts">
+    <div><dt>— Role</dt><dd>Lead developer<span class="sub">Solo · OSS</span></dd></div>
+    <div><dt>— Year</dt><dd>2026<span class="sub">— Present</span></dd></div>
+    <div><dt>— Duration</dt><dd>9 mo<span class="sub">Mar — Now</span></dd></div>
+    <div><dt>— Client</dt><dd>Personal<span class="sub">Open source</span></dd></div>
+    <div><dt>— Stack</dt><dd style="font-size: 14px; font-family: var(--font-mono); font-style: normal; letter-spacing: 0.02em; line-height: 1.5;">Django<br/>HTMX · Tailwind<br/>Postgres · Redis</dd></div>
+    <div><dt>— Live at</dt><dd><a href="#" style="color: var(--accent);">mosaic.run ↗</a><span class="sub">In beta</span></dd></div>
+  </dl>
+</section>
+
+<!-- COVER IMAGE ────────────────────────────────── -->
+<div class="ph-cover img-mosaic-dense">
+  <span class="label-tl">Cover · 01</span>
+  <span class="label-br">Mosaic · v 1.4.2 · 16:9</span>
+</div>
+
+<!-- THE BRIEF ──────────────────────────────────── -->
+<section class="ph-brief">
+  <div class="section-num">— 01 · The brief</div>
+  <div class="body">
+    <p class="pull-lede">
+      A self-hosted project management tool for distributed teams who don’t live in their inbox.
+    </p>
+    <p>
+      <span class="drop">M</span>ost of the team had tried Asana, Notion, Linear — and all of them felt either too heavy or too prescribed. We wanted something that respected the way our studio already worked: in shared rituals, in scattered async messages, in occasional bursts of intense collaboration.
+    </p>
+    <p>
+      Mosaic started as a weekend experiment with HTMX on top of Django. The idea was simple: render full pages on the server, swap fragments in place, and never write a line of JavaScript framework code. Three months later it was running in our studio and four others. Nine months in, fourteen design studios are using it daily.
+    </p>
+    <p>
+      The hardest constraint wasn’t technical — it was philosophical. Most PM tools try to be everything to everyone. Mosaic chose, deliberately, to be small. Three views, two object types, one strong opinion about how projects should breathe.
+    </p>
+  </div>
+</section>
+
+<!-- METRICS ─────────────────────────────────── -->
+<section class="ph-metrics">
+  <div class="ph-metric reveal" data-reveal-once>
+    <div class="badge">+18% MoM</div>
+    <div class="label">— Active studios</div>
+    <div class="num">14<span class="unit">teams</span></div>
+    <div class="desc">Up from 4 at launch, growing quietly through word of mouth.</div>
+  </div>
+  <div class="ph-metric reveal reveal-delay-1" data-reveal-once>
+    <div class="badge">P50</div>
+    <div class="label">— Response time</div>
+    <div class="num">42<span class="unit">ms</span></div>
+    <div class="desc">Server-rendered HTML, no JS hydration tax. Snappy on a 4G phone too.</div>
+  </div>
+  <div class="ph-metric reveal reveal-delay-2" data-reveal-once>
+    <div class="badge">Shipped JS</div>
+    <div class="label">— Bundle weight</div>
+    <div class="num">8.4<span class="unit">KB</span></div>
+    <div class="desc">Just HTMX + a sprinkle of Alpine. No framework, no virtual DOM.</div>
+  </div>
+  <div class="ph-metric reveal reveal-delay-3" data-reveal-once>
+    <div class="badge">Self-host</div>
+    <div class="label">— Lines of code</div>
+    <div class="num">8.2<span class="unit">k</span></div>
+    <div class="desc">Auditable in an afternoon. No microservices, no Kubernetes.</div>
+  </div>
+</section>
+
+<!-- CHAPTER I ──────────────────────────────────── -->
+<section class="ph-chapter">
+  <div class="text">
+    <div class="chap-num"><span class="big">01</span> Chapter · Discovery</div>
+    <h3>Three weeks of watching how teams actually work.</h3>
+    <p>Before writing a line of code, I shadowed five distributed studios for three weeks each. I watched stand-ups, retros, async hand-offs. I read their Notion docs and their Slack channels.</p>
+    <p>The pattern was always the same: people bypassed the formal PM tool the moment things got real. Decisions happened in DMs. Status updates lived in private docs. The PM tool was a graveyard of stale tickets.</p>
+    <ul class="bullets">
+      <li><b>Insight 01</b><span>Most PM software is built for managers, not the people doing the work.</span></li>
+      <li><b>Insight 02</b><span>Distributed teams need rituals, not just dashboards.</span></li>
+      <li><b>Insight 03</b><span>Speed is a feature. 200ms latency kills a tool.</span></li>
+    </ul>
+  </div>
+  <div class="visual">
+    <span class="corner">Fig. 01 · Research</span>
+    <div class="vis-wires">
+      <div class="col">
+        <div class="row big"></div>
+        <div class="row med short"></div>
+        <div class="row"></div>
+        <div class="row shorter"></div>
+        <div class="row"></div>
+        <div class="row accent short"></div>
+        <div class="row med"></div>
+        <div class="row shorter"></div>
+        <div class="row short"></div>
+        <div class="row"></div>
+        <div class="row accent shorter"></div>
+        <div class="row short"></div>
+      </div>
+      <div class="col">
+        <div class="row med"></div>
+        <div class="row"></div>
+        <div class="row shorter"></div>
+        <div class="row accent"></div>
+        <div class="row med short"></div>
+        <div class="row"></div>
+        <div class="row shorter"></div>
+        <div class="row"></div>
+        <div class="row big short"></div>
+        <div class="row accent shorter"></div>
+        <div class="row"></div>
+        <div class="row short"></div>
+      </div>
+    </div>
+    <div class="caption">
+      <span>Field notes · 3 weeks</span>
+      <span>05 studios</span>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER II (flipped) ──────────────────────── -->
+<section class="ph-chapter flip">
+  <div class="text">
+    <div class="chap-num"><span class="big">02</span> Chapter · Design</div>
+    <h3>One board. Three views. Two object types.</h3>
+    <p>The design constraints I settled on were almost embarrassingly small. A project has a board. A board has cards. Cards have a status. That's it.</p>
+    <p>The interesting design work was in what to leave out: no nested subtasks, no custom fields, no automation rules. Everything else lives in the card body — written in Markdown, edited inline, history kept in plain Git-style diffs.</p>
+    <ul class="bullets">
+      <li><b>Move 01</b><span>Three views (Board, Index, Now) — switch with a single keystroke.</span></li>
+      <li><b>Move 02</b><span>Cards are documents with a status, not tickets with metadata.</span></li>
+      <li><b>Move 03</b><span>Daily digest at 9am. No notifications. No badges.</span></li>
+    </ul>
+  </div>
+  <div class="visual">
+    <span class="corner">Fig. 02 · Board view</span>
+    <div class="vis-board">
+      <div class="swim">
+        <div class="swim-head">
+          <span>Todo · 4</span>
+          <span>Doing · 3</span>
+          <span>Review · 2</span>
+          <span>Done · 8</span>
+        </div>
+        <div class="swim-cols">
+          <div>
+            <div class="card featured"><div class="ttl"></div><div class="meta"><b></b><b></b></div></div>
+            <div class="card"><div class="ttl short"></div><div class="meta"><b></b></div></div>
+            <div class="card"><div class="ttl"></div><div class="meta"><b></b><b></b><b></b></div></div>
+            <div class="card"><div class="ttl short"></div></div>
+          </div>
+          <div>
+            <div class="card"><div class="ttl"></div><div class="meta"><b></b></div></div>
+            <div class="card featured"><div class="ttl short"></div><div class="meta"><b></b><b></b></div></div>
+            <div class="card"><div class="ttl"></div></div>
+          </div>
+          <div>
+            <div class="card"><div class="ttl short"></div><div class="meta"><b></b></div></div>
+            <div class="card"><div class="ttl"></div></div>
+          </div>
+          <div>
+            <div class="card" style="opacity: 0.4;"><div class="ttl short"></div></div>
+            <div class="card" style="opacity: 0.4;"><div class="ttl"></div></div>
+            <div class="card" style="opacity: 0.4;"><div class="ttl short"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <span>Board · live data</span>
+      <span>Project / Spring '26</span>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER III ─────────────────────────────── -->
+<section class="ph-chapter">
+  <div class="text">
+    <div class="chap-num"><span class="big">03</span> Chapter · Build</div>
+    <h3>Django on the server, HTMX on the wire, joy in the seams.</h3>
+    <p>The architecture is unfashionably boring on purpose. Django renders full HTML. HTMX swaps fragments. Postgres does the heavy lifting. Redis caches the hot paths. There's no API. There's no client state.</p>
+    <p>The wire is so quiet that the whole app feels offline. Cards drag-reorder in 30ms. Filter changes feel instant. The longest interaction in the app — opening a card — takes 64ms over 4G.</p>
+    <ul class="bullets">
+      <li><b>Stack 01</b><span>Django 5 + HTMX 2 + Tailwind 4 + Alpine 3.</span></li>
+      <li><b>Stack 02</b><span>Postgres 16 with pg_search for full-text, Redis 7 for cache.</span></li>
+      <li><b>Stack 03</b><span>Deployed on Fly.io, 3 regions, ~$28/month per studio.</span></li>
+    </ul>
+  </div>
+  <div class="visual">
+    <span class="corner">Fig. 03 · Architecture</span>
+    <div class="vis-stack">
+      <div class="layer acc"><span class="name">Browser</span><span class="tag">HTMX · Alpine</span></div>
+      <div class="layer"><span class="name">Nginx</span><span class="tag">Edge cache</span></div>
+      <div class="layer"><span class="name">Django</span><span class="tag">Templates · Forms</span></div>
+      <div class="layer acc"><span class="name">Postgres</span><span class="tag">Source of truth</span></div>
+      <div class="layer"><span class="name">Redis</span><span class="tag">Sessions · Cache</span></div>
+      <div class="layer"><span class="name">S3</span><span class="tag">Files · Avatars</span></div>
+    </div>
+    <div class="caption">
+      <span>Architecture diagram</span>
+      <span>v 1.4.2</span>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY ───────────────────────────────────── -->
+<section class="ph-gallery">
+  <div class="ph-gallery-head">
+    <h3>The artefacts.</h3>
+    <span class="count">— 04 · Selected screens / sketches</span>
+  </div>
+
+  <div class="ph-gallery-grid">
+    <div class="ph-gallery-tile wide img-mosaic">
+      <span class="corner">Screen · 01 · Board view</span>
+    </div>
+    <div class="ph-gallery-tile img-drift">
+      <span class="corner">Screen · 02 · Card open</span>
+    </div>
+    <div class="ph-gallery-tile img-roost">
+      <span class="corner">Screen · 03 · Now feed</span>
+    </div>
+  </div>
+</section>
+
+<!-- PULL QUOTE ─────────────────────────────────── -->
+<section class="ph-quote">
+  <div class="lab">— Kind words</div>
+  <div class="body">
+    <span class="marks">“</span>
+    <blockquote>
+      Mosaic is the first PM tool I've used that doesn't try to <em style="color: var(--accent);">manage me</em>. The team uses it daily — that's the highest compliment I can give a piece of software.
+    </blockquote>
+    <div class="who">
+      <div class="av">M</div>
+      <div class="meta">
+        Maya Okafor
+        <span>CTO · Cobalt Studio · early adopter</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEXT PROJECT ──────────────────────────────── -->
+<section class="ph-next">
+  <div class="head">
+    <span>— Next project</span>
+    <span>02 / 06</span>
+  </div>
+  <a href="project.html" class="next-card" data-transition data-hover>
+    <div class="img img-drift"></div>
+    <div class="info">
+      <div class="meta-row">
+        <span class="acc">N° 02</span>
+        <span>2025</span>
+        <span>Node · Socket.io</span>
+      </div>
+      <h4>Drift.</h4>
+      <p>A real-time collaborative editor for product teams who write more than they speak. Operational transforms, the hard way.</p>
+      <div class="arrow">
+        Read case study
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 9L9 3M5 3h4v4"/></svg>
+      </div>
+    </div>
+  </a>
+</section>
+
+<!-- FOOTER ────────────────────────────────────── -->
+<div class="ph-foot">
+  <span>© 2026 Rukundo Ronaldo · Case study · N° 01</span>
+  <span><span class="status-dot"></span>Mosaic · v 1.4.2 · live</span>
+  <span>← Back to <a href="home-atelier.html" class="link-u" style="color: var(--ink);" data-transition>All work</a></span>
+</div>
+
+<script src="shared.js"></script>
+</body>
+</html>

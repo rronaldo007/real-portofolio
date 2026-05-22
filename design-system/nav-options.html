@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Burger nav explorations</title>
+<link rel="stylesheet" href="shared.css" />
+<style>
+  body { --pad-x: 88px; overflow-x: hidden; }
+  html[data-theme="dark"] body { background: #0a0908; }
+  html[data-theme="dark"] { --bg: #0a0908; --bg-2: #131210; }
+
+  /* ─── Picker (UI, not part of design) ─── */
+  .picker {
+    position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+    z-index: 9999;
+    display: flex; gap: 4px; padding: 4px;
+    background: rgba(20,18,16,0.88);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 999px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .picker button {
+    padding: 8px 14px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: rgba(245,242,236,0.6);
+    transition: background 0.2s, color 0.2s;
+  }
+  .picker button:hover { color: #fff; }
+  .picker button.on { background: var(--accent); color: #0a0908; }
+  .picker .lab { padding: 8px 12px 8px 14px; color: rgba(245,242,236,0.4); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; border-right: 1px solid rgba(255,255,255,0.08); margin-right: 4px; }
+
+  /* ─── Hero (shared backdrop) ─── */
+  .hero {
+    padding: 200px var(--pad-x) 140px;
+    position: relative;
+  }
+  .hero .eyebrow {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 80px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero h1 {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(80px, 11vw, 168px); line-height: 0.95;
+    letter-spacing: -0.03em; font-weight: 400;
+    max-width: 1100px; color: var(--ink); margin-bottom: 60px;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero h1 .ac { color: var(--accent); }
+  .hero .meta {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 60px; padding-top: 48px;
+    border-top: 1px solid var(--line); max-width: 1000px;
+  }
+  .hero .meta dt { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .hero .meta dd { font-size: 15px; line-height: 1.55; color: var(--ink-2); max-width: 28ch; }
+
+  /* hide nav variants */
+  [data-nav] { display: none; }
+  body.opt-a [data-nav="a"],
+  body.opt-b [data-nav="b"],
+  body.opt-c [data-nav="c"],
+  body.opt-d [data-nav="d"],
+  body.opt-e [data-nav="e"] { display: revert; }
+
+  /* ════════════════════════════════════════════════ */
+  /*  A · MINIMAL — name left, 3 lines right          */
+  /* ════════════════════════════════════════════════ */
+  .nav-a {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px var(--pad-x);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-a .brand {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    line-height: 1.4;
+  }
+  .nav-a .brand b { color: var(--ink); font-weight: 500; display: block; }
+  .nav-a .brand span { color: var(--muted); font-size: 10px; }
+  .nav-a .right { display: flex; align-items: center; gap: 28px; }
+  .nav-a .avail {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2);
+    display: inline-flex; align-items: center;
+  }
+  .burger-a {
+    display: flex; flex-direction: column; justify-content: center;
+    width: 36px; height: 24px; gap: 6px;
+    cursor: pointer;
+  }
+  .burger-a span {
+    display: block; width: 100%; height: 1.5px;
+    background: var(--ink);
+    transition: transform 0.4s var(--ease-out), opacity 0.3s;
+  }
+  .burger-a:hover span:first-child { transform: translateX(-4px); }
+  .burger-a:hover span:last-child { transform: translateX(4px); }
+  .burger-a.open span:first-child { transform: translateY(3.5px) rotate(45deg); }
+  .burger-a.open span:last-child { transform: translateY(-3.5px) rotate(-45deg); }
+
+  /* ════════════════════════════════════════════════ */
+  /*  B · BOXED — burger in a square                  */
+  /* ════════════════════════════════════════════════ */
+  .nav-b {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 22px var(--pad-x);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-b .brand {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 28px; letter-spacing: -0.01em;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .nav-b .brand .mark {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-style: italic; color: #fff; font-size: 20px; line-height: 1;
+  }
+  .nav-b .brand sub {
+    font-family: var(--font-mono); font-style: normal; font-size: 10px;
+    color: var(--muted); letter-spacing: 0.08em; vertical-align: top;
+    margin-left: 6px;
+  }
+  .nav-b .right { display: flex; align-items: center; gap: 18px; }
+  .nav-b .avail {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2);
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    display: inline-flex; align-items: center;
+  }
+  .burger-b {
+    width: 56px; height: 56px;
+    border: 1px solid var(--line-strong);
+    border-radius: 14px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    cursor: pointer;
+    transition: background 0.25s, border-color 0.25s;
+    position: relative;
+  }
+  .burger-b:hover { background: var(--accent); border-color: var(--accent); }
+  .burger-b:hover span { background: #0a0908; }
+  .burger-b span {
+    display: block; width: 20px; height: 1.5px;
+    background: var(--ink);
+    transition: transform 0.4s var(--ease-out), background 0.25s;
+  }
+  .burger-b.open { background: var(--accent); border-color: var(--accent); }
+  .burger-b.open span { background: #0a0908; }
+  .burger-b.open span:first-child { transform: translateY(3.25px) rotate(45deg); }
+  .burger-b.open span:last-child { transform: translateY(-3.25px) rotate(-45deg); }
+
+  /* ════════════════════════════════════════════════ */
+  /*  C · WORD + BURGER — "Menu" label with lines     */
+  /* ════════════════════════════════════════════════ */
+  .nav-c {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 30px var(--pad-x);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-c .brand {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .nav-c .brand b { color: var(--ink); font-weight: 500; }
+  .nav-c .brand .dot { color: var(--accent); margin: 0 8px; }
+  .nav-c .right { display: flex; align-items: center; gap: 32px; }
+  .nav-c .avail {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+    display: inline-flex; align-items: center;
+  }
+  .burger-c {
+    display: inline-flex; align-items: center; gap: 14px;
+    cursor: pointer;
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink);
+  }
+  .burger-c .lines { display: flex; flex-direction: column; gap: 5px; width: 28px; }
+  .burger-c .lines span {
+    display: block; height: 1.5px;
+    background: var(--ink);
+    transition: width 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  }
+  .burger-c .lines span:first-child { width: 28px; }
+  .burger-c .lines span:last-child { width: 18px; margin-left: auto; }
+  .burger-c:hover .lines span:last-child { width: 28px; }
+  .burger-c.open .lines span { width: 28px; margin-left: 0; }
+  .burger-c.open .lines span:first-child { transform: translateY(3.25px) rotate(45deg); }
+  .burger-c.open .lines span:last-child { transform: translateY(-3.25px) rotate(-45deg); }
+  .burger-c .label-w { display: inline-flex; flex-direction: column; line-height: 1; gap: 3px; }
+  .burger-c .label-w span { font-size: 9px; color: var(--muted); }
+
+  /* ════════════════════════════════════════════════ */
+  /*  D · CIRCLE — round burger with dot indicator    */
+  /* ════════════════════════════════════════════════ */
+  .nav-d {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 22px var(--pad-x);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-d .brand {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 30px; letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .nav-d .brand sup {
+    font-family: var(--font-mono); font-style: normal; font-size: 10px;
+    color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
+    margin-left: 10px; vertical-align: top; padding-top: 6px; display: inline-block;
+  }
+  .nav-d .right { display: flex; align-items: center; gap: 18px; }
+  .nav-d .status-pill {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2);
+    padding: 8px 14px 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+  .burger-d {
+    position: relative;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #0a0908;
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .burger-d:hover { transform: rotate(90deg); box-shadow: 0 0 0 6px var(--accent-soft); }
+  .burger-d span {
+    display: block; width: 20px; height: 1.8px;
+    background: #0a0908;
+    transition: transform 0.4s var(--ease-out);
+  }
+  .burger-d.open span:first-child { transform: translateY(2.9px) rotate(45deg); }
+  .burger-d.open span:last-child { transform: translateY(-2.9px) rotate(-45deg); }
+  .burger-d .ring {
+    position: absolute; inset: -8px;
+    border: 1px dashed var(--accent);
+    border-radius: 50%;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .burger-d:hover .ring { opacity: 0.5; }
+
+  /* ════════════════════════════════════════════════ */
+  /*  E · TEXTURED — burger as 5 lines (varied)       */
+  /* ════════════════════════════════════════════════ */
+  .nav-e {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 30px var(--pad-x);
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid transparent;
+  }
+  .nav-e .brand {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink); line-height: 1.4;
+  }
+  .nav-e .brand b { font-weight: 500; }
+  .nav-e .brand span { display: block; color: var(--muted); font-size: 10px; }
+  .nav-e .right { display: flex; align-items: center; gap: 22px; }
+  .nav-e .avail { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+  .burger-e {
+    display: flex; flex-direction: column; gap: 4px;
+    width: 32px;
+    cursor: pointer;
+    align-items: flex-end;
+  }
+  .burger-e span {
+    display: block; height: 1.5px;
+    background: var(--ink);
+    transition: width 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  }
+  .burger-e span:nth-child(1) { width: 100%; }
+  .burger-e span:nth-child(2) { width: 70%; }
+  .burger-e span:nth-child(3) { width: 100%; }
+  .burger-e span:nth-child(4) { width: 50%; }
+  .burger-e:hover span:nth-child(2) { width: 100%; }
+  .burger-e:hover span:nth-child(4) { width: 100%; }
+  .burger-e.open span:nth-child(1) { width: 100%; transform: translateY(8.25px) rotate(45deg); }
+  .burger-e.open span:nth-child(2) { width: 0; }
+  .burger-e.open span:nth-child(3) { width: 100%; transform: translateY(-8.25px) rotate(-45deg); }
+  .burger-e.open span:nth-child(4) { width: 0; }
+
+  /* ════════════════════════════════════════════════ */
+  /*  MENU OVERLAY — shared, theming per variant      */
+  /* ════════════════════════════════════════════════ */
+  .menu-overlay {
+    position: fixed; inset: 0; z-index: 90;
+    background: var(--bg);
+    pointer-events: none;
+    clip-path: circle(0% at var(--mx, 100%) var(--my, 0%));
+    transition: clip-path 0.7s var(--ease-out);
+  }
+  .menu-overlay.open {
+    pointer-events: auto;
+    clip-path: circle(140% at var(--mx, 100%) var(--my, 0%));
+  }
+
+  .menu-overlay .inner {
+    position: absolute; inset: 0;
+    padding: 120px var(--pad-x) 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease) 0.2s;
+  }
+  .menu-overlay.open .inner { opacity: 1; }
+
+  .menu-overlay .left h2 {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 40px;
+  }
+  .menu-overlay .left ul { list-style: none; }
+  .menu-overlay .left li {
+    border-top: 1px solid var(--line);
+    padding: 4px 0;
+  }
+  .menu-overlay .left li:last-child { border-bottom: 1px solid var(--line); }
+  .menu-overlay .left li a {
+    display: flex; align-items: baseline; gap: 24px;
+    padding: 18px 0;
+    font-family: var(--font-display); font-style: italic;
+    font-size: 88px; line-height: 1; letter-spacing: -0.025em;
+    color: var(--ink);
+    transition: color 0.3s, transform 0.4s var(--ease-out);
+  }
+  .menu-overlay .left li a:hover { color: var(--accent); transform: translateX(20px); }
+  .menu-overlay .left li a .n { font-family: var(--font-mono); font-style: normal; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; }
+
+  .menu-overlay .right {
+    display: flex; flex-direction: column; gap: 60px;
+    padding-left: 60px;
+    border-left: 1px solid var(--line);
+  }
+  .menu-overlay .right h3 { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+  .menu-overlay .right .lede { font-family: var(--font-display); font-style: italic; font-size: 32px; line-height: 1.2; color: var(--ink); letter-spacing: -0.015em; max-width: 22ch; }
+  .menu-overlay .right .lede em { color: var(--accent); font-style: italic; }
+  .menu-overlay .right .contact a { display: block; font-size: 16px; color: var(--ink-2); padding: 4px 0; }
+  .menu-overlay .right .contact a:hover { color: var(--accent); }
+  .menu-overlay .right .socials { display: flex; gap: 16px; }
+  .menu-overlay .right .socials a { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; }
+  .menu-overlay .right .socials a:hover { background: var(--ink); color: #0a0908; }
+
+  .menu-overlay .foot {
+    position: absolute; bottom: 30px; left: var(--pad-x); right: var(--pad-x);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+    padding-top: 24px; border-top: 1px solid var(--line);
+  }
+
+  /* description tooltip */
+  .desc-label {
+    position: fixed; bottom: 28px; left: 32px;
+    z-index: 9000;
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(245,242,236,0.5);
+    max-width: 300px; line-height: 1.6;
+  }
+  .desc-label b { color: var(--accent); display: block; margin-bottom: 4px; font-weight: 500; }
+</style>
+</head>
+<body class="opt-a">
+
+<!-- ─── Picker (the tool) ─── -->
+<div class="picker">
+  <span class="lab">Burger style</span>
+  <button data-opt="a" class="on">A · Minimal</button>
+  <button data-opt="b">B · Boxed</button>
+  <button data-opt="c">C · Word + lines</button>
+  <button data-opt="d">D · Circle</button>
+  <button data-opt="e">E · Stack</button>
+</div>
+
+<!-- ─── A · Minimal ─── -->
+<nav class="nav-a" data-nav="a">
+  <div class="brand"><b>RUKUNDO RONALDO</b><span>FULLSTACK · 2026</span></div>
+  <div class="right">
+    <span class="avail"><span class="status-dot"></span>Open Aug ’26</span>
+    <div class="burger-a" data-toggle><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- ─── B · Boxed ─── -->
+<nav class="nav-b" data-nav="b">
+  <a href="#" class="brand">
+    <div class="mark">R</div>
+    Rukundo<sub>RR / 2026</sub>
+  </a>
+  <div class="right">
+    <span class="avail"><span class="status-dot" style="margin-right:8px;"></span>Available Aug ’26</span>
+    <div class="burger-b" data-toggle>
+      <span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── C · Word + lines ─── -->
+<nav class="nav-c" data-nav="c">
+  <div class="brand"><b>RUKUNDO RONALDO</b><span class="dot">●</span>FULLSTACK · LYON · 2026</div>
+  <div class="right">
+    <span class="avail"><span class="status-dot"></span>Available Aug ’26</span>
+    <div class="burger-c" data-toggle>
+      <span class="label-w">Menu<span>05 — items</span></span>
+      <div class="lines"><span></span><span></span></div>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── D · Circle ─── -->
+<nav class="nav-d" data-nav="d">
+  <a href="#" class="brand">Rukundo Ronaldo<sup>· RR / Fullstack</sup></a>
+  <div class="right">
+    <span class="status-pill"><span class="status-dot"></span>Open Aug ’26 · UTC+2</span>
+    <div class="burger-d" data-toggle>
+      <div class="ring"></div>
+      <span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── E · Stack ─── -->
+<nav class="nav-e" data-nav="e">
+  <div class="brand"><b>RUKUNDO RONALDO</b><span>FULLSTACK · 2026 · KIGALI</span></div>
+  <div class="right">
+    <span class="avail"><span class="status-dot"></span>Available Aug ’26</span>
+    <div class="burger-e" data-toggle>
+      <span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── The overlay ─── -->
+<div class="menu-overlay" id="menuOverlay">
+  <div class="inner">
+    <div class="left">
+      <h2>— Index</h2>
+      <ul>
+        <li><a href="#"><span class="n">N° 01</span>Work</a></li>
+        <li><a href="#"><span class="n">N° 02</span>About</a></li>
+        <li><a href="#"><span class="n">N° 03</span>Experience</a></li>
+        <li><a href="#"><span class="n">N° 04</span>Notes</a></li>
+        <li><a href="#"><span class="n">N° 05</span>Contact</a></li>
+      </ul>
+    </div>
+    <div class="right">
+      <div>
+        <h3>— Currently</h3>
+        <p class="lede">Building <em>Mosaic</em> — a self-hostable PM tool for distributed teams.</p>
+      </div>
+      <div>
+        <h3>— Get in touch</h3>
+        <div class="contact">
+          <a href="/cdn-cgi/l/email-protection#375f525b5b587745425c4259535819535241" class="link-u"><span class="__cf_email__" data-cfemail="234b464f4f4c63515648564d474c0d474655">[email&#160;protected]</span></a>
+          <a href="#" class="link-u">+250 78 123 4567</a>
+          <a href="#" class="link-u">Schedule a call ↗</a>
+        </div>
+      </div>
+      <div>
+        <h3>— Elsewhere</h3>
+        <div class="socials">
+          <a href="#">GitHub ↗</a>
+          <a href="#">X / Twitter ↗</a>
+          <a href="#">LinkedIn ↗</a>
+          <a href="#">Read.cv ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <span>© 2026 Rukundo Ronaldo · v 1.0</span>
+    <span><span class="status-dot"></span>Open for work · August 2026</span>
+    <span>Lyon · UTC+1</span>
+  </div>
+</div>
+
+<!-- ─── Shared hero ─── -->
+<section class="hero">
+  <div class="eyebrow"><span>N° 01</span> &nbsp;·&nbsp; <span>Portfolio · MMXXVI</span></div>
+  <h1>Fullstack<br/>developer <em>building</em><br/>tools for the web<span class="ac">.</span></h1>
+  <dl class="meta">
+    <div><dt>Currently</dt><dd>Crafting backends and interfaces with Django, Node and a soft spot for HTMX.</dd></div>
+    <div><dt>Based in</dt><dd>Lyon · France. Working remote with teams across UTC ± 6.</dd></div>
+    <div><dt>For hire</dt><dd>Open to product roles &amp; consulting from August 2026.</dd></div>
+  </dl>
+</section>
+
+<div class="desc-label" id="descLabel">
+  <b>A · Minimal</b>
+  Two thin lines, no frame. Name top-left, burger top-right. Lines shift on hover, fold to X on open. Quietest option.
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="shared.js"></script>
+<script>
+  const body = document.body;
+  const overlay = document.getElementById('menuOverlay');
+
+  const opts = {
+    a: ["A · Minimal", "Two thin lines, no frame. Name top-left, burger top-right. Lines shift on hover, fold to X on open. Quietest option."],
+    b: ["B · Boxed", "Burger sits inside a rounded square. Becomes violet on hover/open. Brand has a circle mark. Most product-y of the bunch."],
+    c: ["C · Word + lines", "“Menu” label + uneven lines. Lines align on hover, fold to X on open. Editorial — reads like a section heading."],
+    d: ["D · Circle", "Solid violet circle. Rotates 90° on hover with a dashed halo. Most expressive — has personality without being loud."],
+    e: ["E · Stack", "Four lines of varied widths, like a paragraph being condensed. Settles to even widths on hover. Typographic, calm, distinct."]
+  };
+
+  document.querySelectorAll('.picker button').forEach(b => {
+    b.addEventListener('click', () => {
+      const opt = b.dataset.opt;
+      body.className = 'opt-' + opt;
+      overlay.classList.remove('open');
+      document.querySelectorAll('[data-toggle].open').forEach(b => b.classList.remove('open'));
+      document.querySelectorAll('.picker button').forEach(x => x.classList.toggle('on', x === b));
+      const [t, d] = opts[opt];
+      document.getElementById('descLabel').innerHTML = '<b>' + t + '</b>' + d;
+    });
+  });
+
+  // toggle burger → overlay; circle expands from burger position
+  document.querySelectorAll('[data-toggle]').forEach(b => {
+    b.addEventListener('click', (e) => {
+      const r = b.getBoundingClientRect();
+      overlay.style.setProperty('--mx', (r.left + r.width/2) + 'px');
+      overlay.style.setProperty('--my', (r.top + r.height/2) + 'px');
+      const isOpen = b.classList.toggle('open');
+      overlay.classList.toggle('open', isOpen);
+      // also sync other visible burgers if user re-clicks
+    });
+  });
+
+  // click outside overlay (on backdrop) to close
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay || e.target.classList.contains('inner')) {
+      overlay.classList.remove('open');
+      document.querySelectorAll('[data-toggle].open').forEach(b => b.classList.remove('open'));
+    }
+  });
+</script>
+</body>
+</html>
