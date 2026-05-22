@@ -56,9 +56,11 @@ Config lives in `UNFOLD` (`config/settings.py`) + `pages/dashboard.py`.
 
 | URL | Template | name |
 |-----|----------|------|
-| `/` | `home_atelier.html` | `home` — primary home: hero, about, projects, experience, skills, contact + floating dock |
-| `/etudes/` | `home_etudes.html` | `home_etudes` — alternate home layout |
-| `/project/` | `project.html` | `project` — case-study detail page |
+| `/` | `home_atelier.html`* | `home` — DB-driven; `*`served template depends on `SiteProfile.home_variant` |
+| `/etudes/` | `home_etudes.html` | `home_etudes` — alternate home layout (partly static) |
+| `/work/<slug>/` | `project.html` | `project_detail` — DB-driven case study (+metrics) |
+| `/project/` | → redirect | `project` — redirects to the first project |
+| `/contact/` | (POST) | `contact` — saves a ContactMessage to the admin inbox |
 | `/dashboard/` | `admin.html` | `admin_demo` — dashboard mockup (this is a static front-end page, NOT the Django admin) |
 | `/design-system/` | `design_system.html` | `design_system` — living style guide |
 | `/nav-options/` | `nav_options.html` | `nav_options` — nav pattern explorations |
@@ -101,7 +103,7 @@ The custom cursor and hover effects are disabled on touch devices (`@media (hove
 ## Notes
 
 - `.claude/STATUS.md` is auto-generated — don't hand-edit it.
-- Content models exist (`pages/models.py`) and are fully editable in the Unfold admin, seeded with sample data (migration `0002`). **Not yet wired to the public templates** — `templates/pages/*.html` still render hardcoded content. Next step for "everything customisable": drive those templates from the models via the views.
+- Content is fully customisable end-to-end: edit in the Unfold admin → it shows on the public site. `pages/views.py` passes `profile`, `projects`, `experiences`, `skill_groups`, etc. into `home_atelier.html`; `/work/<slug>/` renders a project (incl. metrics) via `project_detail`. The public contact form POSTs to `pages:contact` → creates a `ContactMessage` (admin inbox). `home_etudes.html` (alternate variant, served when `SiteProfile.home_variant=etudes`) is still partly static.
 - Static is collected at image build (`collectstatic`) and served by WhiteNoise with hashed filenames; `migrate` runs on container start.
 - Config is environment-driven: `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS` (see `config/settings.py` and `docker-compose.yml`). Set a real secret key in production.
 - The portfolio content (projects, experience, testimonials) is currently hardcoded placeholder data in the templates. **Direction:** everything will become customisable — model the content and edit it via the Unfold admin, then drive the templates from the DB.

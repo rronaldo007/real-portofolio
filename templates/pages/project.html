@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=1440" />
-<title>Mosaic — Rukundo Ronaldo</title>
+<title>{{ project.title|default:"Projet" }} — {{ profile.name|default:"Rukundo Ronaldo" }}</title>
 <link rel="stylesheet" href="{% static 'css/shared.css' %}" />
 <style>
   body { --pad-x: 88px; overflow-x: hidden; }
@@ -617,33 +617,32 @@
 <!-- HERO ──────────────────────────────────────── -->
 <section class="ph-hero">
   <div class="eyebrow">
-    <span><span class="num">N° 01</span> · Case study</span>
+    <span><span class="num">N° {{ project.order|add:1|stringformat:"02d" }}</span> · Case study</span>
     <div class="tags">
-      <span><span class="dot">●</span> Live · v 1.4.2</span>
-      <span>Featured</span>
-      <span>Self-hostable</span>
+      <span><span class="dot">●</span> {{ project.get_badge_display }}</span>
+      {% if project.featured %}<span>Featured</span>{% endif %}
+      {% if project.open_source %}<span>Open source</span>{% endif %}
     </div>
-    <span>06 / MMXXVI</span>
+    <span>{{ project.year }}</span>
   </div>
 
-  <h1>Mosaic<span class="ac">.</span></h1>
+  <h1>{{ project.title }}<span class="ac">.</span></h1>
 
-  <p class="lede">Project management built for distributed teams who don’t live in their inbox — self-hostable, snappy, real-time.</p>
+  <p class="lede">{{ project.short_description }}</p>
 
   <dl class="ph-facts">
-    <div><dt>— Role</dt><dd>Lead developer<span class="sub">Solo · OSS</span></dd></div>
-    <div><dt>— Year</dt><dd>2026<span class="sub">— Present</span></dd></div>
-    <div><dt>— Duration</dt><dd>9 mo<span class="sub">Mar — Now</span></dd></div>
-    <div><dt>— Client</dt><dd>Personal<span class="sub">Open source</span></dd></div>
-    <div><dt>— Stack</dt><dd style="font-size: 14px; font-family: var(--font-mono); font-style: normal; letter-spacing: 0.02em; line-height: 1.5;">Django<br/>HTMX · Tailwind<br/>Postgres · Redis</dd></div>
-    <div><dt>— Live at</dt><dd><a href="#" style="color: var(--accent);">mosaic.run ↗</a><span class="sub">In beta</span></dd></div>
+    {% if project.role %}<div><dt>— Role</dt><dd>{{ project.role }}</dd></div>{% endif %}
+    <div><dt>— Year</dt><dd>{{ project.year }}</dd></div>
+    {% if project.client %}<div><dt>— Client</dt><dd>{{ project.client }}</dd></div>{% endif %}
+    {% if project.tech_list %}<div><dt>— Stack</dt><dd style="font-size: 14px; font-family: var(--font-mono); font-style: normal; letter-spacing: 0.02em; line-height: 1.5;">{% for t in project.tech_list %}{{ t }}{% if not forloop.last %} · {% endif %}{% endfor %}</dd></div>{% endif %}
+    {% if project.live_url %}<div><dt>— Live at</dt><dd><a href="{{ project.live_url }}" style="color: var(--accent);">{{ project.live_url|cut:"https://"|cut:"http://" }} ↗</a></dd></div>{% endif %}
   </dl>
 </section>
 
 <!-- COVER IMAGE ────────────────────────────────── -->
-<div class="ph-cover img-mosaic-dense">
+<div class="ph-cover img-{{ project.card_style }}">
   <span class="label-tl">Cover · 01</span>
-  <span class="label-br">Mosaic · v 1.4.2 · 16:9</span>
+  <span class="label-br">{{ project.title }} · {{ project.year }} · 16:9</span>
 </div>
 
 <!-- THE BRIEF ──────────────────────────────────── -->
@@ -666,32 +665,16 @@
 </section>
 
 <!-- METRICS ─────────────────────────────────── -->
+{% if project.metrics.all %}
 <section class="ph-metrics">
-  <div class="ph-metric reveal" data-reveal-once>
-    <div class="badge">+18% MoM</div>
-    <div class="label">— Active studios</div>
-    <div class="num">14<span class="unit">teams</span></div>
-    <div class="desc">Up from 4 at launch, growing quietly through word of mouth.</div>
+  {% for metric in project.metrics.all %}
+  <div class="ph-metric reveal{% cycle '' ' reveal-delay-1' ' reveal-delay-2' ' reveal-delay-3' %}" data-reveal-once>
+    <div class="label">— {{ metric.label }}</div>
+    <div class="num">{{ metric.value }}{% if metric.unit %}<span class="unit">{{ metric.unit }}</span>{% endif %}</div>
   </div>
-  <div class="ph-metric reveal reveal-delay-1" data-reveal-once>
-    <div class="badge">P50</div>
-    <div class="label">— Response time</div>
-    <div class="num">42<span class="unit">ms</span></div>
-    <div class="desc">Server-rendered HTML, no JS hydration tax. Snappy on a 4G phone too.</div>
-  </div>
-  <div class="ph-metric reveal reveal-delay-2" data-reveal-once>
-    <div class="badge">Shipped JS</div>
-    <div class="label">— Bundle weight</div>
-    <div class="num">8.4<span class="unit">KB</span></div>
-    <div class="desc">Just HTMX + a sprinkle of Alpine. No framework, no virtual DOM.</div>
-  </div>
-  <div class="ph-metric reveal reveal-delay-3" data-reveal-once>
-    <div class="badge">Self-host</div>
-    <div class="label">— Lines of code</div>
-    <div class="num">8.2<span class="unit">k</span></div>
-    <div class="desc">Auditable in an afternoon. No microservices, no Kubernetes.</div>
-  </div>
+  {% endfor %}
 </section>
+{% endif %}
 
 <!-- CHAPTER I ──────────────────────────────────── -->
 <section class="ph-chapter">
@@ -873,22 +856,24 @@
     <span>— Next project</span>
     <span>02 / 06</span>
   </div>
-  <a href="{% url 'pages:project' %}" class="next-card" data-transition data-hover>
-    <div class="img img-drift"></div>
+  {% if next_project %}
+  <a href="{% url 'pages:project_detail' next_project.slug %}" class="next-card" data-transition data-hover>
+    <div class="img img-{{ next_project.card_style }}"></div>
     <div class="info">
       <div class="meta-row">
-        <span class="acc">N° 02</span>
-        <span>2025</span>
-        <span>Node · Socket.io</span>
+        <span class="acc">N° {{ next_project.order|add:1|stringformat:"02d" }}</span>
+        <span>{{ next_project.year }}</span>
+        <span>{% for t in next_project.tech_list|slice:":2" %}{{ t }}{% if not forloop.last %} · {% endif %}{% endfor %}</span>
       </div>
-      <h4>Drift.</h4>
-      <p>A real-time collaborative editor for product teams who write more than they speak. Operational transforms, the hard way.</p>
+      <h4>{{ next_project.title }}.</h4>
+      <p>{{ next_project.short_description }}</p>
       <div class="arrow">
         Read case study
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 9L9 3M5 3h4v4"/></svg>
       </div>
     </div>
   </a>
+  {% endif %}
 </section>
 
 <!-- FOOTER ────────────────────────────────────── -->

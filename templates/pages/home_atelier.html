@@ -884,7 +884,7 @@
 <div class="topbar" data-screen-label="01 Atelier · Home">
   <a href="#" class="brand">Rukundo Ronaldo<sup>RR · 2026</sup></a>
   <div class="right">
-    <span class="status-pill" data-hover><span class="status-dot"></span>Disponible · août ’26</span>
+    <span class="status-pill" data-hover><span class="status-dot"></span>{{ profile.availability|default:"Disponible · août ’26" }}</span>
     <button class="theme-toggle" data-theme-toggle data-hover>
       <svg class="sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3" stroke-linecap="round"/></svg>
       <svg class="moon" viewBox="0 0 16 16" fill="currentColor"><path d="M12 9a4 4 0 11-5-5 5 5 0 005 5z"/></svg>
@@ -1010,116 +1010,30 @@
 <section id="work" class="projects">
   <div class="head">
     <h2 class="reveal" data-reveal-once>Travaux<br/>sélectionnés.</h2>
-    <div class="count reveal reveal-delay-1" data-reveal-once>06 projets · 2022–2026</div>
+    <div class="count reveal reveal-delay-1" data-reveal-once>{{ projects|length|stringformat:"02d" }} projets · {{ project_year_range }}</div>
   </div>
   <div class="proj-grid">
-    <a class="proj reveal" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
-      <div class="img img-mosaic">
+    {% for project in projects %}
+    <a class="proj reveal{% cycle '' ' reveal-delay-1' %}" data-reveal-once href="{% url 'pages:project_detail' project.slug %}" data-transition data-hover>
+      <div class="img img-{{ project.card_style }}">
         <div class="bg"></div>
         <div class="overlay"></div>
-        <div class="corner">N° 01</div>
-        <div class="status status-beta"><span class="dot"></span>En bêta · v 1.4</div>
+        <div class="corner">N° {{ forloop.counter|stringformat:"02d" }}</div>
+        <div class="status status-{{ project.badge }}"><span class="dot"></span>{{ project.get_badge_display }}</div>
         <div class="open">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 11L11 3M5 3h6v6"/></svg>
         </div>
       </div>
       <div class="meta-row">
-        <div class="title">Mosaic</div>
-        <div class="year">2026</div>
+        <div class="title">{{ project.title }}</div>
+        <div class="year">{{ project.year }}</div>
       </div>
-      <div class="desc">Outil de gestion de projet pour équipes distribuées qui ne vivent pas dans leur boîte mail. Auto-hébergeable, rapide, temps réel.</div>
-      <div class="tags"><span class="tag">Django</span><span class="tag">Postgres</span><span class="tag">HTMX</span></div>
+      <div class="desc">{{ project.short_description }}</div>
+      <div class="tags">{% for t in project.tech_list %}<span class="tag">{{ t }}</span>{% endfor %}</div>
     </a>
-
-    <a class="proj reveal reveal-delay-1" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
-      <div class="img img-ledger">
-        <div class="bg"></div>
-        <div class="overlay"></div>
-        <div class="corner">N° 02</div>
-        <div class="status status-live"><span class="dot"></span>En production</div>
-        <div class="open">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 11L11 3M5 3h6v6"/></svg>
-        </div>
-      </div>
-      <div class="meta-row">
-        <div class="title">Ledger</div>
-        <div class="year">2025</div>
-      </div>
-      <div class="desc">Un tableau de bord personnel pour vos finances, qui ne parle pas à votre banque. Chaque transaction classée à la main.</div>
-      <div class="tags"><span class="tag">Django</span><span class="tag">Chart.js</span><span class="tag">Tailwind</span></div>
-    </a>
-
-    <a class="proj reveal" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
-      <div class="img img-roost">
-        <div class="bg"></div>
-        <div class="overlay"></div>
-        <div class="corner">N° 03</div>
-        <div class="status status-oss"><span class="dot"></span>Open source · ★ 1.2k</div>
-        <div class="open">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 11L11 3M5 3h6v6"/></svg>
-        </div>
-      </div>
-      <div class="meta-row">
-        <div class="title">Roost</div>
-        <div class="year">2025</div>
-      </div>
-      <div class="desc">Un CMS open-source pour les blogs lents et les petites publications. Django + Unfold + un admin qui ne vous déteste pas.</div>
-      <div class="tags"><span class="tag">Django</span><span class="tag">Unfold</span><span class="tag">OSS</span></div>
-    </a>
-
-    <a class="proj reveal reveal-delay-1" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
-      <div class="img img-drift">
-        <div class="bg"></div>
-        <div class="overlay"></div>
-        <div class="corner">N° 04</div>
-        <div class="status status-live"><span class="dot"></span>Live · racheté en 2024</div>
-        <div class="open">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 11L11 3M5 3h6v6"/></svg>
-        </div>
-      </div>
-      <div class="meta-row">
-        <div class="title">Drift</div>
-        <div class="year">2024</div>
-      </div>
-      <div class="desc">Éditeur collaboratif en temps réel pour les équipes produit qui écrivent plus qu’elles ne parlent. OT à la dure.</div>
-      <div class="tags"><span class="tag">Node</span><span class="tag">Socket.io</span><span class="tag">React</span></div>
-    </a>
-
-    <a class="proj reveal" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
-      <div class="img img-quill">
-        <div class="bg"></div>
-        <div class="overlay"></div>
-        <div class="corner">N° 05</div>
-        <div class="status status-working"><span class="dot"></span>En cours · v 2 bientôt</div>
-        <div class="open">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 11L11 3M5 3h6v6"/></svg>
-        </div>
-      </div>
-      <div class="meta-row">
-        <div class="title">Quill</div>
-        <div class="year">2023</div>
-      </div>
-      <div class="desc">Un outil d’écriture assisté par IA qui se fait discret. Les suggestions apparaissent en marge, jamais au milieu de votre phrase.</div>
-      <div class="tags"><span class="tag">Next.js</span><span class="tag">OpenAI</span><span class="tag">Postgres</span></div>
-    </a>
-
-    <a class="proj reveal reveal-delay-1" data-reveal-once href="{% url 'pages:project' %}" data-transition data-hover>
-      <div class="img img-atlas">
-        <div class="bg"></div>
-        <div class="overlay"></div>
-        <div class="corner">N° 06</div>
-        <div class="status status-archived"><span class="dot"></span>Archivé · toujours actif</div>
-        <div class="open">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 11L11 3M5 3h6v6"/></svg>
-        </div>
-      </div>
-      <div class="meta-row">
-        <div class="title">Atlas</div>
-        <div class="year">2022</div>
-      </div>
-      <div class="desc">Visualisation de données géographiques pour une ONG environnementale. Livré en sept semaines, toujours en service quatre ans plus tard.</div>
-      <div class="tags"><span class="tag">Django</span><span class="tag">PostGIS</span><span class="tag">Mapbox</span></div>
-    </a>
+    {% empty %}
+    <p class="muted">Aucun projet pour l’instant.</p>
+    {% endfor %}
   </div>
 </section>
 
@@ -1127,76 +1041,31 @@
 <section id="exp" class="exp">
   <div class="exp-head">
     <h2 class="reveal" data-reveal-once>Carrière.</h2>
-    <div class="count reveal reveal-delay-1" data-reveal-once>03 rôles · 06 ans · 2020 — Présent</div>
+    <div class="count reveal reveal-delay-1" data-reveal-once>{{ experiences|length|stringformat:"02d" }} rôles · 2020 — Présent</div>
   </div>
 
   <div class="exp-list">
+    {% for exp in experiences %}
     <article class="exp-card reveal" data-reveal-once data-hover>
       <div class="dates">
-        <span class="yr-big">2024</span>
-        <span class="yr-sub">— Présent · 2 ans +</span>
+        <span class="yr-big">{{ exp.start_year }}</span>
+        <span class="yr-sub">— {% if exp.end_year %}{{ exp.end_year }}{% else %}Présent{% endif %}</span>
       </div>
       <div class="role-wrap">
-        <div class="role">Sénior Fullstack.</div>
-        <div class="co"><span class="pin">●</span>Cobalt Studio · Remote, UE</div>
-        <p class="desc">Direction de l’équipe plateforme. Architecture, recrutement, et tout le dashboard client de bout en bout.</p>
+        <div class="role">{{ exp.role }}.</div>
+        <div class="co"><span class="pin">●</span>{{ exp.company }}{% if exp.location %} · {{ exp.location }}{% endif %}</div>
+        <p class="desc">{{ exp.description }}</p>
       </div>
       <div class="side">
         <ul class="highlights">
-          <li>Livré un backend Django multi-tenant servant 40k MAUs</li>
-          <li>Refonte du dashboard en HTMX + Tailwind, JS réduit de 78%</li>
-          <li>P50 réduit de 280ms à 42ms</li>
-          <li>Mentor de deux ingénieurs juniors</li>
+          {% for h in exp.highlight_list %}<li>{{ h }}</li>{% endfor %}
         </ul>
         <div class="stack">
-          <span>Django</span><span>Node</span><span>HTMX</span><span>Postgres</span><span>Redis</span><span>AWS</span>
+          {% for s in exp.stack_list %}<span>{{ s }}</span>{% endfor %}
         </div>
       </div>
     </article>
-
-    <article class="exp-card reveal" data-reveal-once data-hover>
-      <div class="dates">
-        <span class="yr-big">2022</span>
-        <span class="yr-sub">— 2024 · 2 ans</span>
-      </div>
-      <div class="role-wrap">
-        <div class="role">Développeur Fullstack.</div>
-        <div class="co"><span class="pin">●</span>Acre &amp; Co. · Berlin</div>
-        <p class="desc">Construction de deux apps consumer de zéro. De la schéma Postgres jusqu’au déploiement en production.</p>
-      </div>
-      <div class="side">
-        <ul class="highlights">
-          <li>Conception et lancement d’une marketplace B2C de 0 à 8k users</li>
-          <li>Intégration de Stripe Connect pour les paiements partagés</li>
-          <li>Mentoré deux juniors jusqu’à leurs premières mises en prod</li>
-        </ul>
-        <div class="stack">
-          <span>Django</span><span>React</span><span>Stripe</span><span>Postgres</span><span>Heroku</span>
-        </div>
-      </div>
-    </article>
-
-    <article class="exp-card reveal" data-reveal-once data-hover>
-      <div class="dates">
-        <span class="yr-big">2020</span>
-        <span class="yr-sub">— 2022 · 2 ans</span>
-      </div>
-      <div class="role-wrap">
-        <div class="role">Développeur Junior.</div>
-        <div class="co"><span class="pin">●</span>Studio K · Lyon</div>
-        <p class="desc">Mes premières armes en agence. Une dizaine de petits sites Django pour des ONG et des PME.</p>
-      </div>
-      <div class="side">
-        <ul class="highlights">
-          <li>Livré 12 sites Django + Wagtail — tous encore en ligne</li>
-          <li>Piloté le port open-source d’un CMS interne utilisé par 4 ONG partenaires</li>
-          <li>Début de mes écrits publics sur l’artisanat logiciel</li>
-        </ul>
-        <div class="stack">
-          <span>Django</span><span>Wagtail</span><span>Linux</span><span>Nginx</span><span>jQuery</span>
-        </div>
-      </div>
-    </article>
+    {% endfor %}
   </div>
 </section>
 
@@ -1204,83 +1073,24 @@
 <section id="tools" class="skills">
   <div class="skills-head">
     <h2 class="reveal" data-reveal-once>Stack &amp; outils.</h2>
-    <div class="count reveal reveal-delay-1" data-reveal-once>— 22 outils / 03 catégories</div>
+    <div class="count reveal reveal-delay-1" data-reveal-once>— {{ skill_total|stringformat:"02d" }} outils / {{ skill_groups|length|stringformat:"02d" }} catégories</div>
   </div>
   <div class="skills-grid">
-    <div class="skill-col reveal" data-reveal-once>
-      <div class="cat-head"><h4>Backend</h4><span class="num">— 11</span></div>
-      <div class="tier primary">
-        <div class="tier-lab">— Au quotidien</div>
+    {% for group in skill_groups %}
+    <div class="skill-col reveal{% cycle '' ' reveal-delay-1' ' reveal-delay-2' %}" data-reveal-once>
+      <div class="cat-head"><h4>{{ group.name }}</h4><span class="num">— {{ group.count|stringformat:"02d" }}</span></div>
+      {% for tier in group.tiers %}
+      <div class="{{ tier.css }}">
+        <div class="tier-lab">— {{ tier.label }}</div>
         <div class="chips">
-          <span class="chip" data-hover><span class="led"></span>Python</span>
-          <span class="chip" data-hover><span class="led"></span>Django</span>
-          <span class="chip" data-hover><span class="led"></span>PostgreSQL</span>
+          {% for skill in tier.chips %}
+          <span class="chip{% if skill.favorite %} chip-fav{% endif %}" data-hover>{% if tier.css == 'tier primary' or skill.favorite %}<span class="led"></span>{% endif %}{{ skill.name }}</span>
+          {% endfor %}
         </div>
       </div>
-      <div class="tier">
-        <div class="tier-lab">— Fréquent</div>
-        <div class="chips">
-          <span class="chip" data-hover>Node</span>
-          <span class="chip" data-hover>FastAPI</span>
-          <span class="chip" data-hover>Redis</span>
-          <span class="chip" data-hover>Celery</span>
-        </div>
-      </div>
-      <div class="tier">
-        <div class="tier-lab">— IA &amp; LLMs (que j’utilise)</div>
-        <div class="chips">
-          <span class="chip chip-fav" data-hover><span class="led"></span>Claude <em style="font-style:italic; opacity: 0.7; margin-left: 4px;">— préféré</em></span>
-          <span class="chip" data-hover>Llama</span>
-          <span class="chip" data-hover>ALLaM</span>
-          <span class="chip" data-hover>Cursor</span>
-          <span class="chip" data-hover>OpenAI</span>
-          <span class="chip" data-hover>pgvector</span>
-          <span class="chip" data-hover>LangChain</span>
-        </div>
-      </div>
+      {% endfor %}
     </div>
-
-    <div class="skill-col reveal reveal-delay-1" data-reveal-once>
-      <div class="cat-head"><h4>Frontend</h4><span class="num">— 06</span></div>
-      <div class="tier primary">
-        <div class="tier-lab">— Au quotidien</div>
-        <div class="chips">
-          <span class="chip" data-hover><span class="led"></span>HTML &amp; CSS</span>
-          <span class="chip" data-hover><span class="led"></span>Tailwind</span>
-          <span class="chip" data-hover><span class="led"></span>HTMX</span>
-        </div>
-      </div>
-      <div class="tier">
-        <div class="tier-lab">— Fréquent</div>
-        <div class="chips">
-          <span class="chip" data-hover>JavaScript</span>
-          <span class="chip" data-hover>React</span>
-          <span class="chip" data-hover>Alpine.js</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-col reveal reveal-delay-2" data-reveal-once>
-      <div class="cat-head"><h4>Outillage</h4><span class="num">— 07</span></div>
-      <div class="tier primary">
-        <div class="tier-lab">— Au quotidien</div>
-        <div class="chips">
-          <span class="chip" data-hover><span class="led"></span>Git</span>
-          <span class="chip" data-hover><span class="led"></span>Docker</span>
-          <span class="chip" data-hover><span class="led"></span>Linux</span>
-        </div>
-      </div>
-      <div class="tier">
-        <div class="tier-lab">— Fréquent</div>
-        <div class="chips">
-          <span class="chip" data-hover>AWS · Fly.io</span>
-          <span class="chip" data-hover>Nginx</span>
-          <span class="chip" data-hover>GitHub Actions</span>
-          <span class="chip" data-hover>Figma</span>
-          <span class="chip" data-hover>Cursor · Claude</span>
-        </div>
-      </div>
-    </div>
+    {% endfor %}
   </div>
 </section>
 
@@ -1292,7 +1102,9 @@
   </div>
 
   <div class="contact-grid">
-    <form class="contact-form reveal" data-reveal-once onsubmit="return false">
+    <form class="contact-form reveal" data-reveal-once method="post" action="{% url 'pages:contact' %}">
+      {% csrf_token %}
+      {% if messages %}{% for m in messages %}<p class="hint" style="color: var(--accent); margin-bottom: 16px;">{{ m }}</p>{% endfor %}{% endif %}
       <div class="field-row">
         <div class="field">
           <label>— Votre nom</label>
@@ -1321,7 +1133,9 @@
     </form>
 
     <aside class="contact-side reveal reveal-delay-1" data-reveal-once>
-      <a href="mailto:hello@rukundo.dev" class="big-email" data-hover>hello@rukundo.dev<span style="color: var(--accent);">.</span></a>
+      {% with email=profile.email|default:"hello@rukundo.dev" %}
+      <a href="mailto:{{ email }}" class="big-email" data-hover>{{ email }}<span style="color: var(--accent);">.</span></a>
+      {% endwith %}
 
       <div class="quick-links">
         <a href="#" class="ql" data-hover>
@@ -1331,27 +1145,22 @@
           </div>
           <span class="arrow"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg></span>
         </a>
-        <a href="#" class="ql" data-hover>
+        {% if profile.resume_url %}
+        <a href="{{ profile.resume_url }}" class="ql" data-hover>
           <div>
             <div class="lab">— CV</div>
             <div class="val">Télécharger le CV · PDF</div>
           </div>
           <span class="arrow"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg></span>
         </a>
-        <a href="#" class="ql" data-hover>
-          <div>
-            <div class="lab">— Discussion rapide</div>
-            <div class="val">Telegram · Signal</div>
-          </div>
-          <span class="arrow"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg></span>
-        </a>
+        {% endif %}
       </div>
 
       <div class="contact-socials">
-        <a href="#" data-hover>GitHub ↗</a>
-        <a href="#" data-hover>X / Twitter ↗</a>
-        <a href="#" data-hover>LinkedIn ↗</a>
-        <a href="#" data-hover>Read.cv ↗</a>
+        {% if profile.github_url %}<a href="{{ profile.github_url }}" data-hover>GitHub ↗</a>{% endif %}
+        {% if profile.twitter_url %}<a href="{{ profile.twitter_url }}" data-hover>X / Twitter ↗</a>{% endif %}
+        {% if profile.linkedin_url %}<a href="{{ profile.linkedin_url }}" data-hover>LinkedIn ↗</a>{% endif %}
+        {% if profile.dribbble_url %}<a href="{{ profile.dribbble_url }}" data-hover>Dribbble ↗</a>{% endif %}
       </div>
     </aside>
   </div>
