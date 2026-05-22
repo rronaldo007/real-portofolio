@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Personal portfolio for **Rukundo Ronaldo** — a fullstack developer (Django-focused). An editorial, magazine-style portfolio. The pages are **HTML/CSS/vanilla-JS** served by **Django 5.0** as templates; copy is in French (`lang="fr"`). Static assets are served by WhiteNoise; the app runs under Gunicorn in Docker.
+Personal portfolio for **Rukundo Ronaldo** — a fullstack developer (Django-focused). An editorial, magazine-style portfolio. The pages are **HTML/CSS/vanilla-JS** served by **Django 5.2 LTS** as templates; copy is in French (`lang="fr"`). Static assets are served by WhiteNoise; the app runs under Gunicorn in Docker. The Django admin uses the **Unfold** theme (`django-unfold`).
 
 ## How to run
 
@@ -41,7 +41,7 @@ Dockerfile, docker-compose.yml, .dockerignore, requirements.txt
 | `/` | `home_atelier.html` | `home` — primary home: hero, about, projects, experience, skills, contact + floating dock |
 | `/etudes/` | `home_etudes.html` | `home_etudes` — alternate home layout |
 | `/project/` | `project.html` | `project` — case-study detail page |
-| `/dashboard/` | `admin.html` | `admin_demo` — dashboard mockup (note: Django admin is at `/admin/`) |
+| `/dashboard/` | `admin.html` | `admin_demo` — dashboard mockup (this is a static front-end page, NOT the Django admin) |
 | `/design-system/` | `design_system.html` | `design_system` — living style guide |
 | `/nav-options/` | `nav_options.html` | `nav_options` — nav pattern explorations |
 

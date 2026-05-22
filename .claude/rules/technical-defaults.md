@@ -4,7 +4,8 @@
 
 ## Stack
 
-- **Django 5.0** (Python 3.13) serves the pages as templates. Pages are static HTML/CSS/vanilla-JS — no frontend framework, no bundler.
+- **Django 5.2 LTS** (Python 3.13) serves the pages as templates. Pages are static HTML/CSS/vanilla-JS — no frontend framework, no bundler.
+- **django-unfold** themes the Django admin. `"unfold"` must stay **before** `django.contrib.admin` in `INSTALLED_APPS`; config in the `UNFOLD` settings dict.
 - **Gunicorn** as the WSGI server; **WhiteNoise** serves hashed static files from the app.
 - **SQLite** (in `data/`) — only for Django's built-in apps; no project models yet.
 - **CSS:** plain CSS with custom-property design tokens in `static/css/shared.css`.

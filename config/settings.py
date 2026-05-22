@@ -36,6 +36,8 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").sp
 # Application definition
 
 INSTALLED_APPS = [
+    # Unfold must precede django.contrib.admin to override the admin templates.
+    "unfold",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -136,6 +138,17 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+# Unfold admin theme
+# https://unfoldadmin.com/docs/configuration/
+UNFOLD = {
+    "SITE_TITLE": "Rukundo Ronaldo — Admin",
+    "SITE_HEADER": "Rukundo Ronaldo",
+    "SITE_SUBHEADER": "Portfolio",
+    "SHOW_HISTORY": True,
+    "SHOW_VIEW_ON_SITE": True,
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
