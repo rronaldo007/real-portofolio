@@ -2,7 +2,7 @@
 <html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=1440" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Cartes de visite — Rukundo Ronaldo</title>
 <link rel="stylesheet" href="{% static 'css/shared.css' %}" />
 <style>
@@ -586,10 +586,78 @@
   .stage-mn { width: 360px; height: 226px; }   /* mini */
   .stage-cl-lg { width: 540px; height: 340px; }
 
+  /* ── Responsive ───────────────────────────────────
+     The page is authored at 1440. Below that we: collapse the
+     12-col variation grid, scale the fixed-px card stages to vw
+     so they never overflow, then stack the hero / decks. ──── */
   @media (max-width: 1320px) {
     .var-item.span-7, .var-item.span-5,
     .var-item.span-6, .var-item.span-4,
     .var-item.span-8 { grid-column: span 6; }
+    /* showcase stages must fit a half-width column → cap to vw, keep ratio */
+    .stage-cl     { width: min(460px, 40vw); height: auto; aspect-ratio: 460 / 290; }
+    .stage-cl-lg  { width: min(540px, 40vw); height: auto; aspect-ratio: 460 / 290; }
+    .stage-sq     { width: min(320px, 40vw); height: auto; aspect-ratio: 1 / 1; }
+    .stage-vt     { width: min(240px, 40vw); height: auto; aspect-ratio: 240 / 360; }
+    .stage-mn     { width: min(360px, 40vw); height: auto; aspect-ratio: 360 / 226; }
+  }
+
+  /* Tablet: tighten gutters, stack the hero + decks, scale the hero card */
+  @media (max-width: 1180px) {
+    body { --pad-x: 44px; }
+    .topbar { left: 20px; right: 20px; flex-wrap: wrap; gap: 10px; }
+    .cover { padding: 150px var(--pad-x) 56px; }
+    .cover .deck { grid-template-columns: 1fr 1fr; gap: 28px 36px; }
+    .hero-stage {
+      grid-template-columns: 1fr; gap: 44px;
+      min-height: 0; padding: 56px var(--pad-x) 96px;
+    }
+    .hero-stage .hero-card-wrap,
+    .hero-stage .hero-meta { grid-column: 1; }
+    .hero-stage .hero-meta { max-width: 560px; }
+    .hero-card-wrap .card-stage { width: min(var(--w), 86vw); height: auto; }
+    .card-stage[data-format="classique"] { aspect-ratio: 620 / 391; }
+    .card-stage[data-format="carre"]     { aspect-ratio: 1 / 1; }
+    .card-stage[data-format="verticale"] { aspect-ratio: 360 / 540; }
+    .card-stage[data-format="mini"]      { aspect-ratio: 420 / 264; }
+    .spec-grid { grid-template-columns: 1fr; gap: 44px; }
+  }
+
+  /* Narrow tablet / large phone: variation grid becomes a single column */
+  @media (max-width: 820px) {
+    .var-grid { grid-template-columns: 1fr; gap: 64px 0; }
+    .var-item.span-7, .var-item.span-5, .var-item.span-6,
+    .var-item.span-4, .var-item.span-8 { grid-column: auto; }
+    .stage-cl    { width: min(460px, 82vw); }
+    .stage-cl-lg { width: min(540px, 82vw); }
+    .stage-sq    { width: min(320px, 82vw); }
+    .stage-vt    { width: min(240px, 70vw); }
+    .stage-mn    { width: min(360px, 82vw); }
+    .var-sect-head { flex-direction: column; align-items: flex-start; gap: 18px; padding-top: 56px; margin-bottom: 56px; }
+  }
+
+  /* Phone */
+  @media (max-width: 600px) {
+    body { --pad-x: 20px; }
+    .topbar { top: 16px; }
+    .topbar .brand { font-size: 24px; }
+    .topbar .status-pill { display: none; }
+    .cover { padding: 124px var(--pad-x) 44px; }
+    .cover .eyebrow { flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 44px; }
+    .cover .eyebrow .tags { gap: 16px; flex-wrap: wrap; }
+    .cover h1 { font-size: clamp(46px, 14vw, 92px); margin-bottom: 36px; max-width: none; }
+    .cover .deck { grid-template-columns: 1fr; gap: 24px; }
+    .hero-stage { padding: 40px var(--pad-x) 72px; gap: 36px; }
+    .hero-stage .hero-meta .ix { grid-template-columns: 1fr; }
+    .var-sect { padding: 32px var(--pad-x) 80px; }
+    .var-item .panel { padding: 36px 16px; min-height: 0; }
+    .var-item .caption .nm { font-size: 26px; }
+    .spec { padding: 72px var(--pad-x); }
+    .spec-head { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .footer-bar { flex-direction: column; align-items: flex-start; gap: 14px; }
+    /* settings panel becomes a full-width bottom sheet */
+    .tw-toggle { right: 16px; bottom: 16px; }
+    .tw-panel { left: 12px; right: 12px; bottom: 12px; width: auto; max-height: 82vh; }
   }
 
   /* ── Variation 02 — Manifeste (square, type-only) ── */

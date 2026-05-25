@@ -3,7 +3,7 @@
 <html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=1440" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 {% include "pages/_seo.html" with structured="person" %}
 <link rel="stylesheet" href="{% static 'css/shared.css' %}" />
 <style>
@@ -889,6 +889,92 @@
   @keyframes scroll {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
+  }
+
+  /* ════════════════════════════════════════════════
+     RESPONSIVE — page is authored at 1440. Tighten
+     gutters, collapse multi-column grids, scale the
+     editorial display type, and compact the dock. ──── */
+
+  /* Tablet / small laptop */
+  @media (max-width: 1080px) {
+    body { --pad-x: 48px; }
+    .topbar { left: 22px; right: 22px; }
+    .hero { padding: 150px var(--pad-x) 110px; }
+    .hero .meta { gap: 40px; }
+    .about, .exp, .skills { padding: 110px var(--pad-x); }
+    .projects { padding: 120px var(--pad-x) 110px; }
+    .testi, .contact { padding: 120px var(--pad-x) 90px; }
+    .about-grid { grid-template-columns: 340px 1fr; gap: 56px; }
+    .projects h2 { font-size: clamp(56px, 9vw, 84px); }
+    .projects .head { margin-bottom: 72px; }
+    .proj-grid { gap: 60px 44px; }
+    .exp-card { grid-template-columns: 150px 1fr; gap: 18px 40px; }
+    .exp-card .side { grid-column: 1 / -1; }
+    .exp-card .dates .yr-big { font-size: 52px; }
+    .skills-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .testi-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Tablet portrait / large phone */
+  @media (max-width: 768px) {
+    body { --pad-x: 32px; }
+    .topbar { left: 18px; right: 18px; }
+    .hero h1 { font-size: clamp(40px, 10vw, 132px); margin-bottom: 44px; }
+    .hero .hero-greet { gap: 14px; margin-bottom: 32px; }
+    .hero .hero-greet .name { font-size: clamp(34px, 8vw, 80px); }
+    .hero .meta { grid-template-columns: 1fr; gap: 28px; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .about-photo { max-width: 420px; }
+    .about-text .lede { font-size: 32px; margin-bottom: 32px; }
+    .about-text .facts { grid-template-columns: 1fr 1fr; }
+    .proj-grid { grid-template-columns: 1fr; gap: 56px; }
+    .exp-card { grid-template-columns: 1fr; gap: 16px; padding: 36px 0; }
+    .exp-card:hover { padding-left: 0; }      /* no shift under sticky touch-hover */
+    .exp-card .dates .yr-big { font-size: 46px; }
+    .exp-card .role-wrap .role { font-size: 30px; }
+    .skills-grid { grid-template-columns: 1fr; gap: 44px; }
+    .testi h3 { font-size: clamp(44px, 10vw, 72px); margin-bottom: 56px; }
+    .testi-grid { grid-template-columns: 1fr; gap: 40px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 56px; }
+    .marquee-inner span { font-size: 48px; }
+    .marquee-inner .star { font-size: 38px; }
+  }
+
+  /* Phone */
+  @media (max-width: 600px) {
+    body { --pad-x: 20px; }
+    .topbar { top: 18px; }
+    .topbar .brand { font-size: 22px; }
+    .topbar .brand sup { display: none; }
+    .topbar .status-pill { display: none; }
+    .hero { padding: 124px var(--pad-x) 80px; }
+    .hero .eyebrow { margin-bottom: 44px; }
+    .hero h1 { font-size: clamp(32px, 9.2vw, 132px); }
+    .about, .exp, .skills { padding: 80px var(--pad-x); }
+    .projects { padding: 88px var(--pad-x) 80px; }
+    .projects .head { margin-bottom: 56px; }
+    .testi { padding: 88px var(--pad-x); }
+    .contact { padding: 88px var(--pad-x) 80px; }
+    .about-eyebrow { margin-bottom: 48px; gap: 12px; }
+    .about-text .lede { font-size: 28px; }
+    .exp-head, .skills-head { margin-bottom: 48px; }
+    .testi-card .quote { font-size: 20px; }
+    .contact-head { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 56px; }
+    .contact-head h2 { font-size: clamp(46px, 14vw, 168px); }
+    .contact-head .top { align-self: flex-start; }
+    .contact-form .field-row { grid-template-columns: 1fr; gap: 0; }
+    .contact-form .field input, .contact-form .field textarea { font-size: 20px; }
+    .contact-form .form-foot { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .marquee-inner span { font-size: 38px; }
+    .footer-bar { flex-direction: column; align-items: flex-start; gap: 12px; padding-bottom: 116px; }
+    /* compact the floating dock so it fits a phone width */
+    .dock { gap: 0; padding: 6px; max-width: calc(100vw - 16px); }
+    .dock a.dock-link { min-width: 0; padding: 8px 9px; gap: 3px; }
+    .dock a.dock-link .lab { font-size: 9px; letter-spacing: 0.03em; }
+    .dock .sep { margin: 0 2px; height: 30px; }
+    .dock .cta { padding: 11px 13px; font-size: 0; gap: 0; }   /* icon-only on phone */
+    .dock .cta .ic { width: 15px; height: 15px; }
   }
 </style>
 </head>
