@@ -1,0 +1,2131 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Cartes de visite — Rukundo Ronaldo</title>
+<link rel="stylesheet" href="shared.css" />
+<style>
+  body {
+    --pad-x: 88px;
+    overflow-x: hidden;
+  }
+  html[data-theme="dark"] body { background: #0a0908; }
+  html[data-theme="dark"] { --bg: #0a0908; --bg-2: #131210; }
+
+  /* ── Topbar (same vocabulary as portfolio) ─────── */
+  .topbar {
+    position: fixed; top: 28px; left: 36px; right: 36px;
+    z-index: 100;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    pointer-events: none;
+  }
+  .topbar > * { pointer-events: auto; }
+  .topbar .brand {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 32px; letter-spacing: -0.01em;
+    color: var(--ink); line-height: 1;
+    display: inline-flex; align-items: flex-start; gap: 12px;
+    padding: 6px 14px;
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 14px;
+  }
+  .topbar .brand sup {
+    font-family: var(--font-mono); font-style: normal;
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-top: 8px;
+  }
+  .topbar .right { display: flex; align-items: center; gap: 10px; }
+  .topbar .status-pill {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 14px;
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .topbar .status-pill .dt {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+  .topbar .theme-toggle {
+    padding: 8px 12px;
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    backdrop-filter: blur(12px);
+  }
+  .topbar .back-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-2);
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .topbar .back-link:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ── Cover ──────────────────────────────────────── */
+  .cover {
+    padding: 200px var(--pad-x) 80px;
+    position: relative;
+  }
+  .cover .eyebrow {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 64px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  }
+  .cover .eyebrow .num { color: var(--ink); }
+  .cover .eyebrow .tags { display: flex; gap: 24px; }
+  .cover .eyebrow .tags .dot { color: var(--accent); }
+
+  .cover h1 {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(80px, 11vw, 168px);
+    line-height: 0.9; letter-spacing: -0.03em;
+    font-weight: 400; color: var(--ink);
+    margin-bottom: 56px;
+    max-width: 12ch;
+  }
+  .cover h1 em { font-style: normal; color: var(--accent); }
+  .cover h1 .pt { color: var(--accent); }
+
+  .cover .deck {
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    max-width: 1100px;
+  }
+  .cover .deck dt {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .cover .deck dd { font-size: 14px; color: var(--ink-2); line-height: 1.6; max-width: 36ch; }
+  .cover .deck dd .serif {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 22px; color: var(--ink);
+    display: block; margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── Hero stage ─────────────────────────────────── */
+  .hero-stage {
+    padding: 80px var(--pad-x) 120px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    gap: 64px;
+    align-items: center;
+    min-height: 760px;
+  }
+  .hero-stage::before {
+    content: ""; position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 580px; height: 580px;
+    background: radial-gradient(circle, var(--accent-soft) 0%, transparent 60%);
+    filter: blur(40px);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-stage .hero-card-wrap {
+    grid-column: 1;
+    display: flex; justify-content: center; align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-stage .hero-meta {
+    grid-column: 2;
+    position: relative; z-index: 1;
+  }
+  .hero-stage .hero-meta .crumb {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 20px;
+  }
+  .hero-stage .hero-meta h2 {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(40px, 4.5vw, 64px);
+    line-height: 0.98; letter-spacing: -0.02em;
+    color: var(--ink); font-weight: 400;
+    margin-bottom: 24px;
+    max-width: 14ch;
+  }
+  .hero-stage .hero-meta h2 em { font-style: normal; color: var(--accent); }
+  .hero-stage .hero-meta p {
+    font-size: 14.5px; line-height: 1.7;
+    color: var(--ink-2); max-width: 36ch;
+    margin-bottom: 28px;
+  }
+  .hero-stage .hero-meta .ix {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0 18px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+  .hero-stage .hero-meta .ix .row {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  }
+  .hero-stage .hero-meta .ix .row b {
+    color: var(--ink); font-weight: 500;
+    font-family: var(--font-display); font-style: italic;
+    font-size: 15px; letter-spacing: -0.005em;
+    text-transform: none;
+  }
+  .hero-stage .hero-meta .nudge {
+    margin-top: 28px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hero-stage .hero-meta .nudge .kbd {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 22px; padding: 2px 6px;
+    border: 1px solid var(--line);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    background: var(--bg-2);
+    font-size: 10px; color: var(--ink-2);
+  }
+
+  /* ── Generic 3D card (shared) ───────────────────── */
+  .card-stage {
+    perspective: 1600px;
+    perspective-origin: 50% 50%;
+    position: relative;
+  }
+  .card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.9s var(--ease-out);
+    will-change: transform;
+    cursor: none;
+  }
+  .card.is-flipping { transition: transform 0.85s cubic-bezier(0.7, 0, 0.2, 1); }
+  .card .face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.05) inset,
+      0 28px 60px -20px rgba(0,0,0,0.7),
+      0 60px 120px -40px rgba(0,0,0,0.5);
+  }
+  .card .face.back {
+    transform: rotateY(180deg);
+  }
+
+  /* fall-back front-only positioning */
+  .card .face.front:not([style]) { position: absolute; inset: 0; }
+
+  /* ── Hologram + sheen layers (per face) ─────────── */
+  .face .sheen {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0.6;
+    background:
+      radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
+        rgba(255,255,255,0.18) 0%,
+        rgba(255,255,255,0.04) 30%,
+        transparent 55%);
+    mix-blend-mode: screen;
+    transition: opacity 0.4s ease;
+  }
+  .face .holo {
+    position: absolute; inset: -10%;
+    pointer-events: none;
+    z-index: 4;
+    background: conic-gradient(
+      from calc(var(--mx, 50) * 3.6deg) at var(--mx, 50%) var(--my, 50%),
+      #c084fc, #6ee7b7, #fcd34d, #93c5fd, #f472b6, #c084fc
+    );
+    mix-blend-mode: overlay;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    filter: blur(14px) saturate(1.3);
+  }
+  .face .foil {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    background: linear-gradient(
+      calc(var(--mx, 50) * 3.6deg),
+      #1a1410 0%,
+      #d4af7a 20%,
+      #f5e3b3 40%,
+      #d4af7a 55%,
+      #8a6a3b 75%,
+      #1a1410 100%
+    );
+    mix-blend-mode: soft-light;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .card[data-finish="hologramme"] .face .holo { opacity: 0.32; }
+  .card[data-finish="hologramme"] .face .sheen { opacity: 0.7; }
+  .card[data-finish="foil"] .face .foil { opacity: 0.7; }
+  .card[data-finish="matte"] .face .sheen { opacity: 0; }
+  .card[data-finish="satin"] .face .sheen { opacity: 0.45; }
+
+  /* card edge / thickness fake */
+  .card::before {
+    content: ""; position: absolute;
+    left: 0; right: 0; bottom: -2px;
+    height: 3px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent);
+    border-radius: 0 0 8px 8px;
+    transform: translateZ(-1px);
+    z-index: -1;
+  }
+
+  /* ── Hero card specifics (large featured) ───────── */
+  .card-stage[data-format="classique"] { --w: 620px; --h: 391px; }
+  .card-stage[data-format="carre"]     { --w: 480px; --h: 480px; }
+  .card-stage[data-format="verticale"] { --w: 360px; --h: 540px; }
+  .card-stage[data-format="mini"]      { --w: 420px; --h: 264px; }
+  .hero-card-wrap .card-stage {
+    width: var(--w, 620px);
+    height: var(--h, 391px);
+    transition: width 0.7s var(--ease-out), height 0.7s var(--ease-out);
+  }
+
+  /* ── Face styling: editorial recto ──────────────── */
+  .f-editorial-front {
+    background:
+      radial-gradient(at 100% 0%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 50%),
+      linear-gradient(160deg, #15130f 0%, #0a0908 70%);
+    color: var(--ink);
+    padding: 36px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    position: relative;
+  }
+  .f-editorial-front::after {
+    content: ""; position: absolute;
+    inset: 14px;
+    border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 6;
+  }
+  .f-editorial-front .corner-tl,
+  .f-editorial-front .corner-br {
+    position: absolute;
+    width: 22px; height: 22px;
+    z-index: 7;
+    border-color: var(--accent);
+    opacity: 0.9;
+  }
+  .f-editorial-front .corner-tl {
+    top: 22px; left: 22px;
+    border-top: 1px solid; border-left: 1px solid;
+  }
+  .f-editorial-front .corner-br {
+    bottom: 22px; right: 22px;
+    border-bottom: 1px solid; border-right: 1px solid;
+  }
+  .f-editorial-front .lbl-top {
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 7; position: relative;
+  }
+  .f-editorial-front .lbl-top .ed { color: var(--accent); }
+  .f-editorial-front .name {
+    align-self: end;
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(40px, 5.4vw, 64px);
+    line-height: 0.95; letter-spacing: -0.025em;
+    color: var(--ink); font-weight: 400;
+    margin-bottom: 6px;
+    z-index: 7; position: relative;
+  }
+  .f-editorial-front .name em { font-style: normal; color: var(--accent); }
+  .f-editorial-front .name .pt { color: var(--accent); }
+  .f-editorial-front .role {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-2);
+    z-index: 7; position: relative;
+  }
+  .f-editorial-front .role .dot { color: var(--accent); padding: 0 4px; }
+  .f-editorial-front .footline {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 14px;
+    border-top: 1px dashed color-mix(in srgb, var(--ink) 14%, transparent);
+    z-index: 7; position: relative;
+  }
+  .f-editorial-front .footline b { color: var(--ink-2); font-weight: 500; }
+
+  /* verso */
+  .f-editorial-back {
+    background:
+      linear-gradient(180deg, #0e0d0c 0%, #15130f 100%);
+    color: var(--ink);
+    padding: 36px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 24px;
+    position: relative;
+  }
+  .f-editorial-back::after {
+    content: ""; position: absolute;
+    inset: 14px;
+    border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+    border-radius: 4px;
+    pointer-events: none; z-index: 6;
+  }
+  .f-editorial-back .head {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted);
+    z-index: 7; position: relative;
+  }
+  .f-editorial-back .head .ac { color: var(--accent); }
+  .f-editorial-back .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 28px;
+    align-content: center;
+    z-index: 7; position: relative;
+  }
+  .f-editorial-back .grid .field {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .f-editorial-back .grid .field .k {
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .f-editorial-back .grid .field .v {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 22px; line-height: 1.1; letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .f-editorial-back .grid .field .v.mono {
+    font-family: var(--font-mono); font-style: normal;
+    font-size: 13.5px; letter-spacing: 0.02em;
+    color: var(--ink-2);
+  }
+  .f-editorial-back .foot {
+    display: flex; justify-content: space-between; align-items: end;
+    z-index: 7; position: relative;
+  }
+  .f-editorial-back .foot .sig {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 28px; letter-spacing: -0.015em; color: var(--accent);
+    line-height: 1; transform: rotate(-3deg);
+  }
+  .f-editorial-back .qr {
+    width: 64px; height: 64px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 1px;
+    padding: 4px;
+    background: color-mix(in srgb, var(--ink) 8%, transparent);
+    border-radius: 4px;
+  }
+  .f-editorial-back .qr i {
+    background: var(--ink);
+    display: block;
+  }
+
+  /* ── Variation grid ─────────────────────────────── */
+  .var-sect {
+    padding: 40px var(--pad-x) 120px;
+    border-top: 1px solid var(--line);
+  }
+  .var-sect-head {
+    display: flex; justify-content: space-between; align-items: end;
+    padding-top: 80px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 80px;
+  }
+  .var-sect-head h2 {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(56px, 7vw, 96px);
+    line-height: 0.95; letter-spacing: -0.025em;
+    font-weight: 400; color: var(--ink);
+  }
+  .var-sect-head h2 em { font-style: normal; color: var(--accent); }
+  .var-sect-head .meta {
+    display: flex; gap: 28px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  }
+  .var-sect-head .meta b { color: var(--ink-2); font-weight: 500; }
+
+  .var-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 80px 32px;
+  }
+  .var-item { display: flex; flex-direction: column; }
+  .var-item.span-7 { grid-column: span 7; }
+  .var-item.span-5 { grid-column: span 5; }
+  .var-item.span-6 { grid-column: span 6; }
+  .var-item.span-4 { grid-column: span 4; }
+  .var-item.span-8 { grid-column: span 8; }
+
+  .var-item .panel {
+    background:
+      radial-gradient(at 50% 0%, color-mix(in srgb, var(--accent) 4%, transparent), transparent 60%),
+      var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 48px 24px;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 340px;
+    position: relative;
+    overflow: hidden;
+  }
+  .var-item .panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(245,242,236,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,242,236,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 30%, transparent 80%);
+  }
+  .var-item .panel .corner-mark {
+    position: absolute;
+    top: 16px; left: 16px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .var-item .panel .corner-mark .ac { color: var(--accent); }
+  .var-item .panel .ratio-mark {
+    position: absolute;
+    bottom: 16px; right: 16px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .var-item .caption {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 16px;
+    align-items: baseline;
+  }
+  .var-item .caption .num {
+    grid-column: 1;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .var-item .caption .num .ac { color: var(--accent); }
+  .var-item .caption .nm {
+    grid-column: 1;
+    font-family: var(--font-display); font-style: italic;
+    font-size: 32px; letter-spacing: -0.015em;
+    color: var(--ink); line-height: 1.05;
+    margin-top: 2px;
+  }
+  .var-item .caption .tag {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    align-self: start;
+  }
+  .var-item .caption .desc {
+    grid-column: 1 / -1;
+    margin-top: 10px;
+    font-size: 13.5px; line-height: 1.65;
+    color: var(--ink-2);
+    max-width: 46ch;
+  }
+
+  /* ── Per-card-stage sizing inside grid ──────────── */
+  .stage-cl { width: 460px; height: 290px; }   /* classique */
+  .stage-sq { width: 320px; height: 320px; }   /* carré */
+  .stage-vt { width: 240px; height: 360px; }   /* verticale */
+  .stage-mn { width: 360px; height: 226px; }   /* mini */
+  .stage-cl-lg { width: 540px; height: 340px; }
+
+  @media (max-width: 1320px) {
+    .var-item.span-7, .var-item.span-5,
+    .var-item.span-6, .var-item.span-4,
+    .var-item.span-8 { grid-column: span 6; }
+  }
+
+  /* ── Variation 02 — Manifeste (square, type-only) ── */
+  .f-manifeste {
+    background:
+      linear-gradient(180deg, #f5f2ec 0%, #ebe7df 100%);
+    color: #15130f;
+    padding: 36px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    position: relative;
+  }
+  .f-manifeste .hd {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(21,19,15,0.55);
+  }
+  .f-manifeste .hd .ac { color: var(--accent); }
+  .f-manifeste .core {
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 12px 0;
+  }
+  .f-manifeste .core .ttl {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(42px, 6vw, 64px);
+    line-height: 0.92; letter-spacing: -0.025em;
+    color: #15130f; font-weight: 400;
+  }
+  .f-manifeste .core .ttl em { font-style: normal; color: var(--accent); }
+  .f-manifeste .core .ttl .pt { color: var(--accent); }
+  .f-manifeste .ft {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(21,19,15,0.14);
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(21,19,15,0.6);
+    align-items: end;
+  }
+  .f-manifeste .ft .col b { display: block; color: #15130f; font-family: var(--font-display); font-style: italic; font-size: 16px; letter-spacing: -0.005em; font-weight: 400; text-transform: none; margin-bottom: 2px; }
+
+  /* verso manifeste */
+  .f-manifeste-back {
+    background: #0a0908;
+    color: #f5f2ec;
+    padding: 36px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    position: relative;
+  }
+  .f-manifeste-back .big {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(80px, 12vw, 144px);
+    line-height: 0.85; letter-spacing: -0.04em;
+    color: var(--accent); font-weight: 400;
+  }
+  .f-manifeste-back .sub {
+    margin-top: 12px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(245,242,236,0.55);
+  }
+
+  /* ── Variation 03 — Verticale ──────────────────── */
+  .f-verticale {
+    background:
+      linear-gradient(180deg, #0a0908 0%, #15130f 60%, #0a0908 100%);
+    color: var(--ink);
+    padding: 32px 24px;
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    gap: 18px;
+    position: relative;
+  }
+  .f-verticale .ribbon {
+    position: absolute;
+    left: 0; top: 56px;
+    width: 4px; bottom: 56px;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .f-verticale .lbl {
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted);
+    padding-left: 16px;
+  }
+  .f-verticale .name {
+    padding-left: 16px;
+    font-family: var(--font-display); font-style: italic;
+    font-size: 44px; line-height: 0.95; letter-spacing: -0.025em;
+    color: var(--ink); align-self: end;
+    margin-bottom: 8px;
+  }
+  .f-verticale .name em { font-style: normal; color: var(--accent); }
+  .f-verticale .div {
+    padding-left: 16px;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .f-verticale .stack {
+    padding-left: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ink-2);
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .f-verticale .stack .l {
+    display: flex; justify-content: space-between;
+    color: var(--muted); font-size: 9.5px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .f-verticale .stack .v {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 18px; letter-spacing: -0.005em; color: var(--ink);
+  }
+
+  /* verso vertical */
+  .f-verticale-back {
+    background:
+      radial-gradient(at 50% 30%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 60%),
+      #0a0908;
+    padding: 32px 24px;
+    display: grid;
+    place-items: center;
+    position: relative;
+    text-align: center;
+    color: var(--ink);
+  }
+  .f-verticale-back .mark {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 220px; line-height: 0.8;
+    letter-spacing: -0.06em;
+    color: var(--accent);
+    text-shadow: 0 0 40px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .f-verticale-back .yr {
+    position: absolute; bottom: 24px; left: 0; right: 0;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── Variation 04 — Mini ────────────────────────── */
+  .f-mini {
+    background: #f5f2ec;
+    color: #15130f;
+    padding: 22px 26px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 1fr auto;
+    gap: 12px;
+    position: relative;
+  }
+  .f-mini .ed {
+    font-family: var(--font-mono); font-size: 8.5px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(21,19,15,0.5);
+    grid-column: 1;
+  }
+  .f-mini .name {
+    align-self: end;
+    grid-column: 1; grid-row: 1 / span 2;
+    font-family: var(--font-display); font-style: italic;
+    font-size: 36px; line-height: 0.92; letter-spacing: -0.02em;
+    color: #15130f;
+  }
+  .f-mini .name em { font-style: normal; color: var(--accent); }
+  .f-mini .name .pt { color: var(--accent); }
+  .f-mini .sn {
+    grid-column: 2; grid-row: 1 / span 2;
+    align-self: start;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--font-mono); font-size: 8.5px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(21,19,15,0.45);
+  }
+  .f-mini-back {
+    background: #15130f;
+    color: #f5f2ec;
+    padding: 22px 26px;
+    display: grid;
+    place-items: center;
+    position: relative;
+    text-align: center;
+  }
+  .f-mini-back .em {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 24px; letter-spacing: -0.01em;
+    color: var(--accent);
+  }
+  .f-mini-back .em + .mb {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(245,242,236,0.55);
+    margin-top: 8px;
+  }
+
+  /* ── Variation 05 — Hologramme ─────────────────── */
+  .f-holo {
+    background:
+      linear-gradient(135deg, #0a0908 0%, #15130f 100%);
+    color: var(--ink);
+    padding: 32px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    position: relative;
+    overflow: hidden;
+  }
+  .f-holo::before {
+    content: ""; position: absolute;
+    inset: -20%;
+    background: conic-gradient(
+      from var(--ang, 0deg),
+      #c084fc, #6ee7b7, #fcd34d, #93c5fd, #f472b6, #c084fc
+    );
+    opacity: 0.18;
+    mix-blend-mode: screen;
+    filter: blur(28px);
+    z-index: 1;
+    transition: opacity 0.4s ease;
+  }
+  .f-holo > * { position: relative; z-index: 2; }
+  .f-holo .top {
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(245,242,236,0.65);
+    display: flex; justify-content: space-between;
+  }
+  .f-holo .top .ac {
+    background: linear-gradient(90deg, #c084fc, #6ee7b7, #fcd34d);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .f-holo .name {
+    align-self: end;
+    font-family: var(--font-display); font-style: italic;
+    font-size: 52px; line-height: 0.95; letter-spacing: -0.025em;
+    color: var(--ink); font-weight: 400;
+  }
+  .f-holo .name em {
+    font-style: normal;
+    background: linear-gradient(90deg, #c084fc 0%, #6ee7b7 50%, #fcd34d 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .f-holo .role {
+    margin-top: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(245,242,236,0.8);
+  }
+
+  /* hologram bands moving with cursor */
+  .f-holo .bands {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      calc(var(--mx, 50) * 1.6deg),
+      transparent 0px,
+      transparent 28px,
+      rgba(255,255,255,0.06) 29px,
+      rgba(255,255,255,0.06) 30px
+    );
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: overlay;
+  }
+
+  .f-holo-back {
+    background: #0a0908;
+    color: var(--ink);
+    padding: 32px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .f-holo-back .glyph {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 200px; line-height: 0.85; letter-spacing: -0.05em;
+    background: linear-gradient(135deg, #c084fc, #6ee7b7, #fcd34d, #93c5fd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 30px rgba(192,132,252,0.4));
+  }
+  .f-holo-back .sub {
+    position: absolute; bottom: 24px; left: 32px; right: 32px;
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(245,242,236,0.55);
+  }
+
+  /* ── Variation 06 — Particules ─────────────────── */
+  .f-particules {
+    background:
+      radial-gradient(at 20% 80%, #1a1426 0%, #0a0908 60%),
+      #0a0908;
+    color: var(--ink);
+    padding: 32px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    position: relative;
+    overflow: hidden;
+  }
+  .f-particules canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .f-particules > *:not(canvas) {
+    position: relative; z-index: 2;
+  }
+  .f-particules .top {
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; justify-content: space-between;
+  }
+  .f-particules .top .ac { color: var(--accent); }
+  .f-particules .name {
+    align-self: end;
+    font-family: var(--font-display); font-style: italic;
+    font-size: 50px; line-height: 0.95; letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .f-particules .name em { font-style: normal; color: var(--accent); }
+  .f-particules .foot {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 12px;
+    border-top: 1px solid rgba(245,242,236,0.1);
+  }
+  .f-particules .foot b { color: var(--ink); font-weight: 500; }
+
+  .f-particules-back {
+    background:
+      radial-gradient(at 80% 20%, #1a1426 0%, #0a0908 60%);
+    color: var(--ink);
+    padding: 32px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .f-particules-back canvas {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 1;
+  }
+  .f-particules-back > *:not(canvas) { position: relative; z-index: 2; }
+  .f-particules-back .ttl {
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .f-particules-back .ttl .ac { color: var(--accent); }
+  .f-particules-back .grid {
+    display: grid; grid-template-columns: 1fr;
+    gap: 8px;
+    align-content: center;
+  }
+  .f-particules-back .grid .r {
+    display: flex; justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px dashed rgba(245,242,236,0.12);
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.04em; color: var(--ink-2);
+  }
+  .f-particules-back .grid .r b { color: var(--ink); font-weight: 500; }
+
+  /* ── Spec section ───────────────────────────────── */
+  .spec {
+    padding: 120px var(--pad-x);
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .spec-head {
+    display: flex; justify-content: space-between; align-items: end;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 56px;
+  }
+  .spec-head h2 {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 0.95; letter-spacing: -0.025em;
+    font-weight: 400; color: var(--ink);
+  }
+  .spec-head h2 em { font-style: normal; color: var(--accent); }
+  .spec-head .meta {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  }
+  .spec-grid {
+    display: grid; grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 56px;
+  }
+  .spec-grid .col h3 {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  .spec-grid .col table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .spec-grid .col table tr td {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+    font-size: 13.5px;
+    color: var(--ink-2);
+  }
+  .spec-grid .col table tr td:first-child {
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted);
+    width: 110px;
+  }
+  .spec-grid .col table tr td .it {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 18px; letter-spacing: -0.005em; color: var(--ink);
+    display: block;
+  }
+  .spec-grid .col .note {
+    margin-top: 18px;
+    font-size: 13px; line-height: 1.65;
+    color: var(--ink-2); max-width: 38ch;
+  }
+  .spec-grid .col .note em {
+    font-family: var(--font-display); font-style: italic;
+    color: var(--ink);
+  }
+
+  /* ── Footer ─────────────────────────────────────── */
+  .footer-bar {
+    padding: 32px var(--pad-x) 48px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  }
+  .footer-bar .ac { color: var(--accent); }
+
+  /* ── Tweaks toggle (in-page button) ──────────── */
+  .tw-toggle {
+    position: fixed;
+    right: 24px; bottom: 24px;
+    z-index: 199;
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 18px;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink-2);
+    cursor: none;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    opacity: 1;
+    transition: transform 0.3s var(--ease-out), border-color 0.3s, color 0.3s, opacity 0.3s var(--ease-out);
+  }
+  .tw-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-3px);
+  }
+  .tw-toggle .ic {
+    width: 14px; height: 14px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1.5px;
+  }
+  .tw-toggle .ic i {
+    background: currentColor;
+    border-radius: 0.5px;
+    transition: background 0.3s;
+  }
+  .tw-toggle .ic i:nth-child(1),
+  .tw-toggle .ic i:nth-child(5),
+  .tw-toggle .ic i:nth-child(9) {
+    background: var(--accent);
+  }
+  .tw-toggle .lab {
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .tw-toggle .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    margin-left: 2px;
+  }
+  /* hide toggle when panel is open */
+  body.tw-open .tw-toggle { opacity: 0; pointer-events: none; transform: translateY(40px); }
+
+  /* ── Tweaks panel (custom, matches editorial style) ── */
+  .tw-panel {
+    position: fixed;
+    right: 24px; bottom: 24px;
+    z-index: 200;
+    width: 320px;
+    max-height: calc(100vh - 48px);
+    display: none;
+    flex-direction: column;
+    background: rgba(10, 9, 8, 0.86);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 24px 60px rgba(0,0,0,0.5);
+    color: var(--ink);
+    overflow: hidden;
+  }
+  html[data-theme="light"] .tw-panel {
+    background: rgba(255,252,248,0.86);
+    border-color: rgba(0,0,0,0.08);
+  }
+  .tw-panel.is-open { display: flex; }
+  .tw-hd {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tw-hd .ttl {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 20px; letter-spacing: -0.01em; color: var(--ink);
+  }
+  .tw-hd .ttl em { color: var(--accent); font-style: normal; }
+  .tw-hd .x {
+    width: 24px; height: 24px;
+    display: grid; place-items: center;
+    border-radius: 6px;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .tw-hd .x:hover { background: rgba(255,255,255,0.06); color: var(--ink); }
+  .tw-body {
+    padding: 8px 16px 18px;
+    overflow-y: auto;
+    display: flex; flex-direction: column;
+    gap: 14px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+  }
+  .tw-sect {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .tw-sect:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
+  .tw-row { display: flex; flex-direction: column; gap: 8px; }
+  .tw-lbl {
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .tw-lbl b {
+    color: var(--ink-2);
+    font-weight: 500;
+    font-family: var(--font-display); font-style: italic;
+    font-size: 13px; letter-spacing: -0.005em;
+    text-transform: none;
+  }
+  .tw-seg {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 4), 1fr);
+    gap: 4px;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: rgba(245,242,236,0.04);
+  }
+  .tw-seg button {
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    padding: 8px 4px;
+    border-radius: 7px;
+    font-family: var(--font-mono); font-size: 9.5px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: none;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .tw-seg button:hover { color: var(--ink); }
+  .tw-seg button.is-on {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .tw-swatches {
+    display: flex; gap: 8px;
+  }
+  .tw-sw {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    cursor: none;
+    border: 2px solid transparent;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.4);
+    transition: transform 0.2s var(--ease-out), border-color 0.2s;
+  }
+  .tw-sw:hover { transform: scale(1.08); }
+  .tw-sw.is-on { border-color: var(--ink); }
+  .tw-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    padding: 8px 0;
+    color: var(--ink);
+    font-family: var(--font-display); font-style: italic;
+    font-size: 16px; outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+  }
+  .tw-input:focus { border-bottom-color: var(--accent); }
+  .tw-hint {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* light theme overrides for editorial faces */
+  html[data-theme="light"] .f-editorial-front {
+    background:
+      radial-gradient(at 100% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 50%),
+      linear-gradient(160deg, #f5f2ec 0%, #ebe7df 70%);
+    color: #15130f;
+  }
+  html[data-theme="light"] .f-editorial-front .name { color: #15130f; }
+  html[data-theme="light"] .f-editorial-front::after { border-color: rgba(21,19,15,0.1); }
+  html[data-theme="light"] .f-editorial-front .footline { border-color: rgba(21,19,15,0.18); }
+  html[data-theme="light"] .f-editorial-front .footline b { color: rgba(21,19,15,0.7); }
+  html[data-theme="light"] .f-editorial-back {
+    background: linear-gradient(180deg, #ebe7df 0%, #f5f2ec 100%);
+    color: #15130f;
+  }
+  html[data-theme="light"] .f-editorial-back::after { border-color: rgba(21,19,15,0.1); }
+  html[data-theme="light"] .f-editorial-back .grid .field .v { color: #15130f; }
+  html[data-theme="light"] .f-editorial-back .grid .field .v.mono { color: rgba(21,19,15,0.75); }
+  html[data-theme="light"] .f-editorial-back .qr { background: rgba(21,19,15,0.06); }
+  html[data-theme="light"] .f-editorial-back .qr i { background: #15130f; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR ────────────────────────────────────────── -->
+<div class="topbar" data-screen-label="Cartes de visite">
+  <a href="home-atelier.html" class="brand" data-transition data-hover>Rukundo Ronaldo<sup>BIZ · MMXXVI</sup></a>
+  <div class="right">
+    <a href="home-atelier.html" class="back-link" data-transition data-hover>
+      <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 2L3 5.5 7 9M3 5.5h7"/></svg>
+      Atelier
+    </a>
+    <span class="status-pill" data-hover><span class="dt"></span>Édition 04 · 06 cartes</span>
+    <button class="theme-toggle" data-theme-toggle data-hover>
+      <svg class="sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3" stroke-linecap="round"/></svg>
+      <svg class="moon" viewBox="0 0 16 16" fill="currentColor"><path d="M12 9a4 4 0 11-5-5 5 5 0 005 5z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- COVER ─────────────────────────────────────────── -->
+<section class="cover">
+  <div class="eyebrow reveal" data-reveal-once>
+    <span>N° 04 · Vol. I · MMXXVI</span>
+    <span class="tags"><span>Cartes</span><span>·</span><span>Six gestes</span><span class="dot">●</span><span>Une main</span></span>
+  </div>
+  <h1 class="reveal" data-reveal-once>
+    Six cartes,<br/>
+    une <em>main</em><span class="pt">.</span>
+  </h1>
+  <dl class="deck">
+    <div class="reveal" data-reveal-once>
+      <dt>— Note de l'auteur</dt>
+      <dd><span class="serif">Le papier sait se tenir.</span>Chaque carte est un format, un geste, une voix. On glisse l'index pour la retourner, on incline pour faire jouer la lumière. Cliquez pour basculer recto / verso.</dd>
+    </div>
+    <div class="reveal reveal-delay-1" data-reveal-once>
+      <dt>— Format de base</dt>
+      <dd><span class="serif">85 × 55 mm</span>norme ISO 7810 ID-1, marges de 3 mm, coins droits.</dd>
+    </div>
+    <div class="reveal reveal-delay-2" data-reveal-once>
+      <dt>— Tirage</dt>
+      <dd><span class="serif">120 exemplaires</span>numérotés, signés, sur papier Munken Pure 350 g.</dd>
+    </div>
+  </dl>
+</section>
+
+<!-- HERO ──────────────────────────────────────────── -->
+<section class="hero-stage">
+  <div class="hero-card-wrap">
+    <div class="card-stage" id="hero-stage" data-format="classique">
+      <div class="card" id="hero-card" data-finish="satin">
+        <div class="face front f-editorial-front">
+          <span class="corner-tl"></span>
+          <span class="corner-br"></span>
+          <div class="lbl-top">
+            <span>— Carte / Vis<span class="ed">·</span>iteuse · N° 001</span>
+            <span>Recto</span>
+          </div>
+          <div class="name" data-bind="name">Rukundo <em>Ronaldo</em><span class="pt">.</span></div>
+          <div class="role">
+            <span data-bind="role">Designer &amp; Développeur</span>
+          </div>
+          <div class="footline">
+            <span>— Atelier · MMXXVI</span>
+            <span><b data-bind="location">Paris · Kigali</b></span>
+            <span>Éd. <b>001 / 120</b></span>
+          </div>
+          <div class="holo"></div>
+          <div class="foil"></div>
+          <div class="sheen"></div>
+        </div>
+        <div class="face back f-editorial-back">
+          <div class="head">
+            <span>— Carte · N° 001</span>
+            <span class="ac">Verso</span>
+          </div>
+          <div class="grid">
+            <div class="field">
+              <span class="k">— Courriel</span>
+              <span class="v mono" data-bind="email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c4aca1a8a8ab84b6b1afb1aaa0abeaa0a1b2">[email&#160;protected]</a></span>
+            </div>
+            <div class="field">
+              <span class="k">— Téléphone</span>
+              <span class="v mono" data-bind="phone">+33 6 12 34 56 78</span>
+            </div>
+            <div class="field">
+              <span class="k">— Site</span>
+              <span class="v">rukundo.dev</span>
+            </div>
+            <div class="field">
+              <span class="k">— Lieu</span>
+              <span class="v" data-bind="location-back">Paris · Kigali</span>
+            </div>
+          </div>
+          <div class="foot">
+            <div class="sig">— R.R.</div>
+            <div class="qr" aria-hidden="true"></div>
+          </div>
+          <div class="holo"></div>
+          <div class="foil"></div>
+          <div class="sheen"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-meta">
+    <div class="crumb reveal" data-reveal-once>— Édition courante · 01 / 06</div>
+    <h2 class="reveal" data-reveal-once>L'<em>éditoriale</em><span style="color:var(--accent)">.</span></h2>
+    <p class="reveal" data-reveal-once>Le format classique, posé. Un nom au plomb, un accent qui appelle, et au dos quatre champs alignés sur la même grille que le portfolio. Glissez la souris pour faire jouer la matière, cliquez pour retourner.</p>
+    <dl class="ix reveal" data-reveal-once>
+      <div class="row"><span>Format</span><b id="hero-fmt">85 × 55</b></div>
+      <div class="row"><span>Finition</span><b id="hero-fin">Satin</b></div>
+      <div class="row"><span>Papier</span><b>350 g</b></div>
+      <div class="row"><span>Édition</span><b>120</b></div>
+    </dl>
+    <div class="nudge reveal" data-reveal-once>
+      <span>Clic</span><span class="kbd">·</span><span>Retourner</span>
+      <span style="margin-left:18px;">Souris</span><span class="kbd">↔</span><span>Incliner</span>
+    </div>
+  </div>
+</section>
+
+<!-- VARIATIONS GRID ──────────────────────────────── -->
+<section class="var-sect">
+  <div class="var-sect-head">
+    <h2 class="reveal" data-reveal-once>Variations<em>.</em></h2>
+    <div class="meta reveal reveal-delay-1" data-reveal-once>
+      <span><b>N° 02–06</b></span>
+      <span>Format · Disposition · Matière</span>
+      <span>—</span>
+    </div>
+  </div>
+
+  <div class="var-grid">
+
+    <!-- 02 · Manifeste (square, type-heavy, light) -->
+    <div class="var-item span-6 reveal" data-reveal-once>
+      <div class="panel">
+        <span class="corner-mark"><span class="ac">02</span> · Manifeste</span>
+        <span class="ratio-mark">90 × 90 mm</span>
+        <div class="card-stage stage-sq">
+          <div class="card" data-finish="matte">
+            <div class="face front f-manifeste">
+              <div class="hd">
+                <span>— Manifeste · 02 / 06</span>
+                <span class="ac">Carré</span>
+              </div>
+              <div class="core">
+                <div class="ttl">Du papier<br/><em>au pixel</em><span class="pt">.</span></div>
+              </div>
+              <div class="ft">
+                <div class="col"><b>Rukundo R.</b>Designer · Dév.</div>
+                <div class="col"><b>hello</b>@rukundo.dev</div>
+                <div class="col"><b>Paris</b>· Kigali · MMXXVI</div>
+              </div>
+              <div class="sheen"></div>
+            </div>
+            <div class="face back f-manifeste-back">
+              <div>
+                <div class="big">R<em style="font-style:normal">.</em>R</div>
+                <div class="sub">— Édition · 02 / 06 · MMXXVI</div>
+              </div>
+              <div class="sheen"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <span class="num"><span class="ac">N° 02</span> · Manifeste</span>
+        <span class="tag">Carré</span>
+        <span class="nm">Le <em style="font-style:italic;color:var(--accent)">manifeste</em>.</span>
+        <span class="desc">Une seule phrase, en grand. Quand l'identité tient en deux mots, on enlève tout le reste. Recto sur lait, verso sur encre — le format carré pour ne ressembler à rien d'autre.</span>
+      </div>
+    </div>
+
+    <!-- 03 · Verticale (portrait) -->
+    <div class="var-item span-6 reveal reveal-delay-1" data-reveal-once>
+      <div class="panel">
+        <span class="corner-mark"><span class="ac">03</span> · Verticale</span>
+        <span class="ratio-mark">55 × 85 mm</span>
+        <div class="card-stage stage-vt">
+          <div class="card" data-finish="satin">
+            <div class="face front f-verticale">
+              <span class="ribbon"></span>
+              <span class="lbl">— Carte verticale · 03 / 06</span>
+              <div class="name">Rukundo<br/><em>Ronaldo</em></div>
+              <div class="div">— Designer · Développeur</div>
+              <div class="stack">
+                <div><div class="l"><span>— Courriel</span><span>01</span></div><div class="v"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5e363b3232311e2c2b352b303a31703a3b28">[email&#160;protected]</a></div></div>
+                <div><div class="l"><span>— Lieu</span><span>02</span></div><div class="v">Paris · Kigali</div></div>
+                <div><div class="l"><span>— Tél.</span><span>03</span></div><div class="v">+33 6 12 34 56 78</div></div>
+              </div>
+              <div class="sheen"></div>
+            </div>
+            <div class="face back f-verticale-back">
+              <div class="mark">R</div>
+              <div class="yr">— Atelier MMXXVI · Édition 03 / 06</div>
+              <div class="sheen"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <span class="num"><span class="ac">N° 03</span> · Verticale</span>
+        <span class="tag">Portrait</span>
+        <span class="nm">La <em style="font-style:italic;color:var(--accent)">verticale</em>.</span>
+        <span class="desc">Pivotée à 90°, lue comme une page. Un ruban d'accent en marge gauche tient les blocs alignés, et trois champs numérotés organisent les contacts comme une fiche d'archive.</span>
+      </div>
+    </div>
+
+    <!-- 04 · Mini (pocket card) -->
+    <div class="var-item span-4 reveal" data-reveal-once>
+      <div class="panel" style="min-height:300px;">
+        <span class="corner-mark"><span class="ac">04</span> · Mini</span>
+        <span class="ratio-mark">70 × 44 mm</span>
+        <div class="card-stage stage-mn">
+          <div class="card" data-finish="matte">
+            <div class="face front f-mini">
+              <span class="ed">— Carte de poche · 04 / 06</span>
+              <div class="name">Rukundo<br/><em>R</em><span class="pt">.</span></div>
+              <span class="sn">N° 04 / 120 · MMXXVI</span>
+              <div class="sheen"></div>
+            </div>
+            <div class="face back f-mini-back">
+              <div>
+                <div class="em"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bfd7dad3d3d0ffcdcad4cad1dbd091dbdac9">[email&#160;protected]</a></div>
+                <div class="mb">— + 33 6 12 34 56 78</div>
+              </div>
+              <div class="sheen"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <span class="num"><span class="ac">N° 04</span> · Mini</span>
+        <span class="tag">Poche</span>
+        <span class="nm">La <em style="font-style:italic;color:var(--accent)">mini</em>.</span>
+        <span class="desc">Plus petite que la norme. Tient dans la poche d'une veste, dans un carnet, derrière une montre. Un nom au recto, une adresse au verso. Rien d'autre à dire.</span>
+      </div>
+    </div>
+
+    <!-- 05 · Hologramme -->
+    <div class="var-item span-8 reveal reveal-delay-1" data-reveal-once>
+      <div class="panel" style="min-height:380px;">
+        <span class="corner-mark"><span class="ac">05</span> · Hologramme</span>
+        <span class="ratio-mark">85 × 55 mm</span>
+        <div class="card-stage stage-cl-lg">
+          <div class="card" data-finish="hologramme">
+            <div class="face front f-holo">
+              <div class="bands"></div>
+              <div class="top">
+                <span>— Édition spéciale · 05 / 06</span>
+                <span class="ac">▷ Hologramme</span>
+              </div>
+              <div>
+                <div class="name">Rukundo <em>Ronaldo</em></div>
+                <div class="role">— Designer · Développeur · Atelier MMXXVI</div>
+              </div>
+              <div class="holo"></div>
+              <div class="sheen"></div>
+            </div>
+            <div class="face back f-holo-back">
+              <div class="glyph">R<span style="color:var(--accent)">.</span>R</div>
+              <div class="sub">
+                <span>— <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="076f626b6b684775726c7269636829636271">[email&#160;protected]</a></span>
+                <span>05 / 06 · MMXXVI</span>
+              </div>
+              <div class="holo"></div>
+              <div class="sheen"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <span class="num"><span class="ac">N° 05</span> · Hologramme</span>
+        <span class="tag">Édition spéciale</span>
+        <span class="nm">L'<em style="font-style:italic;color:var(--accent)">hologramme</em>.</span>
+        <span class="desc">Surface irisée. Inclinez la carte, les bandes de couleur tournent, le nom prend feu. Tirage très limité — réservé aux amis et complices. Trois nuances passent sous la souris.</span>
+      </div>
+    </div>
+
+    <!-- 06 · Particules -->
+    <div class="var-item span-7 reveal" data-reveal-once>
+      <div class="panel" style="min-height:380px;">
+        <span class="corner-mark"><span class="ac">06</span> · Particules</span>
+        <span class="ratio-mark">85 × 55 mm</span>
+        <div class="card-stage stage-cl-lg">
+          <div class="card" data-finish="satin">
+            <div class="face front f-particules">
+              <canvas data-particles="front"></canvas>
+              <div class="top">
+                <span>— Carte vivante · 06 / 06</span>
+                <span class="ac">●● Particules</span>
+              </div>
+              <div class="name">Rukundo <em>Ronaldo</em><span style="color:var(--accent)">.</span></div>
+              <div class="foot">
+                <span>— Designer &amp; Dév.</span>
+                <span><b><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d4bcb1b8b8bb94a6a1bfa1bab0bbfab0b1a2">[email&#160;protected]</a></b></span>
+                <span>06 / 06</span>
+              </div>
+              <div class="sheen"></div>
+            </div>
+            <div class="face back f-particules-back">
+              <canvas data-particles="back"></canvas>
+              <div class="ttl"><span class="ac">— Verso</span> · Coordonnées</div>
+              <div class="grid">
+                <div class="r"><span>— Courriel</span><b><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5c34393030331c2e2937293238337238392a">[email&#160;protected]</a></b></div>
+                <div class="r"><span>— Tél.</span><b>+33 6 12 34 56 78</b></div>
+                <div class="r"><span>— Site</span><b>rukundo.dev</b></div>
+                <div class="r"><span>— Lieu</span><b>Paris · Kigali</b></div>
+                <div class="r"><span>— Édition</span><b>06 / 06 · MMXXVI</b></div>
+              </div>
+              <div class="sheen"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <span class="num"><span class="ac">N° 06</span> · Particules</span>
+        <span class="tag">Animée</span>
+        <span class="nm">Les <em style="font-style:italic;color:var(--accent)">particules</em>.</span>
+        <span class="desc">Un fond qui respire. Cinquante points lents dérivent en arrière-plan, attirés par la souris quand on passe près. La carte papier devient écran — pour les versions web et les signatures d'e-mail.</span>
+      </div>
+    </div>
+
+    <!-- 07 · Bis : version sans inscriptions (placeholder optionnel) -->
+    <div class="var-item span-5 reveal reveal-delay-2" data-reveal-once>
+      <div class="panel" style="min-height:380px;">
+        <span class="corner-mark"><span class="ac">07</span> · Foil</span>
+        <span class="ratio-mark">85 × 55 mm</span>
+        <div class="card-stage stage-cl">
+          <div class="card" data-finish="foil">
+            <div class="face front f-editorial-front">
+              <span class="corner-tl"></span>
+              <span class="corner-br"></span>
+              <div class="lbl-top">
+                <span>— Dorure à chaud · 07 / 06</span>
+                <span>Foil</span>
+              </div>
+              <div class="name" style="font-size:48px;">Rukundo <em>Ronaldo</em><span class="pt">.</span></div>
+              <div class="role"><span>Atelier · Édition or</span></div>
+              <div class="footline">
+                <span>— Hors série</span>
+                <span><b>Paris</b></span>
+                <span>Éd. <b>VII / X</b></span>
+              </div>
+              <div class="foil"></div>
+              <div class="sheen"></div>
+            </div>
+            <div class="face back f-editorial-back">
+              <div class="head"><span>— Hors série</span><span class="ac">Verso · Or</span></div>
+              <div class="grid">
+                <div class="field"><span class="k">— Tirage</span><span class="v">10 ex.</span></div>
+                <div class="field"><span class="k">— Papier</span><span class="v">Sirio Black 700g</span></div>
+                <div class="field"><span class="k">— Procédé</span><span class="v mono">Foil 24k</span></div>
+                <div class="field"><span class="k">— Signature</span><span class="v">manuscrite</span></div>
+              </div>
+              <div class="foot">
+                <div class="sig" style="color:#d4af7a;">— R.R.</div>
+                <div class="qr"></div>
+              </div>
+              <div class="foil"></div>
+              <div class="sheen"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">
+        <span class="num"><span class="ac">N° 07</span> · Hors série</span>
+        <span class="tag">10 exemplaires</span>
+        <span class="nm">La <em style="font-style:italic;color:#d4af7a">dorure</em>.</span>
+        <span class="desc">Dix exemplaires sur Sirio Black 700 g, dorure à chaud 24 carats. Pour les rares occasions où il faut briller un peu. Inclinez : l'or court d'un bord à l'autre.</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SPEC ──────────────────────────────────────────── -->
+<section class="spec">
+  <div class="spec-head">
+    <h2 class="reveal" data-reveal-once>Fiche <em>technique</em>.</h2>
+    <div class="meta reveal reveal-delay-1" data-reveal-once>
+      <span>N° 08 · Atelier</span>
+    </div>
+  </div>
+  <div class="spec-grid">
+    <div class="col reveal" data-reveal-once>
+      <h3>— Papier &amp; finitions</h3>
+      <table>
+        <tr><td>Standard</td><td><span class="it">Munken Pure 350 g</span>blanc cassé, légèrement texturé</td></tr>
+        <tr><td>Hors série</td><td><span class="it">Sirio Black 700 g</span>noir profond, dense</td></tr>
+        <tr><td>Finitions</td><td><span class="it">Mat · Satin · Holo · Foil</span>quatre matières disponibles</td></tr>
+        <tr><td>Tranche</td><td><span class="it">Brut ou doré</span>au choix sur commande</td></tr>
+      </table>
+    </div>
+    <div class="col reveal reveal-delay-1" data-reveal-once>
+      <h3>— Dimensions</h3>
+      <table>
+        <tr><td>Classique</td><td><span class="it">85 × 55 mm</span>ISO 7810 ID-1</td></tr>
+        <tr><td>Carré</td><td><span class="it">90 × 90 mm</span>format atelier</td></tr>
+        <tr><td>Verticale</td><td><span class="it">55 × 85 mm</span>portrait</td></tr>
+        <tr><td>Mini</td><td><span class="it">70 × 44 mm</span>poche</td></tr>
+      </table>
+      <p class="note">Marges intérieures de <em>3 mm</em>. Coupe franche, sans coins arrondis — sauf demande explicite.</p>
+    </div>
+    <div class="col reveal reveal-delay-2" data-reveal-once>
+      <h3>— Édition &amp; commande</h3>
+      <table>
+        <tr><td>Tirage</td><td><span class="it">120 exemplaires</span>par édition annuelle</td></tr>
+        <tr><td>Numérotation</td><td><span class="it">001 → 120</span>au tampon, à l'encre violette</td></tr>
+        <tr><td>Signature</td><td><span class="it">manuscrite</span>au verso, sur demande</td></tr>
+        <tr><td>Délai</td><td><span class="it">14 jours</span>impression à Vincennes</td></tr>
+      </table>
+      <p class="note">Commande à <em><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="670f020b0b082715120c1209030849030211">[email&#160;protected]</a></em>. Premier tirage disponible — fin d'année à <em>partir de novembre</em>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER ────────────────────────────────────────── -->
+<footer class="footer-bar">
+  <span>© <span class="ac">Rukundo Ronaldo</span> · Atelier · MMXXVI</span>
+  <span>Édition <span class="ac">N° 04</span> · Cartes de visite · Vol. I</span>
+  <span><a href="home-atelier.html" data-transition data-hover>Retour à l'atelier ↗</a></span>
+</footer>
+
+<!-- TWEAKS TOGGLE (in-page button) -->
+<button class="tw-toggle" id="tw-open" data-hover aria-label="Ouvrir les réglages">
+  <span class="ic" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+  <span class="lab">Réglages</span>
+  <span class="dot" aria-hidden="true"></span>
+</button>
+
+<!-- TWEAKS PANEL -->
+<aside class="tw-panel" id="tw-panel" role="dialog" aria-label="Tweaks">
+  <div class="tw-hd">
+    <div class="ttl">Réglages<em style="color:var(--accent);font-style:italic;">.</em></div>
+    <button class="x" id="tw-close" data-hover aria-label="Fermer">✕</button>
+  </div>
+  <div class="tw-body">
+
+    <div class="tw-sect">— I · Accent</div>
+    <div class="tw-row">
+      <div class="tw-lbl"><span>Couleur</span><b id="tw-accent-name">Améthyste</b></div>
+      <div class="tw-swatches" id="tw-accents"></div>
+    </div>
+
+    <div class="tw-sect">— II · Carte principale</div>
+    <div class="tw-row">
+      <div class="tw-lbl"><span>Format</span><b id="tw-fmt-name">85 × 55</b></div>
+      <div class="tw-seg" id="tw-format" style="--n:4;">
+        <button data-v="classique" class="is-on">Classique</button>
+        <button data-v="carre">Carré</button>
+        <button data-v="verticale">Verticale</button>
+        <button data-v="mini">Mini</button>
+      </div>
+    </div>
+    <div class="tw-row">
+      <div class="tw-lbl"><span>Finition</span><b id="tw-fin-name">Satin</b></div>
+      <div class="tw-seg" id="tw-finish" style="--n:4;">
+        <button data-v="matte">Mat</button>
+        <button data-v="satin" class="is-on">Satin</button>
+        <button data-v="hologramme">Holo</button>
+        <button data-v="foil">Foil</button>
+      </div>
+    </div>
+
+    <div class="tw-sect">— III · Texte</div>
+    <div class="tw-row">
+      <label class="tw-lbl"><span>— Nom</span><b></b></label>
+      <input class="tw-input" id="tw-name" type="text" value="Rukundo Ronaldo" />
+    </div>
+    <div class="tw-row">
+      <label class="tw-lbl"><span>— Rôle</span><b></b></label>
+      <input class="tw-input" id="tw-role" type="text" value="Designer & Développeur" />
+    </div>
+    <div class="tw-row">
+      <label class="tw-lbl"><span>— Courriel</span><b></b></label>
+      <input class="tw-input" id="tw-email" type="text" value="hello@rukundo.dev" />
+    </div>
+    <div class="tw-row">
+      <label class="tw-lbl"><span>— Téléphone</span><b></b></label>
+      <input class="tw-input" id="tw-phone" type="text" value="+33 6 12 34 56 78" />
+    </div>
+    <div class="tw-row">
+      <label class="tw-lbl"><span>— Lieu</span><b></b></label>
+      <input class="tw-input" id="tw-location" type="text" value="Paris · Kigali" />
+    </div>
+
+    <div class="tw-hint" style="margin-top:8px;">Clic sur une carte pour la retourner. Souris pour incliner. Les réglages s'appliquent à la carte principale et persistent à l'enregistrement.</div>
+
+  </div>
+</aside>
+
+<!-- DEFAULTS (persisted via host) -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accent": "#fcd34d",
+    "format": "classique",
+    "finish": "hologramme",
+    "name": "Rukundo ",
+    "role": "Designer & Développeur",
+    "email": "hello@rukundo.dev",
+    "phone": "+33 6 12 34 56 78",
+    "location": "Paris · Kigali"
+  }/*EDITMODE-END*/;
+</script>
+
+<script src="shared.js"></script>
+<script>
+/* ─────────────────────────────────────────────────────────────
+   CARTES — interactivité (flip, tilt, hologram, particules)
+   ───────────────────────────────────────────────────────────── */
+(function () {
+
+  // ─── QR placeholder pattern (deterministic dots) ───
+  document.querySelectorAll(".qr").forEach((qr) => {
+    qr.innerHTML = "";
+    const seed = (qr.closest(".card") || qr).innerText.length || 17;
+    for (let i = 0; i < 64; i++) {
+      const cell = document.createElement("i");
+      // pseudo-random with simple LCG
+      const v = ((i * 9301 + seed * 49297) % 233280) / 233280;
+      const corner = (i < 3 || (i >= 5 && i < 8) || i === 8 || i === 16 || i === 24 || i === 40 || i === 48 || i === 56 || (i >= 57 && i < 60));
+      if (corner || v > 0.55) {
+        cell.style.opacity = "1";
+      } else {
+        cell.style.opacity = "0";
+      }
+      qr.appendChild(cell);
+    }
+    // big corners — overlay 3x3 markers (top-left, top-right, bottom-left)
+    [[0,0],[5,0],[0,5]].forEach(([cx, cy]) => {
+      for (let dy = 0; dy < 3; dy++) {
+        for (let dx = 0; dx < 3; dx++) {
+          const idx = (cy + dy) * 8 + (cx + dx);
+          const cell = qr.children[idx];
+          if (!cell) continue;
+          const ring = (dx === 0 || dx === 2 || dy === 0 || dy === 2);
+          cell.style.opacity = ring ? "1" : "0";
+          if (dx === 1 && dy === 1) cell.style.opacity = "1";
+        }
+      }
+    });
+  });
+
+  // ─── 3D tilt + flip on every .card-stage ───────────
+  const stages = document.querySelectorAll(".card-stage");
+  stages.forEach((stage) => {
+    const card = stage.querySelector(".card");
+    if (!card) return;
+
+    let mx = 0.5, my = 0.5;        // normalized 0..1
+    let tx = 0.5, ty = 0.5;
+    let flipped = false;
+    let hover = false;
+    let raf = null;
+
+    const tick = () => {
+      mx += (tx - mx) * 0.16;
+      my += (ty - my) * 0.16;
+      const rotY = (flipped ? 180 : 0) + (mx - 0.5) * (hover ? 22 : 0);
+      const rotX = -(my - 0.5) * (hover ? 16 : 0);
+      const lift = hover ? -8 : 0;
+      card.style.transform = `translateY(${lift}px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+
+      // update sheen + holo position on every face
+      card.querySelectorAll(".face").forEach((f) => {
+        f.style.setProperty("--mx", (mx * 100).toFixed(1) + "%");
+        f.style.setProperty("--my", (my * 100).toFixed(1) + "%");
+      });
+      // hologram rotation
+      const ang = (mx * 360).toFixed(1) + "deg";
+      card.querySelectorAll(".f-holo").forEach((f) => f.style.setProperty("--ang", ang));
+
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    stage.addEventListener("pointermove", (e) => {
+      const r = stage.getBoundingClientRect();
+      tx = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+      ty = Math.max(0, Math.min(1, (e.clientY - r.top) / r.height));
+      hover = true;
+    });
+    stage.addEventListener("pointerleave", () => {
+      hover = false;
+      tx = 0.5; ty = 0.5;
+    });
+    stage.addEventListener("click", () => {
+      flipped = !flipped;
+      card.classList.toggle("is-flipped", flipped);
+      card.classList.add("is-flipping");
+      setTimeout(() => card.classList.remove("is-flipping"), 900);
+    });
+  });
+
+  // ─── Particles (canvas) for f-particules faces ─────
+  document.querySelectorAll("canvas[data-particles]").forEach((cv) => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const ctx = cv.getContext("2d");
+    let w = 0, h = 0;
+    const pts = [];
+    const N = 56;
+    let pointer = { x: -1, y: -1, on: false };
+
+    function resize() {
+      const r = cv.getBoundingClientRect();
+      w = r.width; h = r.height;
+      cv.width = w * dpr; cv.height = h * dpr;
+      ctx.scale(dpr, dpr);
+    }
+    resize();
+    const ro = new ResizeObserver(() => {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      resize();
+    });
+    ro.observe(cv);
+
+    for (let i = 0; i < N; i++) {
+      pts.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
+        r: Math.random() * 1.4 + 0.4,
+        a: Math.random() * 0.5 + 0.25
+      });
+    }
+
+    const stage = cv.closest(".card-stage");
+    if (stage) {
+      stage.addEventListener("pointermove", (e) => {
+        const r = cv.getBoundingClientRect();
+        pointer.x = e.clientX - r.left;
+        pointer.y = e.clientY - r.top;
+        pointer.on = true;
+      });
+      stage.addEventListener("pointerleave", () => { pointer.on = false; });
+    }
+
+    const accent = () => getComputedStyle(document.documentElement)
+      .getPropertyValue("--accent").trim() || "#c084fc";
+
+    function loop() {
+      ctx.clearRect(0, 0, w, h);
+      const a = accent();
+
+      // lines between near points
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        for (let j = i + 1; j < pts.length; j++) {
+          const q = pts[j];
+          const dx = p.x - q.x, dy = p.y - q.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < 70 * 70) {
+            const alpha = (1 - Math.sqrt(d2) / 70) * 0.18;
+            ctx.strokeStyle = a;
+            ctx.globalAlpha = alpha;
+            ctx.lineWidth = 0.6;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      for (const p of pts) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (pointer.on) {
+          const dx = pointer.x - p.x, dy = pointer.y - p.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < 100 * 100 && d2 > 1) {
+            const f = 0.6 / Math.max(20, d2 * 0.01);
+            p.vx += dx * f;
+            p.vy += dy * f;
+          }
+        }
+        // friction
+        p.vx *= 0.985; p.vy *= 0.985;
+        if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+
+        ctx.fillStyle = a;
+        ctx.globalAlpha = p.a;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(loop);
+    }
+    loop();
+  });
+
+  /* ─────────────────────────────────────────────────
+     TWEAKS — protocol + state
+     ───────────────────────────────────────────────── */
+
+  const state = { ...TWEAK_DEFAULTS };
+  const panel = document.getElementById("tw-panel");
+
+  const ACCENT_OPTIONS = [
+    { v: "#c084fc", name: "Améthyste" },
+    { v: "#6ee7b7", name: "Menthe" },
+    { v: "#fcd34d", name: "Safran" },
+    { v: "#93c5fd", name: "Faïence" },
+    { v: "#f472b6", name: "Pivoine" },
+    { v: "#f5f2ec", name: "Lait" }
+  ];
+
+  const FORMAT_LABELS = {
+    classique: "85 × 55",
+    carre: "90 × 90",
+    verticale: "55 × 85",
+    mini: "70 × 44"
+  };
+  const FINISH_LABELS = {
+    matte: "Mat",
+    satin: "Satin",
+    hologramme: "Hologramme",
+    foil: "Foil"
+  };
+
+  // build swatches
+  const swatches = document.getElementById("tw-accents");
+  ACCENT_OPTIONS.forEach((opt) => {
+    const b = document.createElement("button");
+    b.className = "tw-sw";
+    b.style.background = opt.v;
+    b.dataset.v = opt.v;
+    b.dataset.name = opt.name;
+    b.setAttribute("data-hover", "");
+    if (opt.v === state.accent) b.classList.add("is-on");
+    b.addEventListener("click", () => {
+      state.accent = opt.v;
+      apply();
+      persist({ accent: opt.v });
+      swatches.querySelectorAll(".tw-sw").forEach((s) => s.classList.toggle("is-on", s.dataset.v === opt.v));
+      document.getElementById("tw-accent-name").textContent = opt.name;
+    });
+    swatches.appendChild(b);
+  });
+
+  // segment groups
+  function wireSeg(id, key, onSet) {
+    const el = document.getElementById(id);
+    el.querySelectorAll("button").forEach((b) => {
+      b.setAttribute("data-hover", "");
+      b.addEventListener("click", () => {
+        const v = b.dataset.v;
+        state[key] = v;
+        el.querySelectorAll("button").forEach((bb) => bb.classList.toggle("is-on", bb === b));
+        onSet && onSet(v);
+        apply();
+        persist({ [key]: v });
+      });
+    });
+  }
+  wireSeg("tw-format", "format", (v) => {
+    document.getElementById("tw-fmt-name").textContent = FORMAT_LABELS[v];
+    document.getElementById("hero-fmt").textContent = FORMAT_LABELS[v];
+  });
+  wireSeg("tw-finish", "finish", (v) => {
+    document.getElementById("tw-fin-name").textContent = FINISH_LABELS[v];
+    document.getElementById("hero-fin").textContent = FINISH_LABELS[v];
+  });
+
+  // text inputs
+  ["name", "role", "email", "phone", "location"].forEach((key) => {
+    const el = document.getElementById("tw-" + key);
+    if (!el) return;
+    el.value = state[key];
+    el.addEventListener("input", () => {
+      state[key] = el.value;
+      apply();
+    });
+    el.addEventListener("change", () => persist({ [key]: el.value }));
+  });
+
+  function apply() {
+    // accent
+    document.documentElement.style.setProperty("--accent", state.accent);
+    // accent-soft derived
+    document.documentElement.style.setProperty("--accent-soft",
+      `color-mix(in srgb, ${state.accent} 16%, transparent)`);
+
+    // hero card format
+    const hero = document.getElementById("hero-stage");
+    if (hero) hero.setAttribute("data-format", state.format);
+
+    // hero card finish
+    const card = document.getElementById("hero-card");
+    if (card) card.setAttribute("data-finish", state.finish);
+
+    // text bindings on hero
+    document.querySelectorAll("#hero-card [data-bind]").forEach((el) => {
+      const k = el.getAttribute("data-bind");
+      if (k === "name") {
+        const parts = state.name.split(" ");
+        const first = parts[0] || "";
+        const last = parts.slice(1).join(" ") || "";
+        el.innerHTML = `${escapeHtml(first)} <em>${escapeHtml(last)}</em><span class="pt">.</span>`;
+      } else if (k === "location-back") {
+        el.textContent = state.location;
+      } else if (state[k] !== undefined) {
+        el.textContent = state[k];
+      }
+    });
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) =>
+      ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+
+  // Apply initial
+  apply();
+  // Init segment labels with initial values
+  document.getElementById("tw-fmt-name").textContent = FORMAT_LABELS[state.format] || "—";
+  document.getElementById("tw-fin-name").textContent = FINISH_LABELS[state.finish] || "—";
+  const initAcc = ACCENT_OPTIONS.find((o) => o.v === state.accent);
+  if (initAcc) document.getElementById("tw-accent-name").textContent = initAcc.name;
+  document.querySelectorAll("#tw-format button").forEach((b) =>
+    b.classList.toggle("is-on", b.dataset.v === state.format));
+  document.querySelectorAll("#tw-finish button").forEach((b) =>
+    b.classList.toggle("is-on", b.dataset.v === state.finish));
+
+  /* ── host protocol ────────────────────────────── */
+  function persist(edits) {
+    try {
+      window.parent.postMessage({ type: "__edit_mode_set_keys", edits }, "*");
+    } catch (e) {}
+  }
+
+  // ── In-page toggle button ──
+  const toggleBtn = document.getElementById("tw-open");
+  toggleBtn.addEventListener("click", () => {
+    panel.classList.add("is-open");
+    document.body.classList.add("tw-open");
+  });
+
+  // listener first
+  window.addEventListener("message", (e) => {
+    const d = e.data || {};
+    if (d.type === "__activate_edit_mode") {
+      panel.classList.add("is-open");
+      document.body.classList.add("tw-open");
+    } else if (d.type === "__deactivate_edit_mode") {
+      panel.classList.remove("is-open");
+      document.body.classList.remove("tw-open");
+    }
+  });
+  // then announce
+  try { window.parent.postMessage({ type: "__edit_mode_available" }, "*"); } catch (e) {}
+
+  // close button
+  document.getElementById("tw-close").addEventListener("click", () => {
+    panel.classList.remove("is-open");
+    document.body.classList.remove("tw-open");
+    try { window.parent.postMessage({ type: "__edit_mode_dismissed" }, "*"); } catch (e) {}
+  });
+
+})();
+</script>
+
+</body>
+</html>

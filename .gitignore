@@ -19,6 +19,8 @@ db.sqlite3
 data/*.sqlite3
 staticfiles/
 .env
+.env.*
+!.env.example
 
 # Logs / temp
 *.log

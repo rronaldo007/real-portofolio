@@ -63,13 +63,15 @@
     transform: translateX(-50%);
     z-index: 100;
     display: flex; align-items: center; gap: 4px;
-    padding: 6px;
-    background: rgba(20,18,16,0.72);
+    padding: 7px;
+    background: rgba(20,18,16,0.94);
     backdrop-filter: blur(24px) saturate(160%);
     -webkit-backdrop-filter: blur(24px) saturate(160%);
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.18);
     border-radius: 18px;
-    box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 60px rgba(0,0,0,0.45);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.10) inset,
+                0 0 0 1px var(--accent-soft),
+                0 24px 70px rgba(0,0,0,0.6);
     animation: dock-in 0.7s var(--ease-out) 0.3s both;
   }
   @keyframes dock-in {
@@ -87,7 +89,7 @@
     padding: 10px 18px;
     min-width: 68px;
     border-radius: 12px;
-    color: var(--muted);
+    color: var(--ink-2);
     transition: background 0.2s, color 0.2s, transform 0.25s var(--ease-out);
   }
   .dock a.dock-link:hover {
@@ -102,7 +104,7 @@
   }
   .dock a .ic { width: 18px; height: 18px; }
   .dock a .lab {
-    font-family: var(--font-mono); font-size: 9.5px;
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 500;
     letter-spacing: 0.06em; text-transform: uppercase;
   }
   .dock .sep {
@@ -848,6 +850,18 @@
     display: flex; justify-content: space-between; align-items: center;
     font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
   }
+  /* hidden feature: the purple period after the copyright → cartes de visite */
+  .footer-bar .secret-dot {
+    color: var(--accent);
+    font-size: 1.5em;
+    line-height: 0;
+    vertical-align: -0.05em;
+    margin-left: 1px;
+    transition: text-shadow 0.3s var(--ease);
+  }
+  .footer-bar .secret-dot:hover {
+    text-shadow: 0 0 10px var(--accent);
+  }
 
   /* marquee */
   .marquee {
@@ -959,25 +973,28 @@
 
   <div class="about-grid">
     <div class="about-photo reveal" data-reveal-once>
-      <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=900&h=1100&fit=crop&auto=format&q=80"
+      <img src="{{ profile.photo_url|default:'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=900&h=1100&fit=crop&auto=format&q=80' }}"
            onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=900&h=1100&fit=crop&auto=format&q=80'"
-           alt="Rukundo Ronaldo" />
+           alt="{{ profile.name|default:'Rukundo Ronaldo' }}" />
       <div class="frame-tl">N° 01 · Portrait</div>
       <div class="frame-br">
-        <div class="name">Rukundo Ronaldo.</div>
-        <div class="pl">Lyon · 2026<br/>FR · MMXXVI</div>
+        <div class="name">{{ profile.name|default:"Rukundo Ronaldo" }}.</div>
+        <div class="pl">{{ profile.location|default:"Lyon · France" }}</div>
       </div>
     </div>
 
     <div class="about-text">
+      {% if profile.tagline %}
+      <p class="lede reveal reveal-delay-1" data-reveal-once>{{ profile.tagline }}</p>
+      {% else %}
       <p class="lede reveal reveal-delay-1" data-reveal-once>
         Je traite chaque produit comme un petit objet bien fait — du logiciel avec de la matière et du calme.
       </p>
+      {% endif %}
       <div class="body reveal reveal-delay-2" data-reveal-once>
+        {% if profile.bio %}{{ profile.bio|linebreaks }}{% else %}
         <p>Six ans à construire des produits de bout en bout — surtout en Python avec Django, le reste en Node, TypeScript et les coins de Tailwind qui rendent les designers heureux.</p>
-        <p>Je m’occupe des coutures : là où la base de données rencontre l’UI, le moment où un formulaire vous répond, l’écart entre un clic et un écran. La plupart de mon travail consiste à effacer ces coutures sans que ça se voie.
-        </p>
-        <p>Quand je ne livre pas, je lis trop de critique d’architecture, j’écris sur l’artisanat logiciel, et je m’entraîne pour le semi-marathon de Lyon (mal).</p>
+        {% endif %}
       </div>
       <dl class="facts reveal reveal-delay-3" data-reveal-once>
         <div><dt>— Né à</dt><dd>Lyon · 1999</dd></div>
@@ -1167,7 +1184,7 @@
 </section>
 
 <div class="footer-bar">
-  <span>© 2026 Rukundo Ronaldo</span>
+  <span>© 2026 Rukundo Ronaldo<a href="{% url 'pages:cartes' %}" class="secret-dot" data-transition data-hover aria-label="Cartes de visite">.</a></span>
   <span>Construit avec Django · Fait à Lyon</span>
   <span>v 1.0 / 06.MMXXVI</span>
 </div>

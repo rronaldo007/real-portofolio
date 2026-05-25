@@ -14,4 +14,6 @@ urlpatterns = [
     path("dashboard/", TemplateView.as_view(template_name="pages/admin.html"), name="admin_demo"),
     path("design-system/", TemplateView.as_view(template_name="pages/design_system.html"), name="design_system"),
     path("nav-options/", TemplateView.as_view(template_name="pages/nav_options.html"), name="nav_options"),
+    path("cartes/", TemplateView.as_view(template_name="pages/cartes_de_visite.html"), name="cartes"),
+    path("cartes/atelier/", TemplateView.as_view(template_name="pages/cartes_atelier.html"), name="cartes_atelier"),
 ]

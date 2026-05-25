@@ -31,5 +31,6 @@ USER appuser
 
 EXPOSE 8000
 
-# Apply migrations, then serve with Gunicorn.
-CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"]
+# Apply migrations, then serve with Gunicorn. Bind to $PORT when the host injects
+# one (Sevalla/Heroku-style), falling back to 8000 for local Docker.
+CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3"]

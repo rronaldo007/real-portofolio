@@ -64,6 +64,28 @@ Config lives in `UNFOLD` (`config/settings.py`) + `pages/dashboard.py`.
 | `/dashboard/` | `admin.html` | `admin_demo` — dashboard mockup (this is a static front-end page, NOT the Django admin) |
 | `/design-system/` | `design_system.html` | `design_system` — living style guide |
 | `/nav-options/` | `nav_options.html` | `nav_options` — nav pattern explorations |
+| `/cartes/` | `cartes_de_visite.html` | `cartes` — business-card **designer** (see below). Linked from a hidden purple-period easter egg in the home footer |
+| `/cartes/atelier/` | `cartes_atelier.html` | `cartes_atelier` — **freeform playground** to build designs from scratch (reached via the "Créer un design" CTA on `/cartes/`) |
+
+### Cartes de visite designer (`/cartes/`) + playground (`/cartes/atelier/`)
+
+A self-contained business-card design tool. **Hybrid model:** the editable main card is authored as **print-ready SVG**; the flashy HTML cards lower on the page (holo, particules, foil…) stay **screen-only showcases**.
+
+JS layers (all page-specific modules, not `shared.js`):
+- **`static/js/cartes-core.js`** → `window.CartesCore`: the shared engine — SVG primitives (`T`/`rect`/`line`/`qrGroup`/`photoNode`), `FORMATS`, `renderElements()` (freeform), font embedding, and the export pipeline (`exportSheet` → SVG/PNG/JPG/PDF). **Used by both pages.**
+- **`static/js/cartes.js`** (`/cartes/`): preset `DESIGNS` registry (`editoriale`/`mono`/`photo`), live preview, Réglages panel, params, `localStorage` persistence, clone-create.
+- **`static/js/cartes-atelier.js`** (`/cartes/atelier/`): the **freeform editor** — blank SVG canvas, add text/shape/line/photo/QR, drag-to-move + resize handles, per-element inspector, front/back, save to the shared library. Plus a left aside with **Modèles** (`STARTERS` — editable starter designs with live thumbnails) and **Combinaisons** (`PALETTES` — click to re-skin via colour *roles*). Entry from `/cartes/`: the "CRÉER UN DESIGN" topbar button + the hero CTA.
+
+**Colour roles:** element colours (and face `bg`) may be a palette token (`bg`/`ink`/`sub`/`accent`) or a hex literal — `CartesCore.resolveColor()` maps tokens against the active palette. Starters use roles so a palette swap recolours everything at once; the inspector/bg colour controls are palette swatches + a custom picker. Freeform designs persist their `palette` so `/cartes/` renders them correctly.
+- The `/cartes/` inline `<script>` only keeps the showcase tilt/flip/particles + panel open-close.
+
+**Shared design library** (`localStorage` key `rr-cartes-v1`): `custom[id]` holds either clone designs (`{type:"clone",base,pal}`) or **freeform** designs (`{type:"freeform",format,front:{bg,els},back:{bg,els}}`) authored in the playground. Freeform designs appear in the `/cartes/` selector and export there too. The playground also autosaves a working draft (`atelierDraft`) and sets the saved design active (`design`).
+
+- **Designs:** SVG registry (`editoriale`, `mono`, `photo`) + user-created customs. Add a design = add an entry to `DESIGNS` in `cartes.js`.
+- **Params** (Réglages panel): design, format (85×55 / 90×90 / 55×85 / 70×44 mm), finish (preview-only flair), accent, identity fields, **photo** (file → dataURL, downscaled), **website**, **QR target** (any URL/social → scannable QR via vendored `static/js/qrcode.min.js`).
+- **Create design:** clones current as a named custom design saved to the library.
+- **Persistence:** browser `localStorage` key `rr-cartes-v1` (not the DB — publishing a chosen card to the public site would be a separate feature).
+- **Export:** recto+verso at 300 dpi — **SVG** (vector, fonts embedded as base64 from `static/fonts/*.woff2`), **PDF** (vector page w/ embedded JPEG), **PNG**, **JPG**. Font URLs + defaults are injected via `{% static %}` into `window.CARTES_FONT_URLS` / `window.CARTES_DEFAULTS` (needed because WhiteNoise hashes filenames).
 
 Templates reference assets with `{% static %}` and link between pages with `{% url 'pages:...' %}`. Page-specific CSS lives in a `<style>` block inside each template; anything reusable belongs in `static/css/shared.css`. New templates need `{% load static %}` on the first line.
 
