@@ -35,6 +35,16 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
+# Behind a TLS-terminating proxy (Sevalla), trust the forwarded scheme so Django
+# knows the request is HTTPS — required for secure cookies and CSRF on the domain.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Origins allowed to POST (admin login, contact form) over HTTPS. With DEBUG=False
+# on a real domain, Django needs the https:// origin here or login/POST gets a 403.
+CSRF_TRUSTED_ORIGINS = [
+    o for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o
+]
+
 
 # Application definition
 
