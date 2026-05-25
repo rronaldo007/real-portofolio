@@ -2,13 +2,14 @@
 <html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=1440" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Atelier — Créer une carte · Rukundo Ronaldo</title>
 <link rel="stylesheet" href="{% static 'css/shared.css' %}" />
 <style>
   html[data-theme="dark"] body { background: #0a0908; }
   html[data-theme="dark"] { --bg: #0a0908; --bg-2: #131210; }
   body { overflow: hidden; }
+  * { -webkit-tap-highlight-color: transparent; }
 
   /* ── Topbar ─────────────────────────────────────── */
   .topbar {
@@ -161,11 +162,31 @@
 
   .at-hint { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-left: auto; }
 
+  /* ── Responsive: collapse the fixed 3-pane workspace into a scroll ── */
   @media (max-width: 1100px) {
     body { overflow: auto; }
+    /* un-fix the chrome so it flows in the document instead of overlapping */
+    .topbar { position: static; padding: 14px 18px 0; }
+    .at-bar { position: static; top: auto; }
     .atelier { position: static; grid-template-columns: 1fr; }
-    .at-stage { min-height: 50vh; }
+    /* canvas first, then tools, then the inspector */
+    .at-stage { order: 1; min-height: 46vh; padding: 24px; }
+    .at-side { order: 2; }
+    .at-inspect-panel { order: 3; }
     .at-inspect-panel, .at-side { border: none; border-top: 1px solid var(--line); }
+    .at-hint { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .topbar .brand { font-size: 22px; }
+    .at-bar { gap: 10px; padding: 12px 16px; }
+    .at-bar .sep { display: none; }
+    .at-bar input#at-name { min-width: 0; flex: 1; }
+    .at-stage { padding: 16px; min-height: 40vh; }
+    .at-canvas { max-height: 52vh; }
+    .at-starters, .at-palettes { grid-template-columns: 1fr 1fr; }
+    .at-insp-actions { grid-template-columns: 1fr; }
   }
 </style>
 </head>

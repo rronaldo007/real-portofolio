@@ -3,7 +3,7 @@
 <html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=1440" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 {% firstof project.meta_title project.title "Projet" as proj_title %}
 {% firstof project.meta_description project.short_description as proj_desc %}
 {% include "pages/_seo.html" with page_title=proj_title|add:" — "|add:profile.name page_description=proj_desc og_image=project.cover_image_url og_type="article" structured="project" %}
@@ -597,6 +597,78 @@
 
   /* fade-in reveal */
   .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* ════════════════════════════════════════════════
+     RESPONSIVE — authored at 1440. Tighten gutters,
+     collapse the multi-column grids, scale the very
+     large editorial display type. ──────────────────── */
+
+  /* Tablet / small laptop */
+  @media (max-width: 1080px) {
+    body { --pad-x: 48px; }
+    .topbar { left: 22px; right: 22px; }
+    .ph-hero { padding: 200px var(--pad-x) 72px; }
+    .ph-hero h1 { font-size: clamp(80px, 16vw, 280px); margin-bottom: 48px; }
+    .ph-hero .lede { margin-bottom: 64px; }
+    .ph-facts { grid-template-columns: repeat(3, 1fr); gap: 28px 24px; }
+    .ph-brief { padding-top: 110px; padding-bottom: 110px; }
+    .ph-quote { padding-top: 110px; padding-bottom: 110px; }
+    .ph-metrics { grid-template-columns: repeat(2, 1fr); }
+    .ph-metric .num { font-size: 72px; }
+    .ph-chapter { padding: 110px var(--pad-x); gap: 56px; }
+    .ph-chapter .text h3 { font-size: 44px; }
+    .ph-chapter .text .chap-num .big { font-size: 52px; }
+    .ph-next a.next-card { gap: 44px; }
+  }
+
+  /* Tablet portrait / large phone */
+  @media (max-width: 768px) {
+    body { --pad-x: 32px; }
+    .topbar { left: 18px; right: 18px; }
+    .ph-hero { padding: 170px var(--pad-x) 64px; }
+    .ph-hero .eyebrow { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 56px; }
+    .ph-hero h1 { font-size: clamp(64px, 15vw, 280px); }
+    .ph-hero .lede { font-size: clamp(24px, 4.5vw, 40px); }
+    /* the two-column "sticky label + body" sections stack */
+    .ph-brief { grid-template-columns: 1fr; gap: 28px; }
+    .ph-brief .section-num { position: static; top: auto; }
+    .ph-brief .body .pull-lede { font-size: 30px; margin-bottom: 32px; }
+    .ph-brief .body .drop { font-size: 72px; }
+    /* process chapters stack; reset the .flip ordering so it always reads text → visual */
+    .ph-chapter { grid-template-columns: 1fr; gap: 40px; }
+    .ph-chapter.flip > .text { order: 0; }
+    .ph-chapter .visual { aspect-ratio: 4 / 3; }
+    .ph-chapter .text h3 { font-size: 38px; }
+    .ph-gallery-grid { grid-template-columns: 1fr; }
+    .ph-gallery-tile.wide { grid-row: auto; aspect-ratio: 4 / 3; }
+    .ph-quote { grid-template-columns: 1fr; gap: 24px; }
+    .ph-quote .lab { position: static; top: auto; }
+    .ph-quote .body .marks { font-size: 90px; }
+    .ph-next a.next-card { grid-template-columns: 1fr; gap: 28px; }
+    .ph-next a.next-card .info h4 { font-size: clamp(56px, 13vw, 144px); }
+  }
+
+  /* Phone */
+  @media (max-width: 600px) {
+    body { --pad-x: 20px; }
+    .topbar { top: 18px; }
+    .topbar .brand { font-size: 22px; padding: 5px 10px; }
+    .topbar .brand sup { display: none; }
+    .ph-hero { padding: 130px var(--pad-x) 56px; }
+    .ph-hero h1 { font-size: clamp(46px, 13.5vw, 280px); margin-bottom: 36px; }
+    .ph-hero .lede { margin-bottom: 48px; }
+    .ph-facts { grid-template-columns: 1fr 1fr; gap: 24px 18px; padding: 24px 0; }
+    .ph-brief, .ph-chapter, .ph-gallery, .ph-quote, .ph-next { padding-top: 72px; padding-bottom: 72px; }
+    .ph-metrics { grid-template-columns: 1fr 1fr; padding-bottom: 72px; }
+    .ph-metric { padding: 24px 20px; }
+    .ph-metric .label { margin-bottom: 24px; }
+    .ph-metric .num { font-size: 56px; }
+    .ph-chapter .text h3 { font-size: 32px; }
+    .ph-chapter .text .chap-num .big { font-size: 44px; }
+    .ph-gallery-head { flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 44px; }
+    .ph-quote .body blockquote { font-size: clamp(24px, 7vw, 48px); }
+    .ph-foot { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
 </style>
 </head>
 <body>
