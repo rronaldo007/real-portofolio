@@ -87,7 +87,7 @@ class Project(TimeStamped):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("pages:project")
+        return reverse("pages:project_detail", kwargs={"slug": self.slug})
 
     @property
     def tech_list(self):

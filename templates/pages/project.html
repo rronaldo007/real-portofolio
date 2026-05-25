@@ -1,10 +1,12 @@
 {% load static %}
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="fr" data-theme="dark">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=1440" />
-<title>{{ project.title|default:"Projet" }} — {{ profile.name|default:"Rukundo Ronaldo" }}</title>
+{% firstof project.meta_title project.title "Projet" as proj_title %}
+{% firstof project.meta_description project.short_description as proj_desc %}
+{% include "pages/_seo.html" with page_title=proj_title|add:" — "|add:profile.name page_description=proj_desc og_image=project.cover_image_url og_type="article" structured="project" %}
 <link rel="stylesheet" href="{% static 'css/shared.css' %}" />
 <style>
   body { --pad-x: 88px; overflow-x: hidden; }

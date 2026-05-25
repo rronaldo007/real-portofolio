@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import (
@@ -79,6 +80,19 @@ def project_index(request):
     if project:
         return redirect("pages:project_detail", slug=project.slug)
     return render(request, "pages/project.html", {"profile": SiteProfile.objects.first(), "project": None})
+
+
+def robots_txt(request):
+    """Serve /robots.txt — allow everything except the admin, point to the sitemap."""
+    sitemap_url = f"{request.scheme}://{request.get_host()}/sitemap.xml"
+    body = "\n".join([
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /admin/",
+        f"Sitemap: {sitemap_url}",
+        "",
+    ])
+    return HttpResponse(body, content_type="text/plain")
 
 
 def contact_submit(request):
