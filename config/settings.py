@@ -122,6 +122,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Sign in to the admin with either username or email (see pages/backends.py).
+AUTHENTICATION_BACKENDS = [
+    "pages.backends.UsernameOrEmailBackend",
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

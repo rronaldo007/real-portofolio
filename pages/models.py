@@ -216,8 +216,9 @@ class SiteProfile(TimeStamped):
 
     # Profile
     name = models.CharField(max_length=120, default="Rukundo Ronaldo")
+    photo_url = models.URLField(blank=True, help_text="Portrait shown in the À propos section")
     tagline = models.CharField(max_length=200, blank=True)
-    bio = models.TextField(blank=True)
+    bio = models.TextField(blank=True, help_text="One paragraph per line")
     location = models.CharField(max_length=120, blank=True)
     timezone = models.CharField(max_length=60, blank=True)
     availability = models.CharField(max_length=120, blank=True)
