@@ -498,7 +498,8 @@
     loadDraft();
     if (canvas) canvas.addEventListener("pointerdown", onCanvasDown);
     document.addEventListener("keydown", function (e) {
-      if ((e.key === "Delete" || e.key === "Backspace") && ed.selected && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) {
+      var ae = document.activeElement;
+      if ((e.key === "Delete" || e.key === "Backspace") && ed.selected && !(ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))) {
         var el = selectedEl(); if (el) { doAction("del", el); e.preventDefault(); }
       }
     });

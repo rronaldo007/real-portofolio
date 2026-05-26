@@ -1,6 +1,10 @@
 /* shared interactions: cursor, smooth scroll, theme, reveals, hover preview */
 
 (function () {
+  // honored throughout: skip continuous/entrance animations when the user
+  // asks for reduced motion.
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   // ─── Theme toggle ──────────────────────────────────
   const root = document.documentElement;
   const saved = localStorage.getItem("rr-theme");
@@ -70,7 +74,7 @@
       const span = document.createElement("span");
       span.className = "ch" + (c === " " ? " space" : "");
       span.textContent = c;
-      span.style.transitionDelay = (i * 0.025) + "s";
+      if (!reduceMotion) span.style.transitionDelay = (i * 0.025) + "s";
       line.appendChild(span);
     });
     el.appendChild(line);
@@ -149,11 +153,13 @@
   const curtain = document.createElement("div");
   curtain.className = "curtain";
   document.body.appendChild(curtain);
-  // Slide out on load
-  requestAnimationFrame(() => {
-    curtain.classList.add("is-out");
-    setTimeout(() => curtain.classList.remove("is-out"), 750);
-  });
+  // Slide out on load (skip the sweep under reduced motion)
+  if (!reduceMotion) {
+    requestAnimationFrame(() => {
+      curtain.classList.add("is-out");
+      setTimeout(() => curtain.classList.remove("is-out"), 750);
+    });
+  }
 
   document.addEventListener("click", (e) => {
     const a = e.target.closest("a[data-transition]");
@@ -161,6 +167,7 @@
     const href = a.getAttribute("href");
     if (!href || href.startsWith("#") || href.startsWith("http")) return;
     e.preventDefault();
+    if (reduceMotion) { window.location.href = href; return; }
     curtain.classList.remove("is-out");
     curtain.classList.add("is-in");
     setTimeout(() => { window.location.href = href; }, 650);
