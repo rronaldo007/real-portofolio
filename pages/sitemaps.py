@@ -28,7 +28,9 @@ class ProjectSitemap(Sitemap):
 
     def items(self):
         # Public case studies — same set surfaced in the work index.
-        return Project.objects.filter(show_in_index=True)
+        return Project.objects.filter(
+            status=Project.Status.PUBLISHED, show_in_index=True
+        )
 
     def lastmod(self, obj):
         return obj.updated_at

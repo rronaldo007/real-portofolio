@@ -34,9 +34,16 @@ def _skill_groups():
     return groups
 
 
+def _published_projects():
+    """Projects that may surface publicly — published and flagged for the index."""
+    return Project.objects.filter(
+        status=Project.Status.PUBLISHED, show_in_index=True
+    )
+
+
 def _home_context():
     profile = SiteProfile.objects.first()
-    projects = list(Project.objects.filter(show_in_index=True))
+    projects = list(_published_projects())
     years = [p.year for p in projects]
     return {
         "profile": profile,
@@ -65,8 +72,15 @@ def home_etudes(request):
 
 
 def project_detail(request, slug):
-    project = get_object_or_404(Project, slug=slug)
-    nxt = Project.objects.filter(show_in_index=True, order__gt=project.order).first()
+    project = get_object_or_404(
+        Project.objects.prefetch_related("metrics"), slug=slug
+    )
+    nxt = (
+        _published_projects()
+        .exclude(pk=project.pk)
+        .filter(order__gte=project.order)
+        .first()
+    )
     return render(request, "pages/project.html", {
         "profile": SiteProfile.objects.first(),
         "project": project,
@@ -76,7 +90,7 @@ def project_detail(request, slug):
 
 def project_index(request):
     """No-arg fallback — redirect to the first indexed project."""
-    project = Project.objects.filter(show_in_index=True).first() or Project.objects.first()
+    project = _published_projects().first() or Project.objects.first()
     if project:
         return redirect("pages:project_detail", slug=project.slug)
     return render(request, "pages/project.html", {"profile": SiteProfile.objects.first(), "project": None})
