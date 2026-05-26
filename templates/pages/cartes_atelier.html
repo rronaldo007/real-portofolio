@@ -196,7 +196,7 @@
   <a href="{% url 'pages:home' %}" class="brand" data-hover>Rukundo Ronaldo<sup>Atelier</sup></a>
   <div class="right">
     <a href="{% url 'pages:cartes' %}" class="pill" data-hover>← Galerie des cartes</a>
-    <button class="pill" data-theme-toggle data-hover style="cursor:none;">
+    <button type="button" class="pill" data-theme-toggle data-hover style="cursor:none;" aria-label="Basculer le thème clair/sombre">
       <svg class="sun" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3" stroke-linecap="round"/></svg>
       <svg class="moon" viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M12 9a4 4 0 11-5-5 5 5 0 005 5z"/></svg>
     </button>

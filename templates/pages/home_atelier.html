@@ -985,7 +985,7 @@
   <a href="#" class="brand">Rukundo Ronaldo<sup>RR · 2026</sup></a>
   <div class="right">
     <span class="status-pill" data-hover><span class="status-dot"></span>{{ profile.availability|default:"Disponible · août ’26" }}</span>
-    <button class="theme-toggle" data-theme-toggle data-hover>
+    <button type="button" class="theme-toggle" data-theme-toggle data-hover aria-label="Basculer le thème clair/sombre">
       <svg class="sun" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3" stroke-linecap="round"/></svg>
       <svg class="moon" viewBox="0 0 16 16" fill="currentColor"><path d="M12 9a4 4 0 11-5-5 5 5 0 005 5z"/></svg>
     </button>
@@ -1210,21 +1210,21 @@
       {% if messages %}{% for m in messages %}<p class="hint" style="color: var(--accent); margin-bottom: 16px;">{{ m }}</p>{% endfor %}{% endif %}
       <div class="field-row">
         <div class="field">
-          <label>— Votre nom</label>
-          <input type="text" name="name" placeholder="Jeanne Dupont" autocomplete="name" />
+          <label for="contact-name">— Votre nom</label>
+          <input type="text" id="contact-name" name="name" placeholder="Jeanne Dupont" autocomplete="name" />
         </div>
         <div class="field">
-          <label>— Votre email</label>
-          <input type="email" name="email" placeholder="jeanne@studio.fr" autocomplete="email" />
+          <label for="contact-email">— Votre email</label>
+          <input type="email" id="contact-email" name="email" placeholder="jeanne@studio.fr" autocomplete="email" />
         </div>
       </div>
       <div class="field">
-        <label>— Projet / contexte</label>
-        <input type="text" name="subject" placeholder="Une landing page · un CMS · un side project" />
+        <label for="contact-subject">— Projet / contexte</label>
+        <input type="text" id="contact-subject" name="subject" placeholder="Une landing page · un CMS · un side project" />
       </div>
       <div class="field">
-        <label>— Qu’avez-vous en tête ?</label>
-        <textarea name="message" rows="3" placeholder="Racontez-moi ce que vous construisez, votre timeline, et votre budget si vous en avez un…"></textarea>
+        <label for="contact-message">— Qu’avez-vous en tête ?</label>
+        <textarea id="contact-message" name="message" rows="3" placeholder="Racontez-moi ce que vous construisez, votre timeline, et votre budget si vous en avez un…"></textarea>
       </div>
       <div class="form-foot">
         <span class="hint">Réponse sous 24h · ou écrivez-moi directement</span>
