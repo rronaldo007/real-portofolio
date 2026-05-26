@@ -28,10 +28,14 @@ No automated test/lint pipeline yet. `manage.py check` validates config.
 config/             Django project (settings, urls, wsgi/asgi)
 pages/              The one app
   models.py         Project (+ProjectMetric), Experience, Skill, Testimonial, ContactMessage, SiteProfile (singleton)
+  views.py          DB-driven views (home, project_detail, contact, …) feeding templates/pages/*
+  urls.py           Public routes (namespace pages:) → views.py
   admin.py          Unfold ModelAdmins (themed) + read-only LogEntry (Activity Log)
   dashboard.py      Unfold sidebar badge callbacks + DASHBOARD_CALLBACK
-  urls.py           Public routes (TemplateView → templates/pages/*)
-  migrations/       0001 schema, 0002 seed content
+  backends.py       UsernameOrEmailBackend — admin login by username or email
+  sitemaps.py       sitemap.xml entries (static pages + projects)
+  context_processors.py  injects shared context (e.g. SiteProfile) into all templates
+  migrations/       0001 schema, 0002/0004/0006 seed content, 0003/0005 schema changes
 templates/pages/    Public page templates (the design system, see below)
 templates/admin/    index.html — custom Unfold dashboard
 static/css|js/      shared.css, shared.js, image-slot.js, admin.css (Unfold theme)

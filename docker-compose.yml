@@ -9,6 +9,8 @@ services:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-only-change-me}
       DJANGO_DEBUG: ${DJANGO_DEBUG:-False}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0}
+      # Comma-separated https:// origins for CSRF once DEBUG=False on a real domain.
+      DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-}
       # Auto-create an admin on first start. The user is only created when a
       # password is set (no default below) — set it in your shell or .env:
       #   DJANGO_SUPERUSER_PASSWORD=... docker compose up
