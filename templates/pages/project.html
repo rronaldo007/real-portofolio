@@ -87,18 +87,19 @@
 
   .ph-hero h1 {
     font-family: var(--font-display); font-style: italic;
-    font-size: clamp(120px, 18vw, 280px);
+    font-size: var(--step-6);
     line-height: 0.86; letter-spacing: -0.04em;
     font-weight: 400; color: var(--ink);
+    text-wrap: balance;
     margin-bottom: 60px;
   }
-  .ph-hero h1 .ac { color: var(--accent); }
 
   .ph-hero .lede {
     font-family: var(--font-display); font-style: italic;
     font-size: clamp(28px, 3vw, 40px);
     line-height: 1.25; letter-spacing: -0.015em;
     color: var(--ink); max-width: 30ch;
+    text-wrap: balance;
     margin-bottom: 80px;
   }
 
@@ -227,8 +228,8 @@
   .case-md > :first-child { margin-top: 0; }
   .case-md h2 {
     font-family: var(--font-display); font-style: italic;
-    font-size: 34px; line-height: 1.1; letter-spacing: -0.02em;
-    color: var(--ink); margin: 56px 0 20px;
+    font-size: var(--step-2); line-height: 1.05; letter-spacing: -0.02em;
+    color: var(--ink); text-wrap: balance; margin: 56px 0 20px;
   }
   .case-md h3 {
     font-family: var(--font-mono); font-size: 12px;
@@ -631,9 +632,10 @@
   .ph-next a.next-card .info .meta-row .acc { color: var(--accent); }
   .ph-next a.next-card .info h4 {
     font-family: var(--font-display); font-style: italic;
-    font-size: clamp(80px, 10vw, 144px);
-    line-height: 0.95; letter-spacing: -0.025em;
+    font-size: var(--step-6);
+    line-height: 0.92; letter-spacing: -0.025em;
     color: var(--ink); font-weight: 400;
+    text-wrap: balance;
     margin-bottom: 24px;
     transition: color 0.3s;
   }
@@ -747,7 +749,7 @@
 <div class="topbar" data-screen-label="Project · {{ project.title }}">
   <a href="{% url 'pages:home' %}" class="brand" data-transition>Rukundo Ronaldo<sup>RR · 2026</sup></a>
   <div class="right">
-    <a href="{% url 'pages:home' %}" class="back-link" data-transition data-hover>
+    <a href="{% url 'pages:home' %}" class="back-link" data-transition data-hover data-magnetic>
       <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 3L3 8M3 5v3h3"/></svg>
       Back · All work
     </a>
@@ -760,7 +762,7 @@
 
 <!-- HERO ──────────────────────────────────────── -->
 <section class="ph-hero">
-  <div class="eyebrow">
+  <div class="eyebrow" data-vfx>
     <span><span class="num">N° {{ project.order|add:1|stringformat:"02d" }}</span> · Case study</span>
     <div class="tags">
       <span><span class="dot">●</span> {{ project.get_badge_display }}</span>
@@ -770,7 +772,7 @@
     <span>{{ project.year }}</span>
   </div>
 
-  <h1>{{ project.title }}<span class="ac">.</span></h1>
+  <h1>{{ project.title }}<span class="clip-accent">.</span></h1>
 
   <p class="lede">{{ project.short_description }}</p>
 
