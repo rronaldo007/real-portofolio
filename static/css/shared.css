@@ -28,7 +28,7 @@
   --step-3: clamp(2.2rem, 1.6rem + 3vw, 3.4rem);       /* about lede, cat h4, edu degree */
   --step-4: clamp(3rem, 2rem + 5vw, 5.25rem);          /* testimonials h3, mid headings */
   --step-5: clamp(3.75rem, 2.2rem + 7.5vw, 7rem);      /* section h2 */
-  --step-6: clamp(4.5rem, 2.4rem + 10.5vw, 10.5rem);   /* hero h1 + contact h2 */
+  --step-6: clamp(2.75rem, 1.6rem + 5.4vw, 7rem);      /* big single-line titles (contact, project hero, next) */
 
   /* ── Atmosphere: film grain + cursor light source (dark) ── */
   --grain-opacity: 0.05;
