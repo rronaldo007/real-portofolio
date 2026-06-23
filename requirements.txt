@@ -2,6 +2,7 @@ asgiref==3.11.1
 Django==5.2.14
 django-unfold==0.94.0
 gunicorn==26.0.0
+Markdown==3.10.2
 packaging==26.2
 pillow==12.2.0
 sqlparse==0.5.5
