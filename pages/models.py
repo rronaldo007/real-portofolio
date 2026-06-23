@@ -216,7 +216,11 @@ class SiteProfile(TimeStamped):
 
     # Profile
     name = models.CharField(max_length=120, default="Rukundo Ronaldo")
-    photo_url = models.URLField(blank=True, help_text="Portrait shown in the À propos section")
+    photo = models.ImageField(
+        upload_to="profile/", blank=True,
+        help_text="Portrait shown in the À propos section (uploaded file). Takes priority over Photo URL.",
+    )
+    photo_url = models.URLField(blank=True, help_text="Fallback portrait URL, used only if no file is uploaded above")
     tagline = models.CharField(max_length=200, blank=True)
     bio = models.TextField(blank=True, help_text="One paragraph per line")
     location = models.CharField(max_length=120, blank=True)
@@ -252,6 +256,13 @@ class SiteProfile(TimeStamped):
 
     def __str__(self):
         return self.name
+
+    @property
+    def photo_src(self):
+        """The portrait to render: the uploaded file if present, else the URL fallback."""
+        if self.photo:
+            return self.photo.url
+        return self.photo_url
 
     def save(self, *args, **kwargs):
         self.pk = 1  # enforce singleton

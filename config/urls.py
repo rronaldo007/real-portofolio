@@ -15,9 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
-from django.urls import include, path
+from django.urls import include, path, re_path
+from django.views.static import serve as media_serve
 
 from pages.sitemaps import sitemaps
 from pages.views import robots_txt
@@ -26,5 +28,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     path("robots.txt", robots_txt, name="robots_txt"),
+    # Serve user-uploaded media even under DEBUG=False (WhiteNoise only covers
+    # static). Acceptable for a low-traffic portfolio; not a high-throughput path.
+    re_path(r"^media/(?P<path>.*)$", media_serve, {"document_root": settings.MEDIA_ROOT}),
     path("", include("pages.urls")),
 ]

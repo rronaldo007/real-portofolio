@@ -1044,7 +1044,7 @@
     </div>
     <div class="reveal reveal-delay-2" data-reveal-once>
       <dt>À louer</dt>
-      <dd>Ouvert aux postes produit &amp; consulting dès août 2026. <a href="#contact" class="link-u">Dites bonjour →</a></dd>
+      <dd>Ouvert aux postes produit &amp; consulting dès août 2026.</dd>
     </div>
   </dl>
 </section>
@@ -1059,9 +1059,9 @@
 
   <div class="about-grid">
     <div class="about-photo reveal" data-reveal-once>
-      <img src="{{ profile.photo_url|default:'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=900&h=1100&fit=crop&auto=format&q=80' }}"
-           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=900&h=1100&fit=crop&auto=format&q=80'"
-           alt="{{ profile.name|default:'Rukundo Ronaldo' }}" />
+      {% if profile.photo_src %}
+      <img src="{{ profile.photo_src }}" alt="{{ profile.name|default:'Rukundo Ronaldo' }}" />
+      {% endif %}
       <div class="frame-tl">N° 01 · Portrait</div>
       <div class="frame-br">
         <div class="name">{{ profile.name|default:"Rukundo Ronaldo" }}.</div>
