@@ -1093,7 +1093,7 @@
   </a>
   <div class="sep"></div>
   <a href="#contact" class="cta" data-hover>
-    hello@rukundo.dev
+    {{ profile.email|default:"hello@rukundo.dev" }}
     <svg class="ic" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg>
   </a>
 </nav>
