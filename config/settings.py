@@ -149,6 +149,12 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# User-uploaded media (e.g. the profile portrait). Stored under data/ so it lands
+# on the same persistent disk as the SQLite DB and survives Sevalla redeploys.
+# Served by config/urls.py (see note there) since WhiteNoise only handles static.
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "data" / "media"
+
 # WhiteNoise: compressed, hashed static files served by the app itself.
 STORAGES = {
     "default": {

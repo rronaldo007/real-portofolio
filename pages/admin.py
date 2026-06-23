@@ -230,7 +230,7 @@ class ContactMessageAdmin(ModelAdmin):
 @admin.register(SiteProfile)
 class SiteProfileAdmin(ModelAdmin):
     fieldsets = (
-        ("Profile", {"classes": ["tab"], "fields": ("name", "photo_url", "tagline", "bio",
+        ("Profile", {"classes": ["tab"], "fields": ("name", "photo", "photo_url", "tagline", "bio",
                                                      "location", "timezone", "availability")}),
         ("Hero copy", {"classes": ["tab"], "fields": ("hero_prefix", "hero_heading", "hero_sub")}),
         ("Contact & socials", {"classes": ["tab"], "fields": ("email", "github_url",

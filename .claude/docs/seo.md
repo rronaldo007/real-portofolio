@@ -39,7 +39,7 @@ optional params via `{% include "pages/_seo.html" with … %}`:
 |-------|---------|---------|
 | `page_title` | `profile.name` | `<title>` + `og:title` |
 | `page_description` | `profile.tagline` → `profile.bio` | meta description (striptags, truncated to 200) |
-| `og_image` | `profile.photo_url` | Open Graph / Twitter image (absolute URL) |
+| `og_image` | `profile.photo_src` | Open Graph / Twitter image. Made absolute via the `absolute_url` filter (`pages/templatetags/seo_extras.py`), so an uploaded `/media/…` path works. |
 | `og_type` | `"website"` | use `"article"` for project pages |
 | `structured` | *(none)* | `"person"` or `"project"` → emits JSON-LD |
 | `project` | — | the `Project` instance when `structured="project"` |
@@ -81,7 +81,8 @@ It emits: `<title>`, `meta description`, `link canonical`, `robots: index,follow
 It's all in the **Unfold admin** (`/admin/`):
 
 - **`SiteProfile`** (singleton) — `name`, `tagline` (→ default description + JSON-LD
-  jobTitle), `bio` (description fallback), `photo_url` (→ og:image), `location`,
+  jobTitle), `bio` (description fallback), `photo` (uploaded portrait) / `photo_url`
+  (URL fallback) — exposed as `photo_src` and used for the À propos portrait + og:image, `location`,
   `email`, and the social URLs (`github_url`, `linkedin_url`, `twitter_url`,
   `dribbble_url`) which feed JSON-LD `sameAs`.
 - **`Project`** — per-project `meta_title` and `meta_description` override the

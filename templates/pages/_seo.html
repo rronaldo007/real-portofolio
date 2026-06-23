@@ -4,18 +4,19 @@ Reusable SEO <head> block — include once inside each page's <head>.
 Optional params (via {% include "pages/_seo.html" with ... %}):
   page_title        full <title> / og:title (default: profile name + tagline)
   page_description  meta description (default: profile tagline → bio)
-  og_image          absolute image URL (default: profile.photo_url)
+  og_image          image URL, made absolute automatically (default: profile.photo_src)
   og_type           "website" (default) | "article"
   structured        "person" | "project"  → emits JSON-LD; omit for none
   project           Project instance (used when structured="project")
 
 Relies on the `request` + `pages.context_processors.site` context processors.
 {% endcomment %}
+{% load seo_extras %}
 {% firstof page_title profile.name "Rukundo Ronaldo" as seo_title %}
 {% firstof page_description profile.tagline profile.bio "Portfolio de Rukundo Ronaldo — développeur fullstack (Django)." as seo_desc_raw %}
-{% firstof og_image profile.photo_url as seo_image %}
+{% firstof og_image profile.photo_src as seo_image_raw %}
 {% firstof og_type "website" as seo_type %}
-{% with seo_desc=seo_desc_raw|striptags|truncatechars:200 seo_url=request.build_absolute_uri %}
+{% with seo_desc=seo_desc_raw|striptags|truncatechars:200 seo_url=request.build_absolute_uri seo_image=seo_image_raw|absolute_url:request %}
 <title>{{ seo_title }}</title>
 <meta name="description" content="{{ seo_desc }}" />
 <link rel="canonical" href="{{ seo_url }}" />
