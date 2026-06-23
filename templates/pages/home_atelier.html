@@ -1113,7 +1113,7 @@
     <svg class="ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2l2 4 5 .4-3.8 3.3 1.2 5L9 12.5 4.6 14.7l1.2-5L2 6.4 7 6z" stroke-linejoin="round"/></svg>
     <span class="lab">Outils</span>
   </a>
-  <a href="{% if profile.resume_url %}{{ profile.resume_url }}{% else %}{% static 'cv/Rukundo-Ronaldo-CV.pdf' %}{% endif %}" class="dock-link" data-hover download title="Télécharger le CV (PDF)">
+  <a href="{% if profile.resume_url %}{{ profile.resume_url }}{% else %}{% static 'cv/Rukundo-Ronaldo-CV.pdf' %}{% endif %}" class="dock-link" data-hover download="Rukundo-Ronaldo-CV.pdf" title="Télécharger le CV (PDF)">
     <svg class="ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2.5v8M5.5 7L9 10.5 12.5 7M3 14.5h12"/></svg>
     <span class="lab">CV</span>
   </a>
@@ -1382,14 +1382,21 @@
           </div>
           <span class="arrow"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg></span>
         </a>
-        <a href="{% if profile.resume_url %}{{ profile.resume_url }}{% else %}{% static 'cv/Rukundo-Ronaldo-CV.pdf' %}{% endif %}" class="ql" data-hover download>
+        <a href="{% if profile.resume_url %}{{ profile.resume_url }}{% else %}{% static 'cv/Rukundo-Ronaldo-CV.pdf' %}{% endif %}" class="ql" data-hover download="Rukundo-Ronaldo-CV.pdf">
           <div>
             <div class="lab">— CV</div>
             <div class="val">Télécharger le CV · PDF</div>
           </div>
           <span class="arrow"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg></span>
         </a>
-        <a href="{% static 'cv/Rukundo-Ronaldo-CV-ATS.pdf' %}" class="ql" data-hover download>
+        <a href="{% static 'cv/Rukundo-Ronaldo-CV-studio.pdf' %}" class="ql" data-hover download="Rukundo-Ronaldo-CV.pdf">
+          <div>
+            <div class="lab">— CV · autre mise en page</div>
+            <div class="val">Version studio · PDF</div>
+          </div>
+          <span class="arrow"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg></span>
+        </a>
+        <a href="{% static 'cv/Rukundo-Ronaldo-CV-ATS.pdf' %}" class="ql" data-hover download="Rukundo-Ronaldo-CV-ATS.pdf">
           <div>
             <div class="lab">— CV · version ATS</div>
             <div class="val">Format texte (recruteurs / ATS) · PDF</div>
