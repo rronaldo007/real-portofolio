@@ -220,4 +220,25 @@
   document.querySelectorAll("[data-marquee]").forEach((m) => {
     m.innerHTML = m.innerHTML + m.innerHTML;
   });
+
+  // ─── data-cv-menu: dock CV chooser — tap the trigger to toggle the menu ─────
+  // (desktop also reveals it on hover via CSS). The <a> trigger keeps a real
+  // href as a no-JS fallback; here we intercept it to show the choice instead.
+  document.querySelectorAll("[data-cv-menu]").forEach((wrap) => {
+    const trigger = wrap.querySelector(":scope > .dock-link");
+    if (!trigger) return;
+    trigger.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const open = wrap.classList.toggle("open");
+      trigger.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  });
+  document.addEventListener("click", () => {
+    document.querySelectorAll("[data-cv-menu].open").forEach((w) => {
+      w.classList.remove("open");
+      const t = w.querySelector(":scope > .dock-link");
+      if (t) t.setAttribute("aria-expanded", "false");
+    });
+  });
 })();

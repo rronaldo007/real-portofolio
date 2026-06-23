@@ -113,6 +113,48 @@
     margin: 0 4px;
   }
   html[data-theme="light"] .dock .sep { background: rgba(0,0,0,0.1); }
+
+  /* CV chooser dropdown (opens above the dock) */
+  .dock-cv { position: relative; display: flex; }
+  .cv-menu {
+    position: absolute; bottom: calc(100% + 14px); left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 230px; padding: 6px;
+    background: rgba(20,18,16,0.96);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 14px;
+    box-shadow: 0 0 0 1px var(--accent-soft), 0 22px 60px rgba(0,0,0,0.55);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.28s var(--ease-out), transform 0.28s var(--ease-out), visibility 0.28s;
+    z-index: 110;
+  }
+  html[data-theme="light"] .cv-menu {
+    background: rgba(255,252,248,0.94);
+    border-color: rgba(0,0,0,0.08);
+    box-shadow: 0 0 0 1px var(--accent-soft), 0 14px 44px rgba(0,0,0,0.16);
+  }
+  .dock-cv:hover .cv-menu,
+  .dock-cv.open .cv-menu {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .cv-menu a {
+    display: flex; flex-direction: column; gap: 1px;
+    padding: 9px 12px; border-radius: 10px; text-decoration: none;
+    transition: background 0.18s, color 0.18s;
+  }
+  .cv-menu a .t { font-family: var(--font-body); font-size: 12.5px; color: var(--ink); }
+  .cv-menu a .d {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .cv-menu a:hover { background: rgba(255,255,255,0.06); }
+  html[data-theme="light"] .cv-menu a:hover { background: rgba(0,0,0,0.04); }
+  .cv-menu a:hover .t { color: var(--accent); }
+
   .dock .cta {
     background: var(--accent); color: #0a0908;
     padding: 12px 18px;
@@ -1113,10 +1155,20 @@
     <svg class="ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2l2 4 5 .4-3.8 3.3 1.2 5L9 12.5 4.6 14.7l1.2-5L2 6.4 7 6z" stroke-linejoin="round"/></svg>
     <span class="lab">Outils</span>
   </a>
-  <a href="{% if profile.resume_url %}{{ profile.resume_url }}{% else %}{% static 'cv/Rukundo-Ronaldo-CV.pdf' %}{% endif %}" class="dock-link" data-hover download="Rukundo-Ronaldo-CV.pdf" title="Télécharger le CV (PDF)">
-    <svg class="ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2.5v8M5.5 7L9 10.5 12.5 7M3 14.5h12"/></svg>
-    <span class="lab">CV</span>
-  </a>
+  <div class="dock-cv" data-cv-menu>
+    <a href="{% static 'cv/Rukundo-Ronaldo-CV-studio.pdf' %}" class="dock-link" data-hover aria-haspopup="true" aria-expanded="false" title="Choisir un CV">
+      <svg class="ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2.5v8M5.5 7L9 10.5 12.5 7M3 14.5h12"/></svg>
+      <span class="lab">CV</span>
+    </a>
+    <div class="cv-menu" role="menu">
+      <a href="{% static 'cv/Rukundo-Ronaldo-CV-studio.pdf' %}" download="Rukundo-Ronaldo-CV.pdf" role="menuitem" data-hover>
+        <span class="t">CV — mise en page</span><span class="d">PDF · design</span>
+      </a>
+      <a href="{% static 'cv/Rukundo-Ronaldo-CV-ATS.pdf' %}" download="Rukundo-Ronaldo-CV-ATS.pdf" role="menuitem" data-hover>
+        <span class="t">CV — format ATS</span><span class="d">PDF · texte / recruteurs</span>
+      </a>
+    </div>
+  </div>
   <div class="sep"></div>
   <a href="#contact" class="cta" data-hover data-magnetic>
     {{ profile.email|default:"hello@rukundo.dev" }}
