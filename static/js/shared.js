@@ -31,16 +31,28 @@
 
     let mx = -100, my = -100;
     let rx = -100, ry = -100;
+    let glowDirty = false, glowShown = false;
 
     window.addEventListener("pointermove", (e) => {
       mx = e.clientX; my = e.clientY;
       dot.style.transform = `translate3d(${mx - 3}px, ${my - 3}px, 0)`;
+      // light-source: flag the glow position for the rAF loop (no 2nd loop)
+      if (!reduceMotion) glowDirty = true;
+      if (!glowShown) {
+        glowShown = true;
+        document.body.classList.add("glow-on");
+      }
     });
 
     const loop = () => {
       rx += (mx - rx) * 0.18;
       ry += (my - ry) * 0.18;
       ring.style.transform = `translate3d(${rx - 14}px, ${ry - 14}px, 0)`;
+      // lag the glow toward the smoothed ring position, throttled by the dirty flag
+      if (glowDirty) {
+        root.style.setProperty("--mx", (rx / window.innerWidth * 100) + "%");
+        root.style.setProperty("--my", (ry / window.innerHeight * 100) + "%");
+      }
       requestAnimationFrame(loop);
     };
     loop();
@@ -172,6 +184,37 @@
     curtain.classList.add("is-in");
     setTimeout(() => { window.location.href = href; }, 650);
   });
+
+  // ─── data-vfx: gentle scroll-driven mono-label weight breathe ──
+  // Maps each label's viewport position to a font wght between the
+  // --vfx-wght-base and --vfx-wght-max tokens. Mono/Geist labels only —
+  // serif headlines never move. No-ops under reduced motion.
+  const vfxEls = document.querySelectorAll("[data-vfx]");
+  if (vfxEls.length && !reduceMotion) {
+    const cs = getComputedStyle(root);
+    const base = parseInt(cs.getPropertyValue("--vfx-wght-base"), 10) || 500;
+    const max = parseInt(cs.getPropertyValue("--vfx-wght-max"), 10) || 620;
+    let vfxQueued = false;
+    const updateVfx = () => {
+      vfxQueued = false;
+      const vh = window.innerHeight || 1;
+      vfxEls.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        // 0 when the label sits at viewport bottom, 1 near the top third
+        const p = 1 - Math.min(Math.max(r.top / vh, 0), 1);
+        const w = Math.round(base + (max - base) * p);
+        el.style.fontVariationSettings = `"wght" ${w}`;
+      });
+    };
+    const queueVfx = () => {
+      if (vfxQueued) return;
+      vfxQueued = true;
+      requestAnimationFrame(updateVfx);
+    };
+    window.addEventListener("scroll", queueVfx, { passive: true });
+    window.addEventListener("resize", queueVfx, { passive: true });
+    updateVfx();
+  }
 
   // ─── Marquee duplication (for seamless loops) ─────
   document.querySelectorAll("[data-marquee]").forEach((m) => {
