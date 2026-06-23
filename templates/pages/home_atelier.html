@@ -1378,15 +1378,13 @@
           </div>
           <span class="arrow"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg></span>
         </a>
-        {% if profile.resume_url %}
-        <a href="{{ profile.resume_url }}" class="ql" data-hover>
+        <a href="{% if profile.resume_url %}{{ profile.resume_url }}{% else %}{% static 'cv/Rukundo-Ronaldo-CV.pdf' %}{% endif %}" class="ql" data-hover download>
           <div>
             <div class="lab">— CV</div>
             <div class="val">Télécharger le CV · PDF</div>
           </div>
           <span class="arrow"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg></span>
         </a>
-        {% endif %}
       </div>
 
       <div class="contact-socials">

@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Rukundo Ronaldo — CV</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #17150f;
+    --ink-2: #4a463d;
+    --muted: #8a8378;
+    --line: #e4e0d7;
+    --accent: #7c3aed;
+    --bg-soft: #faf8f3;
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-body: 'Geist', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'Geist Mono', 'SFMono-Regular', Menlo, monospace;
+  }
+
+  @page {
+    size: A4;
+    margin: 14mm 15mm;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font-body);
+    color: var(--ink-2);
+    font-size: 9.6px;
+    line-height: 1.5;
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Header ── */
+  .head { border-bottom: 2px solid var(--ink); padding-bottom: 10px; margin-bottom: 14px; }
+  .head h1 {
+    font-family: var(--font-display); font-style: italic; font-weight: 400;
+    font-size: 42px; line-height: 0.9; letter-spacing: -0.02em;
+    color: var(--ink); margin: 0 0 4px;
+  }
+  .head h1 .dot { color: var(--accent); }
+  .head .role {
+    font-family: var(--font-mono); font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .head .contact {
+    font-family: var(--font-mono); font-size: 8.6px; color: var(--ink-2);
+    letter-spacing: 0.01em;
+  }
+  .head .contact span { color: var(--muted); margin: 0 6px; }
+
+  /* ── Intro ── */
+  .intro {
+    font-size: 10px; color: var(--ink); line-height: 1.55;
+    margin-bottom: 14px; max-width: 64ch;
+  }
+  .intro b { color: var(--ink); font-weight: 600; }
+
+  /* ── Layout ── */
+  .grid { display: flex; gap: 20px; align-items: flex-start; }
+  .main { flex: 1 1 0; min-width: 0; }
+  .side { flex: 0 0 33%; }
+
+  /* ── Section ── */
+  .sec { margin-bottom: 13px; }
+  .sec > h2 {
+    font-family: var(--font-mono); font-size: 8.6px; font-weight: 600;
+    letter-spacing: 0.13em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 9px; padding-bottom: 4px; border-bottom: 1px solid var(--line);
+  }
+
+  /* ── Entry ── */
+  .item { margin-bottom: 10px; break-inside: avoid; }
+  .item .row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .item .ttl { font-size: 10.5px; font-weight: 600; color: var(--ink); }
+  .item .ttl .co { color: var(--accent); font-weight: 600; }
+  .item .when {
+    font-family: var(--font-mono); font-size: 8.2px; color: var(--muted);
+    white-space: nowrap; letter-spacing: 0.02em;
+  }
+  .item .sub { font-size: 9px; color: var(--ink-2); font-style: italic; margin: 1px 0 3px; }
+  .item ul { margin: 3px 0 0; padding: 0; list-style: none; }
+  .item li { position: relative; padding-left: 11px; margin-bottom: 2px; }
+  .item li::before {
+    content: ""; position: absolute; left: 0; top: 6px;
+    width: 5px; height: 1px; background: var(--accent);
+  }
+  .item .stack {
+    font-family: var(--font-mono); font-size: 7.8px; color: var(--muted);
+    margin-top: 3px; letter-spacing: 0.02em;
+  }
+  .item .stack b { color: var(--ink-2); font-weight: 500; }
+
+  /* projects */
+  .proj { margin-bottom: 8px; break-inside: avoid; }
+  .proj .ttl { font-size: 10px; font-weight: 600; color: var(--ink); }
+  .proj .ttl .meta { font-family: var(--font-mono); font-size: 7.6px; color: var(--accent); font-weight: 400; }
+  .proj p { margin: 1px 0 2px; font-size: 9px; }
+  .proj .stack { font-family: var(--font-mono); font-size: 7.6px; color: var(--muted); }
+
+  /* ── Sidebar blocks ── */
+  .side .sec > h2 { color: var(--ink); }
+  .skillgroup { margin-bottom: 8px; }
+  .skillgroup .gl {
+    font-family: var(--font-mono); font-size: 7.8px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 3px; }
+  .chips span {
+    font-family: var(--font-mono); font-size: 7.8px; color: var(--ink-2);
+    border: 1px solid var(--line); border-radius: 999px; padding: 1.5px 6px;
+    background: var(--bg-soft);
+  }
+  .edu .item { margin-bottom: 8px; }
+  .edu .ttl { font-size: 9.5px; }
+  .kv { font-size: 9px; margin-bottom: 3px; }
+  .kv b { color: var(--ink); font-weight: 600; }
+  .avail {
+    margin-top: 4px; padding: 8px 10px; border: 1px solid var(--accent);
+    border-radius: 6px; background: var(--bg-soft);
+  }
+  .avail .lab {
+    font-family: var(--font-mono); font-size: 7.6px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent);
+    margin-bottom: 2px;
+  }
+  .avail .txt { font-size: 9.2px; color: var(--ink); }
+</style>
+</head>
+<body>
+
+  <div class="head">
+    <h1>Rukundo Ronaldo<span class="dot">.</span></h1>
+    <div class="role">Développeur Full-Stack · Cap sur l'IA / Data Science</div>
+    <div class="contact">
+      Lyon · France<span>—</span>rukundoronaldo4@gmail.com<span>—</span>github.com/rronaldo007<span>—</span>linkedin.com/in/rukundo-ronaldo-7a62b6168
+    </div>
+  </div>
+
+  <p class="intro">
+    Développeur <b>fullstack</b> formé sur le terrain (stage puis alternance chez <b>LumApps</b> et <b>Néatemys</b>),
+    j'<b>apprends en construisant</b> : des produits de bout en bout en <b>Django</b> et <b>React</b>, et de plus en
+    plus de projets autour de l'<b>IA</b> et de la <b>data</b>. Je me dirige vers l'IA / data science — parcours dès
+    l'an prochain — et je recherche une <b>alternance dans ce domaine dès août 2026</b>.
+  </p>
+
+  <div class="grid">
+    <!-- MAIN COLUMN -->
+    <div class="main">
+
+      <div class="sec">
+        <h2>Expérience professionnelle</h2>
+
+        <div class="item">
+          <div class="row">
+            <div class="ttl">Développeur Full-Stack — <span class="co">Néatemys</span></div>
+            <div class="when">2023 — 2025 · Lyon</div>
+          </div>
+          <div class="sub">Plateforme SaaS de médiation B2B (résolution de conflits en ligne).</div>
+          <ul>
+            <li>Développement de bout en bout du parcours de médiation : dossier, paiement, questionnaires, prise de créneaux, attribution du médiateur et tableau de bord (Django).</li>
+            <li>Refonte complète du frontend : migration de Bootstrap vers Tailwind CSS + architecture de composants réutilisables (Django Cotton).</li>
+            <li>Migration progressive de jQuery vers du JavaScript vanilla pour fiabiliser le code.</li>
+            <li>Automatisation de traitements asynchrones (emails, tâches longues) via Celery ; rédaction de tests unitaires et fonctionnels.</li>
+          </ul>
+          <div class="stack"><b>Stack ·</b> Django · Python · Tailwind CSS · Django Cotton · JavaScript · Celery</div>
+        </div>
+
+        <div class="item">
+          <div class="row">
+            <div class="ttl">Développeur Full-Stack — <span class="co">LumApps</span></div>
+            <div class="when">2022 — 2023 · stage + alternance</div>
+          </div>
+          <div class="sub">Plateforme SaaS d'intranet d'entreprise (7 M+ d'utilisateurs).</div>
+          <ul>
+            <li>Développement de widgets pour la marketplace, en React &amp; TypeScript.</li>
+            <li>Widget de fuseaux horaires : heure selon la timezone choisie ou détectée par géolocalisation.</li>
+            <li>Widget Spotify via le SDK et l'API Spotify ; widget « qualité de l'air » adossé à un endpoint Flask consommant l'API OpenWeather.</li>
+            <li>Gestion des appels API via React Query, correction de bugs et amélioration de l'expérience de la marketplace.</li>
+          </ul>
+          <div class="stack"><b>Stack ·</b> React · TypeScript · React Query · Flask · OpenWeather API · Spotify SDK &amp; API</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h2>Projets</h2>
+        <div class="proj">
+          <div class="ttl">Youcus <span class="meta">· en cours</span></div>
+          <p>Couche d'étude posée sur YouTube : lecteur sans distraction, notes Markdown synchronisées à la vidéo, suivi de progression. APIs officielles Google / YouTube.</p>
+          <div class="stack">React · TypeScript · Vite · TanStack Query · Tailwind · Express · Prisma · MySQL · Docker</div>
+        </div>
+        <div class="proj">
+          <div class="ttl">Video Planner <span class="meta">· video-planner3-8kppd.sevalla.app</span></div>
+          <p>Plateforme SaaS pour créateurs YouTube : préserver la vision d'une vidéo — ressources, checklist de production, export ZIP, bot Telegram, collaboration par rôles.</p>
+          <div class="stack">Django · DRF · Celery · Redis · MariaDB · React · TypeScript · Docker</div>
+        </div>
+        <div class="proj">
+          <div class="ttl">Jaydee Kanban <span class="meta">· github.com/rronaldo007/jaydee-kanban</span></div>
+          <p>Suivi des ordres de fabrication (tableau Kanban) : API Node/Express sécurisée, front React (Vite), mises à jour optimistes, tests Jest/Supertest.</p>
+          <div class="stack">React · Vite · Node.js · Express · Jest · Supertest</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h2>Expérience complémentaire</h2>
+        <div class="item">
+          <div class="row">
+            <div class="ttl">Réceptionniste week-end — <span class="co">Montempo</span></div>
+            <div class="when">2023 — 2025 · Lyon Cité Internationale</div>
+          </div>
+          <ul>
+            <li>Accueil clientèle, gestion des réservations, du planning et des demandes par email.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="side">
+
+      <div class="sec">
+        <h2>Compétences</h2>
+        <div class="skillgroup">
+          <div class="gl">Backend</div>
+          <div class="chips"><span>Python</span><span>Django</span><span>Django ORM</span><span>Flask</span><span>Node.js</span><span>SQL</span><span>Prisma</span></div>
+        </div>
+        <div class="skillgroup">
+          <div class="gl">Frontend</div>
+          <div class="chips"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>React</span><span>Tailwind</span><span>jQuery</span></div>
+        </div>
+        <div class="skillgroup">
+          <div class="gl">Outils &amp; infra</div>
+          <div class="chips"><span>Docker</span><span>GitHub</span><span>CI/CD</span><span>Jira</span><span>Linux</span><span>CLI</span></div>
+        </div>
+        <div class="skillgroup">
+          <div class="gl">Données &amp; IA</div>
+          <div class="chips"><span>MySQL</span><span>MariaDB</span><span>Redis</span><span>LLMs</span></div>
+        </div>
+      </div>
+
+      <div class="sec edu">
+        <h2>Formation</h2>
+        <div class="item">
+          <div class="ttl">Mastère — Management de la transformation digitale en IA</div>
+          <div class="when" style="margin-top:1px">ISCOD · Titre RNCP niv. 7 (Bac+5) · 2026 — 2028</div>
+        </div>
+        <div class="item">
+          <div class="ttl">Bachelor — Développement Web</div>
+          <div class="when" style="margin-top:1px">ISCOD · 2023 — 2025</div>
+        </div>
+        <div class="item">
+          <div class="ttl">Formation en Intelligence Artificielle</div>
+          <div class="when" style="margin-top:1px">Iaschool · 2022 — 2023</div>
+        </div>
+        <div class="item">
+          <div class="ttl">Bac +1 — Développement informatique</div>
+          <div class="when" style="margin-top:1px">EPITECH · 2021 — 2022</div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h2>Langues</h2>
+        <div class="kv"><b>Français</b> — natif</div>
+        <div class="kv"><b>Anglais</b> — professionnel</div>
+        <div class="kv"><b>Italien</b> — notions</div>
+      </div>
+
+      <div class="sec">
+        <h2>Disponibilité</h2>
+        <div class="avail">
+          <div class="lab">Recherche · août 2026</div>
+          <div class="txt">Alternance en IA / data science.<br/>Remote, hybride ou Lyon.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
