@@ -22,6 +22,8 @@ Relies on the `request` + `pages.context_processors.site` context processors.
 <link rel="canonical" href="{{ seo_url }}" />
 <meta name="robots" content="index, follow" />
 <meta name="author" content="{{ profile.name|default:'Rukundo Ronaldo' }}" />
+{% if profile.photo_src %}<link rel="icon" href="{{ profile.photo_src|absolute_url:request }}" />
+<link rel="apple-touch-icon" href="{{ profile.photo_src|absolute_url:request }}" />{% endif %}
 
 {# ── Open Graph ── #}
 <meta property="og:type" content="{{ seo_type }}" />
