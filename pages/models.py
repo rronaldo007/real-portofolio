@@ -145,6 +145,36 @@ class Experience(TimeStamped):
         return _csv_list(self.stack)
 
 
+class Education(TimeStamped):
+    """A formation / diploma entry — drives the home "Formation" section."""
+
+    degree = models.CharField(max_length=160, help_text="e.g. Bachelor — Développement Web")
+    school = models.CharField(max_length=120)
+    field = models.CharField(
+        max_length=160, blank=True,
+        help_text="Sub-line, e.g. “Titre RNCP niveau 7 (Bac+5)”",
+    )
+    location = models.CharField(max_length=120, blank=True)
+    start_year = models.PositiveIntegerField()
+    end_year = models.PositiveIntegerField(
+        null=True, blank=True, help_text="Leave empty for “Present”"
+    )
+    description = models.TextField(blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "-start_year"]
+        verbose_name = "Education"
+        verbose_name_plural = "Education"
+
+    def __str__(self):
+        return f"{self.degree} · {self.school}"
+
+    @property
+    def period(self):
+        return f"{self.start_year} — {self.end_year or 'Présent'}"
+
+
 class Skill(TimeStamped):
     """A single skill/tool, grouped by category and tier."""
 

@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import (
     ContactMessage,
+    Education,
     Experience,
     Project,
     Skill,
@@ -50,6 +51,7 @@ def _home_context():
         "projects": projects,
         "project_year_range": (f"{min(years)}–{max(years)}" if years else ""),
         "experiences": list(Experience.objects.all()),
+        "education": list(Education.objects.all()),
         "skill_groups": _skill_groups(),
         "skill_total": Skill.objects.count(),
         "testimonials": list(Testimonial.objects.all()),

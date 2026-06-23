@@ -4,7 +4,15 @@ from django.contrib.admin.models import LogEntry
 from django.db.models import Count
 from django.urls import reverse
 
-from .models import ContactMessage, Experience, Project, Skill, SiteProfile, Testimonial
+from .models import (
+    ContactMessage,
+    Education,
+    Experience,
+    Project,
+    Skill,
+    SiteProfile,
+    Testimonial,
+)
 
 ACCENT_SWATCHES = ["#c084fc", "#ff5a1f", "#4d7cfe", "#d4ff3a", "#6ee7b7", "#f5f2ec"]
 
@@ -16,6 +24,10 @@ def project_count(request):
 
 def experience_count(request):
     return Experience.objects.count() or None
+
+
+def education_count(request):
+    return Education.objects.count() or None
 
 
 def skill_count(request):

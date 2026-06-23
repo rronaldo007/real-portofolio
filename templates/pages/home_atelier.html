@@ -580,6 +580,78 @@
     border-radius: 999px;
   }
 
+  /* formation — diploma list */
+  .edu {
+    padding: 140px var(--pad-x);
+    border-top: 1px solid var(--line);
+  }
+  .edu-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 80px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .edu-head h2 {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(64px, 8vw, 112px);
+    line-height: 0.95; letter-spacing: -0.025em;
+    font-weight: 400; color: var(--ink);
+  }
+  .edu-head .count {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  }
+  .edu-list { display: flex; flex-direction: column; }
+  .edu-card {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 56px;
+    padding: 40px 0;
+    border-top: 1px solid var(--line);
+    align-items: baseline;
+    position: relative;
+    transition: padding 0.5s var(--ease-out);
+  }
+  .edu-card:last-child { border-bottom: 1px solid var(--line); }
+  .edu-card::before {
+    content: "";
+    position: absolute; top: -1px; left: 0;
+    height: 1px; width: 0;
+    background: var(--accent);
+    transition: width 0.6s var(--ease-out);
+  }
+  .edu-card:hover { padding-left: 24px; }
+  .edu-card:hover::before { width: 100%; }
+  .edu-card .dates { display: flex; flex-direction: column; }
+  .edu-card .dates .yr-big {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 48px; line-height: 0.9; letter-spacing: -0.025em;
+    color: var(--ink); margin-bottom: 8px;
+  }
+  .edu-card .dates .yr-sub {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.06em; color: var(--muted);
+    text-transform: uppercase;
+  }
+  .edu-card .degree {
+    font-family: var(--font-display); font-style: italic;
+    font-size: 30px; line-height: 1.1;
+    letter-spacing: -0.015em; color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .edu-card .school {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .edu-card .school .pin { color: var(--accent); margin-right: 4px; }
+  .edu-card .school .field { color: var(--ink-2); }
+  .edu-card .desc {
+    font-size: 14px; line-height: 1.65;
+    color: var(--ink-2); max-width: 52ch;
+    margin-top: 14px;
+  }
+
   /* skills — chip clouds */
   .skills {
     padding: 140px var(--pad-x);
@@ -902,7 +974,7 @@
     .topbar { left: 22px; right: 22px; }
     .hero { padding: 150px var(--pad-x) 110px; }
     .hero .meta { gap: 40px; }
-    .about, .exp, .skills { padding: 110px var(--pad-x); }
+    .about, .exp, .edu, .skills { padding: 110px var(--pad-x); }
     .projects { padding: 120px var(--pad-x) 110px; }
     .testi, .contact { padding: 120px var(--pad-x) 90px; }
     .about-grid { grid-template-columns: 340px 1fr; gap: 56px; }
@@ -912,6 +984,8 @@
     .exp-card { grid-template-columns: 150px 1fr; gap: 18px 40px; }
     .exp-card .side { grid-column: 1 / -1; }
     .exp-card .dates .yr-big { font-size: 52px; }
+    .edu-card { grid-template-columns: 150px 1fr; gap: 18px 40px; }
+    .edu-card .dates .yr-big { font-size: 40px; }
     .skills-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
     .testi-grid { grid-template-columns: 1fr 1fr; }
   }
@@ -933,6 +1007,10 @@
     .exp-card:hover { padding-left: 0; }      /* no shift under sticky touch-hover */
     .exp-card .dates .yr-big { font-size: 46px; }
     .exp-card .role-wrap .role { font-size: 30px; }
+    .edu-card { grid-template-columns: 1fr; gap: 12px; padding: 32px 0; }
+    .edu-card:hover { padding-left: 0; }      /* no shift under sticky touch-hover */
+    .edu-card .dates .yr-big { font-size: 40px; }
+    .edu-card .degree { font-size: 27px; }
     .skills-grid { grid-template-columns: 1fr; gap: 44px; }
     .testi h3 { font-size: clamp(44px, 10vw, 72px); margin-bottom: 56px; }
     .testi-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -1004,6 +1082,10 @@
   <a href="#exp" class="dock-link" data-hover>
     <svg class="ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v12M3 3l6 4 6-4M3 15h12" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <span class="lab">Carrière</span>
+  </a>
+  <a href="#edu" class="dock-link" data-hover>
+    <svg class="ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2 6.5L9 3l7 3.5L9 10 2 6.5z"/><path d="M5 8v3.5c0 1 1.8 1.8 4 1.8s4-.8 4-1.8V8"/></svg>
+    <span class="lab">Formation</span>
   </a>
   <a href="#tools" class="dock-link" data-hover>
     <svg class="ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2l2 4 5 .4-3.8 3.3 1.2 5L9 12.5 4.6 14.7l1.2-5L2 6.4 7 6z" stroke-linejoin="round"/></svg>
@@ -1171,6 +1253,32 @@
     {% endfor %}
   </div>
 </section>
+
+{% if education %}
+<!-- FORMATION ──────────────────────────────────── -->
+<section id="edu" class="edu">
+  <div class="edu-head">
+    <h2 class="reveal" data-reveal-once>Formation.</h2>
+    <div class="count reveal reveal-delay-1" data-reveal-once>{{ education|length|stringformat:"02d" }} diplômes · parcours</div>
+  </div>
+
+  <div class="edu-list">
+    {% for ed in education %}
+    <article class="edu-card reveal" data-reveal-once data-hover>
+      <div class="dates">
+        <span class="yr-big">{{ ed.start_year }}</span>
+        <span class="yr-sub">— {% if ed.end_year %}{{ ed.end_year }}{% else %}Présent{% endif %}</span>
+      </div>
+      <div class="edu-body">
+        <div class="degree">{{ ed.degree }}.</div>
+        <div class="school"><span class="pin">●</span>{{ ed.school }}{% if ed.field %} · <span class="field">{{ ed.field }}</span>{% endif %}{% if ed.location %} · {{ ed.location }}{% endif %}</div>
+        {% if ed.description %}<p class="desc">{{ ed.description }}</p>{% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 
 <!-- SKILLS ──────────────────────────────────────── -->
 <section id="tools" class="skills">

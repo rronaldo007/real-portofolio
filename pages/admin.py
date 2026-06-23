@@ -6,6 +6,7 @@ from unfold.decorators import action, display
 
 from .models import (
     ContactMessage,
+    Education,
     Experience,
     Project,
     ProjectMetric,
@@ -169,6 +170,29 @@ class ExperienceAdmin(ModelAdmin):
             },
         ),
         ("Detail", {"fields": ("highlights", "stack", "order")}),
+    )
+
+
+@admin.register(Education)
+class EducationAdmin(ModelAdmin):
+    list_display = ("degree", "school", "period", "order")
+    list_editable = ("order",)
+    search_fields = ("degree", "school", "field", "description")
+    ordering = ("order", "-start_year")
+    fieldsets = (
+        (
+            "Formation",
+            {
+                "fields": (
+                    "degree",
+                    ("school", "field"),
+                    "location",
+                    ("start_year", "end_year"),
+                    "description",
+                    "order",
+                )
+            },
+        ),
     )
 
 
