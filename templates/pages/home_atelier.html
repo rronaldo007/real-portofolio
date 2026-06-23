@@ -147,15 +147,19 @@
   .hero h1 {
     font-family: var(--font-display);
     font-style: italic;
-    font-size: clamp(64px, 9vw, 132px);
-    line-height: 0.98;
+    font-size: var(--step-6);
+    line-height: 0.92;
     letter-spacing: -0.025em;
     font-weight: 400;
+    text-wrap: balance;
     max-width: 1200px;
     color: var(--ink);
     margin-bottom: 60px;
   }
   .hero h1 em { font-style: normal; color: var(--accent); }
+  /* gradient-clip accent word keeps split chars transparent so the
+     gradient paints across the whole em (incl. its .ch spans) */
+  .hero h1 em.clip-accent .ch { color: inherit; -webkit-text-fill-color: inherit; }
   .hero h1 .amp { font-family: var(--font-display); }
 
   .hero .meta {
@@ -249,6 +253,11 @@
     margin-bottom: 80px;
     font-family: var(--font-mono); font-size: 11px;
     letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    /* chapter label holds while the grid scrolls past — no clipping ancestor */
+    position: sticky; top: 96px; z-index: 2;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
   .about-eyebrow .num { color: var(--ink); }
   .about-grid {
@@ -296,9 +305,10 @@
   .about-text { padding-top: 8px; }
   .about-text .lede {
     font-family: var(--font-display); font-style: italic;
-    font-size: 44px; line-height: 1.1;
+    font-size: var(--step-3); line-height: 1.04;
     color: var(--ink); font-weight: 400;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
     margin-bottom: 40px;
   }
   .about-text .body {
@@ -336,14 +346,16 @@
   .projects .head {
     display: flex; justify-content: space-between; align-items: baseline;
     margin-bottom: 100px;
+    /* chapter head holds while the grid scrolls past — no clipping ancestor */
+    position: sticky; top: 96px; z-index: 2;
+    padding-bottom: 24px; border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
+  /* .display supplies italic serif / line-height 0.92 / tracking / balance */
   .projects h2 {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 84px;
-    line-height: 1;
-    letter-spacing: -0.025em;
-    font-weight: 400;
+    font-size: var(--step-5);
     color: var(--ink);
   }
   .projects .count { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
@@ -459,9 +471,9 @@
   .proj .title {
     font-family: var(--font-display);
     font-style: italic;
-    font-size: 30px;
+    font-size: var(--step-2);
     font-weight: 400;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
     color: var(--ink);
   }
   .proj .year { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--muted); }
@@ -493,12 +505,15 @@
     margin-bottom: 80px;
     padding-bottom: 24px;
     border-bottom: 1px solid var(--line);
+    /* chapter head holds while the card list scrolls past — no clipping ancestor */
+    position: sticky; top: 96px; z-index: 2;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
   .exp-head h2 {
-    font-family: var(--font-display); font-style: italic;
-    font-size: clamp(64px, 8vw, 112px);
-    line-height: 0.95; letter-spacing: -0.025em;
-    font-weight: 400; color: var(--ink);
+    font-size: var(--step-5);
+    color: var(--ink);
   }
   .exp-head .count {
     font-family: var(--font-mono); font-size: 11px;
@@ -590,12 +605,15 @@
     margin-bottom: 80px;
     padding-bottom: 24px;
     border-bottom: 1px solid var(--line);
+    /* chapter head holds while the diploma list scrolls past — no clipping ancestor */
+    position: sticky; top: 96px; z-index: 2;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
   .edu-head h2 {
-    font-family: var(--font-display); font-style: italic;
-    font-size: clamp(64px, 8vw, 112px);
-    line-height: 0.95; letter-spacing: -0.025em;
-    font-weight: 400; color: var(--ink);
+    font-size: var(--step-5);
+    color: var(--ink);
   }
   .edu-head .count {
     font-family: var(--font-mono); font-size: 11px;
@@ -635,8 +653,8 @@
   }
   .edu-card .degree {
     font-family: var(--font-display); font-style: italic;
-    font-size: 30px; line-height: 1.1;
-    letter-spacing: -0.015em; color: var(--ink);
+    font-size: var(--step-3); line-height: 1.04;
+    letter-spacing: -0.025em; text-wrap: balance; color: var(--ink);
     margin-bottom: 8px;
   }
   .edu-card .school {
@@ -661,12 +679,16 @@
     display: flex; justify-content: space-between; align-items: flex-end;
     margin-bottom: 80px; padding-bottom: 24px;
     border-bottom: 1px solid var(--line);
+    /* chapter head holds while the stack columns scroll past — no clipping ancestor */
+    position: sticky; top: 96px; z-index: 2;
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
+  /* .display supplies italic serif / line-height 0.92 / tracking / balance */
   .skills-head h2 {
-    font-family: var(--font-display); font-style: italic;
-    font-size: clamp(64px, 8vw, 112px);
-    line-height: 0.95; letter-spacing: -0.025em;
-    font-weight: 400; color: var(--ink);
+    font-size: var(--step-5);
+    color: var(--ink);
   }
   .skills-head .count {
     font-family: var(--font-mono); font-size: 11px;
@@ -685,10 +707,10 @@
     display: flex; justify-content: space-between; align-items: baseline;
     margin-bottom: 28px;
   }
+  /* .display supplies italic serif / line-height / tracking / balance */
   .skill-col .cat-head h4 {
-    font-family: var(--font-display); font-style: italic;
-    font-size: 40px; line-height: 1; letter-spacing: -0.015em;
-    color: var(--ink); font-weight: 400;
+    font-size: var(--step-3);
+    color: var(--ink);
   }
   .skill-col .cat-head .num {
     font-family: var(--font-mono); font-size: 11px;
@@ -789,13 +811,13 @@
     border-bottom: 1px solid var(--line);
     margin-bottom: 80px;
   }
+  /* .display supplies italic serif / line-height 0.92 / tracking / balance —
+     the page's biggest type moment, paired with the --step-6 scale */
   .contact-head h2 {
-    font-family: var(--font-display); font-style: italic;
-    font-size: clamp(80px, 11vw, 168px);
-    line-height: 0.92; letter-spacing: -0.03em;
-    font-weight: 400; color: var(--ink);
+    font-size: var(--step-6);
+    color: var(--ink);
   }
-  .contact-head h2 em { color: var(--accent); font-style: italic; }
+  .contact-head h2 em { font-style: italic; }
   .contact-head .top {
     font-family: var(--font-mono); font-size: 11px;
     letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
@@ -978,7 +1000,6 @@
     .projects { padding: 120px var(--pad-x) 110px; }
     .testi, .contact { padding: 120px var(--pad-x) 90px; }
     .about-grid { grid-template-columns: 340px 1fr; gap: 56px; }
-    .projects h2 { font-size: clamp(56px, 9vw, 84px); }
     .projects .head { margin-bottom: 72px; }
     .proj-grid { gap: 60px 44px; }
     .exp-card { grid-template-columns: 150px 1fr; gap: 18px 40px; }
@@ -1010,7 +1031,6 @@
     .edu-card { grid-template-columns: 1fr; gap: 12px; padding: 32px 0; }
     .edu-card:hover { padding-left: 0; }      /* no shift under sticky touch-hover */
     .edu-card .dates .yr-big { font-size: 40px; }
-    .edu-card .degree { font-size: 27px; }
     .skills-grid { grid-template-columns: 1fr; gap: 44px; }
     .testi h3 { font-size: clamp(44px, 10vw, 72px); margin-bottom: 56px; }
     .testi-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -1092,7 +1112,7 @@
     <span class="lab">Outils</span>
   </a>
   <div class="sep"></div>
-  <a href="#contact" class="cta" data-hover>
+  <a href="#contact" class="cta" data-hover data-magnetic>
     {{ profile.email|default:"hello@rukundo.dev" }}
     <svg class="ic" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8L8 3M5 3h3v3"/></svg>
   </a>
@@ -1110,7 +1130,7 @@
   </div>
 
   <h1 class="reveal" data-reveal-once>
-    <span data-split>Je conçois</span> <em class="serif" data-split>des outils</em><br/>
+    <span data-split>Je conçois</span> <em class="serif clip-accent" data-split>des outils</em><br/>
     <span data-split>du backend au pixel —</span><br/>
     <span data-split>et tout</span><br/>
     <span data-split>entre les deux</span><span style="color: var(--accent)">.</span>
@@ -1134,9 +1154,9 @@
 <!-- ABOUT ───────────────────────────────────────── -->
 <section id="about" class="about">
   <div class="about-eyebrow reveal" data-reveal-once>
-    <span><span class="num">N° 02</span> · À propos</span>
-    <span>— Le créateur</span>
-    <span>VOL. I · MMXXVI</span>
+    <span data-vfx><span class="num">N° 02</span> · À propos</span>
+    <span data-vfx>— Le créateur</span>
+    <span data-vfx>VOL. I · MMXXVI</span>
   </div>
 
   <div class="about-grid">
@@ -1194,12 +1214,12 @@
 <!-- PROJECTS ────────────────────────────────────── -->
 <section id="work" class="projects">
   <div class="head">
-    <h2 class="reveal" data-reveal-once>Travaux<br/>sélectionnés.</h2>
-    <div class="count reveal reveal-delay-1" data-reveal-once>{{ projects|length|stringformat:"02d" }} projets · {{ project_year_range }}</div>
+    <h2 class="display reveal" data-reveal-once>Travaux<br/>sélectionnés.</h2>
+    <div class="count reveal reveal-delay-1" data-reveal-once data-vfx>{{ projects|length|stringformat:"02d" }} projets · {{ project_year_range }}</div>
   </div>
   <div class="proj-grid">
     {% for project in projects %}
-    <a class="proj reveal{% cycle '' ' reveal-delay-1' %}" data-reveal-once href="{% url 'pages:project_detail' project.slug %}" data-transition data-hover>
+    <a class="proj reveal{% cycle '' ' reveal-delay-1' %}" data-reveal-once href="{% url 'pages:project_detail' project.slug %}" data-transition data-hover data-preview="{% if project.cover_image_url %}center / cover no-repeat url('{{ project.cover_image_url }}'){% else %}radial-gradient(120% 120% at 30% 20%, var(--accent-soft), var(--bg-2) 72%){% endif %}">
       <div class="img img-{{ project.card_style }}">
         <div class="bg"></div>
         <div class="overlay"></div>
@@ -1225,8 +1245,8 @@
 <!-- EXPERIENCE ──────────────────────────────────── -->
 <section id="exp" class="exp">
   <div class="exp-head">
-    <h2 class="reveal" data-reveal-once>Carrière.</h2>
-    <div class="count reveal reveal-delay-1" data-reveal-once>{{ experiences|length|stringformat:"02d" }} rôles · 2020 — Présent</div>
+    <h2 class="display reveal" data-reveal-once>Carrière.</h2>
+    <div class="count reveal reveal-delay-1" data-reveal-once data-vfx>{{ experiences|length|stringformat:"02d" }} rôles · 2020 — Présent</div>
   </div>
 
   <div class="exp-list">
@@ -1234,7 +1254,7 @@
     <article class="exp-card reveal" data-reveal-once data-hover>
       <div class="dates">
         <span class="yr-big">{{ exp.start_year }}</span>
-        <span class="yr-sub">— {% if exp.end_year %}{{ exp.end_year }}{% else %}Présent{% endif %}</span>
+        <span class="yr-sub" data-vfx>— {% if exp.end_year %}{{ exp.end_year }}{% else %}Présent{% endif %}</span>
       </div>
       <div class="role-wrap">
         <div class="role">{{ exp.role }}.</div>
@@ -1258,8 +1278,8 @@
 <!-- FORMATION ──────────────────────────────────── -->
 <section id="edu" class="edu">
   <div class="edu-head">
-    <h2 class="reveal" data-reveal-once>Formation.</h2>
-    <div class="count reveal reveal-delay-1" data-reveal-once>{{ education|length|stringformat:"02d" }} diplômes · parcours</div>
+    <h2 class="display reveal" data-reveal-once>Formation.</h2>
+    <div class="count reveal reveal-delay-1" data-reveal-once data-vfx>{{ education|length|stringformat:"02d" }} diplômes · parcours</div>
   </div>
 
   <div class="edu-list">
@@ -1267,7 +1287,7 @@
     <article class="edu-card reveal" data-reveal-once data-hover>
       <div class="dates">
         <span class="yr-big">{{ ed.start_year }}</span>
-        <span class="yr-sub">— {% if ed.end_year %}{{ ed.end_year }}{% else %}Présent{% endif %}</span>
+        <span class="yr-sub" data-vfx>— {% if ed.end_year %}{{ ed.end_year }}{% else %}Présent{% endif %}</span>
       </div>
       <div class="edu-body">
         <div class="degree">{{ ed.degree }}.</div>
@@ -1283,16 +1303,16 @@
 <!-- SKILLS ──────────────────────────────────────── -->
 <section id="tools" class="skills">
   <div class="skills-head">
-    <h2 class="reveal" data-reveal-once>Stack &amp; outils.</h2>
-    <div class="count reveal reveal-delay-1" data-reveal-once>— {{ skill_total|stringformat:"02d" }} outils / {{ skill_groups|length|stringformat:"02d" }} catégories</div>
+    <h2 class="display reveal" data-reveal-once>Stack &amp; outils.</h2>
+    <div class="count reveal reveal-delay-1" data-reveal-once data-vfx>— {{ skill_total|stringformat:"02d" }} outils / {{ skill_groups|length|stringformat:"02d" }} catégories</div>
   </div>
   <div class="skills-grid">
     {% for group in skill_groups %}
     <div class="skill-col reveal{% cycle '' ' reveal-delay-1' ' reveal-delay-2' %}" data-reveal-once>
-      <div class="cat-head"><h4>{{ group.name }}</h4><span class="num">— {{ group.count|stringformat:"02d" }}</span></div>
+      <div class="cat-head"><h4 class="display">{{ group.name }}</h4><span class="num" data-vfx>— {{ group.count|stringformat:"02d" }}</span></div>
       {% for tier in group.tiers %}
       <div class="{{ tier.css }}">
-        <div class="tier-lab">— {{ tier.label }}</div>
+        <div class="tier-lab" data-vfx>— {{ tier.label }}</div>
         <div class="chips">
           {% for skill in tier.chips %}
           <span class="chip{% if skill.favorite %} chip-fav{% endif %}" data-hover>{% if tier.css == 'tier primary' or skill.favorite %}<span class="led"></span>{% endif %}{{ skill.name }}</span>
@@ -1308,8 +1328,8 @@
 <!-- CONTACT ─────────────────────────────────────── -->
 <section id="contact" class="contact">
   <div class="contact-head">
-    <h2 class="reveal" data-reveal-once>Dites <em>bonjour</em>.</h2>
-    <div class="top reveal reveal-delay-1" data-reveal-once>— N° 06 · Écrivez / je réponds toujours ↘</div>
+    <h2 class="display reveal" data-reveal-once>Dites <em class="clip-accent">bonjour</em>.</h2>
+    <div class="top reveal reveal-delay-1" data-reveal-once data-vfx>— N° 06 · Écrivez / je réponds toujours ↘</div>
   </div>
 
   <div class="contact-grid">
@@ -1336,7 +1356,7 @@
       </div>
       <div class="form-foot">
         <span class="hint">Réponse sous 24h · ou écrivez-moi directement</span>
-        <button type="submit" class="send-btn" data-hover>
+        <button type="submit" class="send-btn" data-hover data-magnetic>
           Envoyer
           <svg class="ic" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 10L10 3M5 3h5v5"/></svg>
         </button>
@@ -1392,22 +1412,22 @@
       {
         prefix: '— <span class="wave">👋</span> Salut, c’est Rukundo.',
         name: 'Bienvenue.',
-        h1: '<span data-split>Je conçois</span> <em class="serif" data-split>des outils</em><br/><span data-split>du backend au pixel —</span><br/><span data-split>et tout</span><br/><span data-split>entre les deux</span><span style="color: var(--accent)">.</span>'
+        h1: '<span data-split>Je conçois</span> <em class="serif clip-accent" data-split>des outils</em><br/><span data-split>du backend au pixel —</span><br/><span data-split>et tout</span><br/><span data-split>entre les deux</span><span style="color: var(--accent)">.</span>'
       },
       {
         prefix: '— Augmenté par l’IA',
         name: 'Avec l’IA.',
-        h1: '<span data-split>J’utilise</span> <em class="serif" data-split>les LLMs</em><br/><span data-split>comme outils —</span><br/><span data-split>pour aller vite,</span><br/><span data-split>pas pour tricher</span><span style="color: var(--accent)">.</span>'
+        h1: '<span data-split>J’utilise</span> <em class="serif clip-accent" data-split>les LLMs</em><br/><span data-split>comme outils —</span><br/><span data-split>pour aller vite,</span><br/><span data-split>pas pour tricher</span><span style="color: var(--accent)">.</span>'
       },
       {
         prefix: '— Actuellement en train de livrer',
         name: 'Mosaic.',
-        h1: '<span data-split>Un outil PM</span> <em class="serif" data-split>auto-hébergeable</em><br/><span data-split>pour les équipes —</span><br/><span data-split>rapide, temps réel,</span><br/><span data-split>sans bullshit</span><span style="color: var(--accent)">.</span>'
+        h1: '<span data-split>Un outil PM</span> <em class="serif clip-accent" data-split>auto-hébergeable</em><br/><span data-split>pour les équipes —</span><br/><span data-split>rapide, temps réel,</span><br/><span data-split>sans bullshit</span><span style="color: var(--accent)">.</span>'
       },
       {
         prefix: '— Disponible août ’26',
         name: 'Embauchez-moi ?',
-        h1: '<span data-split>Ouvert au</span> <em class="serif" data-split>freelance</em><br/><span data-split>et au consulting —</span><br/><span data-split>dès août. Remote,</span><br/><span data-split>hybride, ou Lyon</span><span style="color: var(--accent)">.</span>'
+        h1: '<span data-split>Ouvert au</span> <em class="serif clip-accent" data-split>freelance</em><br/><span data-split>et au consulting —</span><br/><span data-split>dès août. Remote,</span><br/><span data-split>hybride, ou Lyon</span><span style="color: var(--accent)">.</span>'
       }
     ];
 
