@@ -780,6 +780,7 @@
     {% if project.client %}<div><dt>— Client</dt><dd>{{ project.client }}</dd></div>{% endif %}
     {% if project.tech_list %}<div><dt>— Stack</dt><dd style="font-size: 14px; font-family: var(--font-mono); font-style: normal; letter-spacing: 0.02em; line-height: 1.5;">{% for t in project.tech_list %}{{ t }}{% if not forloop.last %} · {% endif %}{% endfor %}</dd></div>{% endif %}
     {% if project.live_url %}<div><dt>— Live at</dt><dd><a href="{{ project.live_url }}" style="color: var(--accent);">{{ project.live_url|cut:"https://"|cut:"http://" }} ↗</a></dd></div>{% endif %}
+    {% if project.repo_url %}<div><dt>— Code</dt><dd><a href="{{ project.repo_url }}" style="color: var(--accent);">{{ project.repo_url|cut:"https://"|cut:"http://" }} ↗</a></dd></div>{% endif %}
   </dl>
 </section>
 
