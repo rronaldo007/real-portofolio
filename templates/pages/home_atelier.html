@@ -147,8 +147,10 @@
   .hero h1 {
     font-family: var(--font-display);
     font-style: italic;
-    font-size: var(--step-6);
-    line-height: 0.92;
+    /* dedicated size — the hero is a long multi-line phrase, so it needs
+       to sit below --step-6 to stay elegant and never overflow */
+    font-size: clamp(2.25rem, 1.3rem + 4.4vw, 5.5rem);
+    line-height: 0.96;
     letter-spacing: -0.025em;
     font-weight: 400;
     text-wrap: balance;
@@ -1138,15 +1140,15 @@
   <dl class="meta">
     <div class="reveal" data-reveal-once>
       <dt>Actuellement</dt>
-      <dd>Backends et interfaces avec Django, Node et un faible pour HTMX.</dd>
+      <dd>Développeur fullstack qui apprend l’IA &amp; la data — Django, React, Python.</dd>
     </div>
     <div class="reveal reveal-delay-1" data-reveal-once>
       <dt>Basé à</dt>
       <dd>Lyon · France. Remote avec des équipes à travers UTC ± 6.</dd>
     </div>
     <div class="reveal reveal-delay-2" data-reveal-once>
-      <dt>À louer</dt>
-      <dd>Ouvert aux postes produit &amp; consulting dès août 2026.</dd>
+      <dt>Recherche</dt>
+      <dd>Une alternance en IA / data science dès août 2026.</dd>
     </div>
   </dl>
 </section>
@@ -1187,12 +1189,12 @@
       <dl class="facts reveal reveal-delay-3" data-reveal-once>
         <div><dt>— Né à</dt><dd>Lyon · 1999</dd></div>
         <div><dt>— Langues</dt><dd>FR · EN · IT</dd></div>
-        <div><dt>— Années de code</dt><dd>06</dd></div>
+        <div><dt>— Formation</dt><dd>Mastère IA · Bac+5</dd></div>
         <div><dt>— Avec l’IA</dt><dd>au quotidien</dd></div>
         <div><dt>— Fuseau horaire</dt><dd>UTC+01:00</dd></div>
         <div><dt>— Café</dt><dd>Café crème · quotidien</dd></div>
         <div><dt>— En ce moment</dt><dd>Tufte, encore</dd></div>
-        <div><dt>— TJM</dt><dd>Disponible · DM</dd></div>
+        <div><dt>— Recherche</dt><dd>Alternance · IA / Data</dd></div>
       </dl>
     </div>
   </div>
@@ -1415,19 +1417,24 @@
         h1: '<span data-split>Je conçois</span> <em class="serif clip-accent" data-split>des outils</em><br/><span data-split>du backend au pixel —</span><br/><span data-split>et tout</span><br/><span data-split>entre les deux</span><span style="color: var(--accent)">.</span>'
       },
       {
-        prefix: '— Augmenté par l’IA',
-        name: 'Avec l’IA.',
-        h1: '<span data-split>J’utilise</span> <em class="serif clip-accent" data-split>les LLMs</em><br/><span data-split>comme outils —</span><br/><span data-split>pour aller vite,</span><br/><span data-split>pas pour tricher</span><span style="color: var(--accent)">.</span>'
+        prefix: '— Étudiant en IA',
+        name: 'En Mastère.',
+        h1: '<span data-split>Je me forme à</span> <em class="serif clip-accent" data-split>l’IA</em><br/><span data-split>et la data science —</span><br/><span data-split>un Mastère,</span><br/><span data-split>des projets, du café</span><span style="color: var(--accent)">.</span>'
       },
       {
-        prefix: '— Actuellement en train de livrer',
-        name: 'Mosaic.',
-        h1: '<span data-split>Un outil PM</span> <em class="serif clip-accent" data-split>auto-hébergeable</em><br/><span data-split>pour les équipes —</span><br/><span data-split>rapide, temps réel,</span><br/><span data-split>sans bullshit</span><span style="color: var(--accent)">.</span>'
+        prefix: '— Développeur fullstack',
+        name: 'Le terrain.',
+        h1: '<span data-split>Je construis</span> <em class="serif clip-accent" data-split>des produits</em><br/><span data-split>de bout en bout —</span><br/><span data-split>Django, React,</span><br/><span data-split>et l’outillage autour</span><span style="color: var(--accent)">.</span>'
+      },
+      {
+        prefix: '— Augmenté par l’IA',
+        name: 'Avec l’IA.',
+        h1: '<span data-split>J’utilise</span> <em class="serif clip-accent" data-split>les LLMs</em><br/><span data-split>comme outils —</span><br/><span data-split>pour apprendre vite,</span><br/><span data-split>pas pour tricher</span><span style="color: var(--accent)">.</span>'
       },
       {
         prefix: '— Disponible août ’26',
-        name: 'Embauchez-moi ?',
-        h1: '<span data-split>Ouvert au</span> <em class="serif clip-accent" data-split>freelance</em><br/><span data-split>et au consulting —</span><br/><span data-split>dès août. Remote,</span><br/><span data-split>hybride, ou Lyon</span><span style="color: var(--accent)">.</span>'
+        name: 'Une alternance ?',
+        h1: '<span data-split>Je cherche une</span> <em class="serif clip-accent" data-split>alternance</em><br/><span data-split>en IA / data science —</span><br/><span data-split>dès août. Remote,</span><br/><span data-split>hybride, ou Lyon</span><span style="color: var(--accent)">.</span>'
       }
     ];
 
