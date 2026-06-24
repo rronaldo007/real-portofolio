@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-{% include "pages/_seo.html" with structured="person" %}
+{% include "pages/_seo.html" with structured="person" page_title=profile.name|default:"Rukundo Ronaldo"|add:" — Développeur Python · Alternance IA / Data Science" page_description="Rukundo Ronaldo — développeur full-stack (Django, React) à Lyon, en recherche d'une alternance en IA / data science dès août 2026. Projets, parcours et CV à télécharger." %}
 <link rel="stylesheet" href="{% static 'css/shared.css' %}" />
 <style>
   /* ── Atelier-specific layout ───────────────────── */

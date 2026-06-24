@@ -47,10 +47,16 @@ Relies on the `request` + `pages.context_processors.site` context processors.
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "{{ profile.name|default:'Rukundo Ronaldo'|escapejs }}",
-  "url": "{{ request.scheme }}://{{ request.get_host }}/"{% if profile.tagline %},
-  "jobTitle": "{{ profile.tagline|escapejs }}"{% endif %}{% if seo_image %},
-  "image": "{{ seo_image|escapejs }}"{% endif %}{% if profile.location %},
-  "address": "{{ profile.location|escapejs }}"{% endif %}{% if profile.email %},
+  "url": "{{ request.scheme }}://{{ request.get_host }}/",
+  "jobTitle": "Développeur Full-Stack — spécialisation IA / Data Science",
+  "description": "{{ seo_desc|escapejs }}",
+  "knowsAbout": ["Python", "Django", "Flask", "React", "TypeScript", "Machine Learning", "Data Science", "Docker", "PostgreSQL"],
+  "alumniOf": [
+    { "@type": "EducationalOrganization", "name": "ISCOD" },
+    { "@type": "EducationalOrganization", "name": "EPITECH" }
+  ],
+  "homeLocation": { "@type": "Place", "name": "{{ profile.location|default:'Lyon, France'|escapejs }}" }{% if seo_image %},
+  "image": "{{ seo_image|escapejs }}"{% endif %}{% if profile.email %},
   "email": "mailto:{{ profile.email|escapejs }}"{% endif %},
   "sameAs": [{% for u in social_links %}"{{ u|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
 }
