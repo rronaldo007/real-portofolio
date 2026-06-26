@@ -33,7 +33,18 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = [
+    h.strip()
+    for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    if h.strip()
+]
+# The Next frontend always proxies to Django over the loopback (127.0.0.1:8001),
+# so that internal host must be allowed no matter what public domain the env sets
+# — otherwise every proxied request is a 400 DisallowedHost. Append, don't rely on
+# the operator remembering to list 127.0.0.1 alongside the public hostname.
+for _internal_host in ("127.0.0.1", "localhost"):
+    if _internal_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_internal_host)
 
 # Behind a TLS-terminating proxy (Sevalla), trust the forwarded scheme so Django
 # knows the request is HTTPS — required for secure cookies and CSRF on the domain.
