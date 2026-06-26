@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Syne:wght@600;700;800&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spinR { to { transform: rotate(-360deg); } }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform: translateY(0); } }
+  @keyframes corona { 0%,100% { transform: scale(1); opacity:.85; } 50% { transform: scale(1.06); opacity:1; } }
+  @keyframes drift { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @keyframes blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
+</style>
+</helmet>
+
+<!-- ============ OPTION A : ORBIT ============ -->
+<div style="position:absolute; left:0px; top:0px; width:1280px;">
+  <div data-drags-parent="1" style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#9aa3b2; padding:6px 2px; cursor:grab;">Option A — Orbit · centered cosmic</div>
+  <div style="position:relative; width:1280px; height:820px; overflow:hidden; border-radius:3px; background:radial-gradient(120% 120% at 50% 10%, #0b0e17 0%, #05060a 55%, #030308 100%); box-shadow:0 30px 90px rgba(0,0,0,.5);">
+    <div style="position:absolute;top:0;left:0;width:1.5px;height:1.5px;border-radius:50%;box-shadow:{{ starShadow }};"></div>
+    <!-- solar system backdrop -->
+    <div style="position:absolute; inset:0; display:grid; place-items:center; opacity:.9;">
+      <div style="position:absolute;width:680px;height:680px;border-radius:50%;border:1px solid rgba(155,125,255,.08);animation:spin 60s linear infinite;"><div style="position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:#9B7DFF;box-shadow:0 0 12px #9B7DFF;"></div></div>
+      <div style="position:absolute;width:500px;height:500px;border-radius:50%;border:1px solid rgba(77,226,240,.10);animation:spinR 38s linear infinite;"><div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:9px;height:9px;border-radius:50%;background:#4DE2F0;box-shadow:0 0 16px #4DE2F0;"></div></div>
+      <div style="position:absolute;width:340px;height:340px;border-radius:50%;border:1px solid rgba(255,255,255,.08);animation:spin 22s linear infinite;"><div style="position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:7px;height:7px;border-radius:50%;background:#C6F24E;box-shadow:0 0 14px #C6F24E;"></div></div>
+      <div style="width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 38% 32%, #fff7e6, #ffd56b 32%, #ff8a3d 66%, #b34d12);box-shadow:0 0 70px 14px rgba(255,150,60,.45), 0 0 160px 40px rgba(155,125,255,.18); animation:corona 6s ease-in-out infinite;"></div>
+    </div>
+    <!-- content -->
+    <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:18px; z-index:2;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.4em; text-transform:uppercase; color:#4DE2F0;">Portfolio · 2026</div>
+      <h1 style="margin:0; font-family:'Unbounded',sans-serif; font-weight:800; font-size:104px; line-height:.92; letter-spacing:-.02em; color:#f4f6ff; text-shadow:0 0 60px rgba(120,150,255,.35);">ALEX<br>MARTIN</h1>
+      <div style="font-family:'Space Grotesk',sans-serif; font-size:24px; color:#aeb6c6; height:32px;">{{ roleA }}<span style="color:#4DE2F0; animation:blink 1.1s step-end infinite;">_</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ OPTION B : GRID ============ -->
+<div style="position:absolute; left:1380px; top:0px; width:1280px;">
+  <div data-drags-parent="1" style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#9aa3b2; padding:6px 2px; cursor:grab;">Option B — Grid · brutalist editorial</div>
+  <div style="position:relative; width:1280px; height:820px; overflow:hidden; border-radius:3px; background:#07080c; box-shadow:0 30px 90px rgba(0,0,0,.5);">
+    <div style="position:absolute;top:0;left:0;width:1.5px;height:1.5px;border-radius:50%;box-shadow:{{ starShadow }};opacity:.5;"></div>
+    <!-- grid lines -->
+    <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px); background-size:80px 80px;"></div>
+    <!-- meta top bar -->
+    <div style="position:absolute; top:36px; left:48px; right:48px; display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#5d6675;">
+      <span>FULLSTACK / DEV</span><span>LYON · FR</span><span>EST. 2024</span>
+    </div>
+    <!-- solar panel top right -->
+    <div style="position:absolute; top:96px; right:48px; width:300px; height:300px; border:1px solid rgba(198,242,78,.25); border-radius:3px; display:grid; place-items:center; overflow:hidden; background:radial-gradient(80% 80% at 60% 40%, rgba(198,242,78,.06), transparent);">
+      <div style="position:absolute;width:230px;height:230px;border-radius:50%;border:1px solid rgba(255,255,255,.10);animation:spin 26s linear infinite;"><div style="position:absolute;top:-3px;left:50%;transform:translateX(-50%);width:7px;height:7px;border-radius:50%;background:#C6F24E;box-shadow:0 0 14px #C6F24E;"></div></div>
+      <div style="position:absolute;width:130px;height:130px;border-radius:50%;border:1px solid rgba(255,255,255,.10);animation:spinR 14s linear infinite;"><div style="position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:#4DE2F0;box-shadow:0 0 10px #4DE2F0;"></div></div>
+      <div style="width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 38% 32%, #fff, #C6F24E 60%, #6f8a1f); box-shadow:0 0 30px rgba(198,242,78,.6); animation:corona 5s ease-in-out infinite;"></div>
+      <div style="position:absolute; bottom:8px; left:10px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; color:#8a9170;">SYS.ORBIT</div>
+    </div>
+    <!-- big name bottom-left -->
+    <div style="position:absolute; left:48px; bottom:60px;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:#C6F24E; margin-bottom:18px;">[ {{ roleB }} ]</div>
+      <h1 style="margin:0; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:140px; line-height:.84; letter-spacing:-.04em; color:#f1f3ee;">ALEX<br>MARTIN</h1>
+    </div>
+  </div>
+</div>
+
+<!-- ============ OPTION C : ECLIPSE ============ -->
+<div style="position:absolute; left:2760px; top:0px; width:1280px;">
+  <div data-drags-parent="1" style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#9aa3b2; padding:6px 2px; cursor:grab;">Option C — Eclipse · cinematic outline</div>
+  <div style="position:relative; width:1280px; height:820px; overflow:hidden; border-radius:3px; background:radial-gradient(100% 100% at 50% 45%, #0a0612 0%, #060309 60%, #020103 100%); box-shadow:0 30px 90px rgba(0,0,0,.5);">
+    <div style="position:absolute;top:0;left:0;width:1.5px;height:1.5px;border-radius:50%;box-shadow:{{ starShadow }};"></div>
+    <!-- orbiting ring around eclipse -->
+    <div style="position:absolute; inset:0; display:grid; place-items:center;">
+      <div style="position:absolute;width:760px;height:760px;border-radius:50%;border:1px solid rgba(185,140,255,.12);animation:spin 70s linear infinite;"><div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:#B98CFF;box-shadow:0 0 16px #B98CFF;"></div></div>
+      <!-- eclipse / corona -->
+      <div style="position:relative; width:380px; height:380px; display:grid; place-items:center; animation:drift 9s ease-in-out infinite;">
+        <div style="position:absolute; width:380px; height:380px; border-radius:50%; background:radial-gradient(circle, transparent 47%, rgba(185,140,255,.55) 49%, rgba(255,90,200,.35) 53%, transparent 64%); filter:blur(2px); animation:corona 7s ease-in-out infinite;"></div>
+        <div style="width:300px;height:300px;border-radius:50%;background:#040207; box-shadow:inset 0 0 60px rgba(185,140,255,.25), 0 0 120px 10px rgba(185,140,255,.18);"></div>
+      </div>
+    </div>
+    <!-- name outline overlay -->
+    <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:2;">
+      <h1 style="margin:0; font-family:'Syne',sans-serif; font-weight:800; font-size:150px; line-height:.86; letter-spacing:-.03em; text-align:center; color:transparent; -webkit-text-stroke:1.5px rgba(244,238,255,.85); text-stroke:1.5px rgba(244,238,255,.85);">ALEX<br>MARTIN</h1>
+    </div>
+    <div style="position:absolute; bottom:64px; left:0; right:0; text-align:center; z-index:2;">
+      <div style="display:inline-block; font-family:'JetBrains Mono',monospace; font-size:15px; letter-spacing:.28em; text-transform:uppercase; color:#d7c6ff; padding:10px 22px; border:1px solid rgba(185,140,255,.3); border-radius:999px; backdrop-filter:blur(4px);">{{ roleC }}</div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { roleIdx: 0 };
+  get roles() { return ["Fullstack Developer", "SaaS Builder", "AI Learner — 2026", "Student · Lyon"]; }
+  componentDidMount() {
+    this._t = setInterval(() => {
+      this.setState(s => ({ roleIdx: (s.roleIdx + 1) % this.roles.length }));
+    }, 2200);
+  }
+  componentWillUnmount() { clearInterval(this._t); }
+  makeStars(n, w, h) {
+    const out = [];
+    for (let k = 0; k < n; k++) {
+      const x = Math.round(Math.random() * w);
+      const y = Math.round(Math.random() * h);
+      const o = (Math.random() * 0.7 + 0.12).toFixed(2);
+      out.push(`${x}px ${y}px 0 0 rgba(255,255,255,${o})`);
+    }
+    return out.join(',');
+  }
+  mkRole(idx, style) {
+    return React.createElement('span', {
+      key: idx,
+      style: Object.assign({ display: 'inline-block', animation: 'fadeUp .55s cubic-bezier(.2,.7,.2,1)' }, style)
+    }, this.roles[idx]);
+  }
+  renderVals() {
+    if (!this._stars) this._stars = this.makeStars(95, 1280, 820);
+    const i = this.state.roleIdx;
+    return {
+      starShadow: this._stars,
+      roleA: this.mkRole(i, { color: '#cfd6e6' }),
+      roleB: this.mkRole(i, { color: '#C6F24E' }),
+      roleC: this.mkRole(i, { color: '#d7c6ff' }),
+    };
+  }
+}
+</script>
+</body>
+</html>

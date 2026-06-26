@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin:0; background:#05060B; color:#EAECF5; font-family:'Poppins',sans-serif; -webkit-font-smoothing:antialiased; }
+  ::selection { background:rgba(155,107,255,.35); color:#fff; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spinR { to { transform: rotate(-360deg); } }
+  @keyframes corona { 0%,100% { transform:translate(-50%,-50%) scale(1); opacity:.9; } 50% { transform:translate(-50%,-50%) scale(1.06); opacity:1; } }
+  @keyframes blink { 0%,49% { opacity:1; } 50%,100% { opacity:0; } }
+  @keyframes pulseDot { 0% { box-shadow:0 0 0 0 rgba(198,255,58,.55); } 70% { box-shadow:0 0 0 7px rgba(198,255,58,0); } 100% { box-shadow:0 0 0 0 rgba(198,255,58,0); } }
+  @keyframes floaty { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-7px); } }
+  @keyframes scrollcue { 0% { transform:translateY(0); opacity:0; } 30%{opacity:1;} 100% { transform:translateY(13px); opacity:0; } }
+  @media (pointer:coarse) { #cc-dot,#cc-ring { display:none !important; } #page { cursor:auto !important; } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.001s !important; }
+    html { scroll-behavior:auto; }
+  }
+  a { color:inherit; text-decoration:none; }
+  :focus-visible { outline:2px solid #2BF1FF; outline-offset:3px; border-radius:2px; }
+  @keyframes menuIn { from { opacity:0; transform:translateY(26px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes nudge { 0%,100% { transform:translateX(0); } 50% { transform:translateX(6px); } }
+  @keyframes twinkle { 0%,100% { opacity:.5; } 50% { opacity:1; } }
+  @keyframes driftSlow { 0%,100% { transform:translateY(-50%) translateX(0); } 50% { transform:translateY(-52%) translateX(-14px); } }
+  [data-work-scroller]::-webkit-scrollbar { display:none; height:0; }
+  @media (max-width:680px) { [data-linenum] { display:none !important; } }
+  #nav-links, #nav-cv { display:none; }
+  #nav-menu-btn { display:inline-flex; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+</helmet>
+
+<div id="page" style="position:relative; min-height:100vh; overflow-x:hidden; cursor:none; background:#05060B;">
+
+  <div data-progress style="position:fixed; top:0; left:0; height:2px; width:0; z-index:9997; background:linear-gradient(90deg,#9B6BFF,#2BF1FF,#C6FF3A); box-shadow:0 0 8px rgba(155,107,255,.6); pointer-events:none;"></div>
+  <div data-wipe style="position:fixed; inset:0; z-index:9998; background:#05060B; pointer-events:none;"></div>
+
+  <!-- grain + vignette -->
+  <div style="position:fixed; inset:0; pointer-events:none; z-index:60; opacity:.05; mix-blend-mode:overlay; background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);"></div>
+  <div style="position:fixed; inset:0; pointer-events:none; z-index:1; background:radial-gradient(120% 90% at 50% 0%, transparent 55%, rgba(0,0,0,.55) 100%);"></div>
+
+  <!-- custom cursor -->
+  <div id="cc-ring" style="position:fixed; top:0; left:0; width:34px; height:34px; margin:-17px 0 0 -17px; border:1px solid rgba(255,255,255,.6); border-radius:50%; pointer-events:none; z-index:9999; mix-blend-mode:difference; transition:width .2s, height .2s, margin .2s;"></div>
+  <div id="cc-dot" style="position:fixed; top:0; left:0; width:6px; height:6px; margin:-3px 0 0 -3px; background:#fff; border-radius:50%; pointer-events:none; z-index:9999; mix-blend-mode:difference;"></div>
+
+  <!-- ===================== TOP NAV ===================== -->
+  <div style="position:fixed; top:0; left:0; right:0; z-index:55;">
+    <div style="position:absolute; inset:0; background:rgba(7,9,15,.72); backdrop-filter:blur(13px); border-bottom:1px solid rgba(255,255,255,.07); opacity:{{ navBgOpacity }}; transition:opacity .45s ease; pointer-events:none;"></div>
+    <nav aria-label="Primary" style="position:relative; display:flex; align-items:center; justify-content:space-between; padding:18px clamp(20px,5vw,64px);">
+      <a href="#top" onClick="{{ goToTop }}" data-magnetic="1" aria-label="Back to top" style="display:inline-flex; align-items:center; gap:2px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; letter-spacing:-.03em; color:#EAECF5; transition:transform .25s ease-out;">R<span style="color:#9B6BFF; font-size:13px; vertical-align:super;">2</span></a>
+
+      <div id="nav-links" style="position:relative; align-items:center; gap:2px; padding:5px; border-radius:999px; background:rgba(18,20,30,.55); border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(10px); box-shadow:0 12px 34px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);">
+        <span data-nav-ind style="position:absolute; top:5px; bottom:5px; left:0; width:0; border-radius:999px; background:linear-gradient(135deg,#b594ff,#8a5cf0); box-shadow:0 4px 18px rgba(138,92,240,.5); transition:transform .42s cubic-bezier(.2,.7,.2,1), width .42s cubic-bezier(.2,.7,.2,1), opacity .3s ease; pointer-events:none; z-index:0;"></span>
+        <sc-for list="{{ navItems }}" as="m" hint-placeholder-count="7">
+          <a href="{{ m.href }}" onClick="{{ m.onClick }}" data-navlink="1" data-id="{{ m.id }}" style="position:relative; z-index:1; display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:999px; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:{{ m.fg }}; transition:color .35s ease;" style-hover="color:#FFFFFF;">
+            <span style="font-size:9.5px; color:{{ m.numColor }};">{{ m.num }}</span>
+            <span>{{ m.label }}</span>
+          </a>
+        </sc-for>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:12px;">
+        <a href="Ronaldo-Rukundo-CV.pdf" download id="nav-cv" data-magnetic="1" aria-label="Download CV" style="align-items:center; gap:8px; padding:11px 20px; border-radius:999px; background:#C6FF3A; color:#0b1004; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; cursor:none; transition:transform .25s ease-out, box-shadow .2s ease;" style-hover="box-shadow:0 0 26px rgba(198,255,58,.5);">CV</a>
+        <button id="nav-menu-btn" onClick="{{ toggleMenu }}" aria-label="Open menu" style="align-items:center; justify-content:center; width:46px; height:46px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.16); border-radius:11px; color:#EAECF5; cursor:none; transition:background .2s ease, border-color .2s ease;" style-hover="background:rgba(255,255,255,.08); border-color:rgba(155,107,255,.45);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="17" x2="21" y2="17"></line></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ===================== MOBILE MENU OVERLAY ===================== -->
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-modal="true" aria-label="Menu" style="position:fixed; inset:0; z-index:90; background:rgba(5,6,11,.97); backdrop-filter:blur(10px); display:flex; flex-direction:column; padding:clamp(20px,6vw,40px); box-sizing:border-box; overflow-y:auto;">
+    <div style="display:flex; align-items:center; justify-content:space-between;">
+      <span style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; color:#EAECF5;">R<span style="color:#9B6BFF; font-size:13px; vertical-align:super;">2</span></span>
+      <button onClick="{{ closeMenu }}" aria-label="Close menu" style="display:inline-flex; align-items:center; gap:9px; background:none; border:1px solid rgba(255,255,255,.16); border-radius:999px; padding:12px 18px; min-height:48px; color:#EAECF5; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.2em; cursor:none;">CLOSE&nbsp;&times;</button>
+    </div>
+    <nav aria-label="Mobile" style="display:flex; flex-direction:column; gap:4px; margin:auto 0;">
+      <sc-for list="{{ navItems }}" as="m" hint-placeholder-count="7">
+        <a href="{{ m.href }}" onClick="{{ m.onClickMenu }}" style="display:flex; align-items:baseline; gap:16px; padding:10px 0; min-height:56px; color:#EAECF5; opacity:0; animation:menuIn .55s cubic-bezier(.2,.7,.2,1) both; animation-delay:{{ m.menuDelay }};">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#9B6BFF;">{{ m.num }}</span>
+          <span style="font-family:'Instrument Serif',serif; font-style:italic; font-size:clamp(38px,11vw,68px); line-height:1; color:{{ m.serifColor }};">{{ m.label }}</span>
+        </a>
+      </sc-for>
+    </nav>
+    <div style="display:flex; gap:22px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em; color:#5b6178;">
+      <a href="https://github.com/rronaldo007" target="_blank" rel="noopener" style="min-height:44px; display:inline-flex; align-items:center;">GITHUB</a>
+      <a href="https://linkedin.com/in/rukundo-ronaldo" target="_blank" rel="noopener" style="min-height:44px; display:inline-flex; align-items:center;">LINKEDIN</a>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===================== HERO ===================== -->
+  <section id="top" data-screen-label="Hero" style="position:relative; min-height:100vh; display:flex; align-items:center; padding:120px clamp(20px,5vw,64px) 90px; box-sizing:border-box; overflow:hidden;">
+
+    <!-- distant stars -->
+    <div style="position:absolute; top:0; left:0; width:2px; height:2px; border-radius:50%; box-shadow:{{ starShadow }}; z-index:1; animation:twinkle 4s ease-in-out infinite;"></div>
+
+    <!-- solar system, pushed right / ambient, drifts behind the name -->
+    <div data-hero-sys style="position:absolute; top:50%; right:-8%; width:min(64vw,940px); height:min(64vw,940px); pointer-events:none; z-index:1; transform:translateY(-50%); animation:driftSlow 20s ease-in-out infinite;">
+      <!-- violet-to-cyan nebula haze -->
+      <div style="position:absolute; inset:6%; border-radius:50%; background:radial-gradient(circle at 58% 44%, rgba(155,107,255,.3), rgba(43,241,255,.13) 46%, transparent 72%); filter:blur(44px);"></div>
+      <!-- tilted orbital plane (~0.34 squash) -->
+      <div style="position:absolute; inset:0; transform:rotateX(70deg); transform-style:preserve-3d;">
+
+        <!-- orbit 1 : violet, ringed + moon -->
+        <div style="position:absolute; inset:0; border-radius:50%; border:1px solid rgba(155,107,255,.15); animation:spin 72s linear -18s infinite;">
+          <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%) rotateX(-70deg);">
+            <div style="position:absolute; top:50%; left:50%; width:58px; height:21px; transform:translate(-50%,-50%) rotate(-18deg); border-radius:50%; border:2px solid rgba(201,182,255,.5); box-shadow:0 0 10px rgba(155,107,255,.35);"></div>
+            <div style="position:relative; width:24px; height:24px; border-radius:50%; background:radial-gradient(circle at 30% 26%, #fff, #c9b6ff 42%, #9B6BFF 72%, #4d2aa8 100%); box-shadow:0 0 18px 3px rgba(155,107,255,.7);"></div>
+            <div style="position:absolute; top:50%; left:50%; width:46px; height:46px; transform:translate(-50%,-50%); border-radius:50%; animation:spin 7s linear infinite;"><span style="position:absolute; top:-3px; left:50%; transform:translateX(-50%); width:6px; height:6px; border-radius:50%; background:#e6ecff; box-shadow:0 0 8px #aab8ff;"></span></div>
+          </div>
+        </div>
+
+        <!-- orbit 2 : cyan + trail -->
+        <div style="position:absolute; inset:10%; border-radius:50%; border:1px solid rgba(43,241,255,.13); animation:spinR 52s linear -34s infinite;">
+          <div style="position:absolute; top:-8px; left:50%; transform:translateX(-50%) rotateX(-70deg);">
+            <div style="position:absolute; right:80%; top:50%; transform:translateY(-50%); width:50px; height:8px; border-radius:8px; background:linear-gradient(90deg, transparent, rgba(43,241,255,.55)); filter:blur(3px);"></div>
+            <div style="width:15px; height:15px; border-radius:50%; background:radial-gradient(circle at 30% 26%, #fff, #2BF1FF 55%, #0c5f6b 100%); box-shadow:0 0 14px 2px rgba(43,241,255,.7);"></div>
+          </div>
+        </div>
+
+        <!-- orbit 3 : lime + trail -->
+        <div style="position:absolute; inset:19%; border-radius:50%; border:1px solid rgba(198,255,58,.12); animation:spin 38s linear -9s infinite;">
+          <div style="position:absolute; top:-7px; left:50%; transform:translateX(-50%) rotateX(-70deg);">
+            <div style="position:absolute; right:80%; top:50%; transform:translateY(-50%); width:42px; height:7px; border-radius:7px; background:linear-gradient(90deg, transparent, rgba(198,255,58,.5)); filter:blur(3px);"></div>
+            <div style="width:13px; height:13px; border-radius:50%; background:radial-gradient(circle at 30% 26%, #fff, #C6FF3A 55%, #5d7016 100%); box-shadow:0 0 13px 2px rgba(198,255,58,.6);"></div>
+          </div>
+        </div>
+
+        <!-- orbit 4 : pink + trail -->
+        <div style="position:absolute; inset:28%; border-radius:50%; border:1px solid rgba(255,99,192,.12); animation:spinR 27s linear -16s infinite;">
+          <div style="position:absolute; top:-6px; left:50%; transform:translateX(-50%) rotateX(-70deg);">
+            <div style="position:absolute; right:80%; top:50%; transform:translateY(-50%); width:36px; height:6px; border-radius:6px; background:linear-gradient(90deg, transparent, rgba(255,99,192,.5)); filter:blur(2.5px);"></div>
+            <div style="width:11px; height:11px; border-radius:50%; background:radial-gradient(circle at 30% 26%, #fff, #FF63C0 55%, #7a1e57 100%); box-shadow:0 0 12px 2px rgba(255,99,192,.6);"></div>
+          </div>
+        </div>
+
+        <!-- orbit 5 : amber -->
+        <div style="position:absolute; inset:37%; border-radius:50%; border:1px solid rgba(255,179,92,.12); animation:spin 60s linear -42s infinite;">
+          <div style="position:absolute; top:-8px; left:50%; transform:translateX(-50%) rotateX(-70deg);">
+            <div style="width:16px; height:16px; border-radius:50%; background:radial-gradient(circle at 30% 26%, #fff, #FFB35C 55%, #8a4f15 100%); box-shadow:0 0 14px 2px rgba(255,179,92,.55);"></div>
+          </div>
+        </div>
+
+        <!-- orbit 6 : ice + trail -->
+        <div style="position:absolute; inset:46%; border-radius:50%; border:1px solid rgba(142,203,255,.12); animation:spinR 16s linear -6s infinite;">
+          <div style="position:absolute; top:-5px; left:50%; transform:translateX(-50%) rotateX(-70deg);">
+            <div style="position:absolute; right:78%; top:50%; transform:translateY(-50%); width:28px; height:5px; border-radius:5px; background:linear-gradient(90deg, transparent, rgba(142,203,255,.5)); filter:blur(2px);"></div>
+            <div style="width:9px; height:9px; border-radius:50%; background:radial-gradient(circle at 30% 26%, #fff, #8ecbff 55%, #2a4a6b 100%); box-shadow:0 0 10px 2px rgba(142,203,255,.55);"></div>
+          </div>
+        </div>
+
+      </div>
+      <!-- small bright layered sun -->
+      <div style="position:absolute; top:50%; left:50%; width:11%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle at 44% 40%, #ffffff, #efe6ff 26%, #c4abff 56%, #7d54e6 88%); box-shadow:0 0 26px 6px rgba(255,255,255,.6), 0 0 64px 14px rgba(155,107,255,.65), 0 0 150px 50px rgba(155,107,255,.3); transform:translate(-50%,-50%); animation:corona 6s ease-in-out infinite;"></div>
+    </div>
+
+    <!-- console content -->
+    <div data-hero style="position:relative; z-index:3; max-width:920px; width:100%;">
+      <!-- telemetry -->
+      <div style="display:flex; flex-wrap:wrap; gap:18px 30px; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.08em; color:#6f768f; margin-bottom:clamp(24px,4vw,44px);">
+        <span>LAT&nbsp;<b style="color:#9B6BFF; font-weight:500;">45.7640</b></span>
+        <span>LON&nbsp;<b style="color:#9B6BFF; font-weight:500;">4.8357</b></span>
+        <span>STATUS&nbsp;<b style="color:#C6FF3A; font-weight:500;">ONLINE</b></span>
+        <span>STACK&nbsp;<b style="color:#2BF1FF; font-weight:500;">FULL</b></span>
+      </div>
+
+      <!-- name -->
+      <h1 style="margin:0; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; line-height:.84; letter-spacing:0; text-transform:uppercase; font-size:clamp(66px,13.5vw,212px);">
+        <span style="display:block; color:#F4F1FF; text-shadow:0 0 42px rgba(155,107,255,.55), 0 0 95px rgba(155,107,255,.25);">Ronaldo</span>
+        <span style="display:block; color:transparent; -webkit-text-stroke:1.5px #9B6BFF; text-stroke:1.5px #9B6BFF; filter:drop-shadow(0 0 24px rgba(155,107,255,.4));">Rukundo</span>
+      </h1>
+
+      <!-- typewriter -->
+      <div style="margin-top:clamp(22px,4vw,40px); font-family:'JetBrains Mono',monospace; font-size:clamp(16px,2.4vw,30px); color:#aeb4cb; min-height:1.4em;">
+        <span style="color:#5b6178;">&gt;&nbsp;</span>{{ typed }}<span style="display:inline-block; width:.6ch; height:1.05em; vertical-align:-.16em; margin-left:2px; background:#C6FF3A; animation:blink 1.05s step-end infinite;"></span>
+      </div>
+
+      <!-- status chips -->
+      <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:clamp(28px,4vw,46px); font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em;">
+        <span style="display:inline-flex; align-items:center; gap:9px; padding:9px 15px; border:1px solid rgba(198,255,58,.22); border-radius:999px; background:rgba(198,255,58,.04); color:#cdd3e6;"><span style="width:7px; height:7px; border-radius:50%; background:#C6FF3A; animation:pulseDot 1.8s infinite;"></span>SHIPPING - NEATEMYS SAAS</span>
+        <span style="display:inline-flex; align-items:center; gap:9px; padding:9px 15px; border:1px solid rgba(155,107,255,.22); border-radius:999px; background:rgba(155,107,255,.05); color:#cdd3e6;"><span style="width:7px; height:7px; border-radius:50%; background:#9B6BFF; animation:pulseDot 1.8s infinite .4s;"></span>LEARNING - AI / MASTERE 2026</span>
+        <span style="display:inline-flex; align-items:center; gap:9px; padding:9px 15px; border:1px solid rgba(43,241,255,.2); border-radius:999px; background:rgba(43,241,255,.04); color:#cdd3e6;"><span style="width:7px; height:7px; border-radius:50%; background:#2BF1FF; animation:pulseDot 1.8s infinite .8s;"></span>CDA / RNCP NIVEAU 6</span>
+      </div>
+    </div>
+
+    <!-- scroll cue -->
+    <a href="#about" onClick="{{ goToAbout }}" style="position:absolute; bottom:30px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#5b6178; z-index:3;">
+      scroll to explore
+      <span style="position:relative; width:20px; height:30px; border:1px solid rgba(255,255,255,.18); border-radius:12px; overflow:hidden;"><span style="position:absolute; top:6px; left:50%; transform:translateX(-50%); width:3px; height:6px; border-radius:2px; background:#9B6BFF; animation:scrollcue 1.7s ease-in-out infinite;"></span></span>
+    </a>
+  </section>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section id="about" data-screen-label="About" style="position:relative; max-width:1200px; margin:0 auto; padding:clamp(90px,13vh,150px) clamp(20px,5vw,64px); box-sizing:border-box;">
+    <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); margin-bottom:clamp(28px,5vw,48px);">
+      <div style="display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#5b6178; margin-bottom:14px;"><span style="width:7px; height:7px; border-radius:50%; background:#9B6BFF; box-shadow:0 0 8px #9B6BFF; animation:pulseDot 1.8s infinite;"></span><span>01 /</span> <span style="color:#9B6BFF;">about</span></div>
+      <h2 style="margin:0; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(40px,6.5vw,86px); line-height:.9; letter-spacing:-.01em; color:#EAECF5;">About me</h2>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:clamp(26px,3vw,48px); align-items:flex-start;">
+
+      <!-- LEFT COLUMN -->
+      <div style="flex:2.4 1 440px; min-width:0; display:flex; flex-direction:column; gap:clamp(28px,4vw,42px);">
+        <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1) .05s, transform .8s cubic-bezier(.2,.7,.2,1) .05s;">
+          <p style="margin:0 0 24px; font-size:clamp(22px,3.2vw,38px); line-height:1.28; letter-spacing:-.01em; font-weight:500; color:#EAECF5;">Full-stack developer in Lyon. I ship to production on an alternance at <span style="color:#9B6BFF;">Neatemys</span>, a French SaaS for professional mediation and workplace psychological support.</p>
+          <p style="margin:0; font-size:clamp(15px,1.7vw,18px); line-height:1.7; color:#9aa1b8; max-width:62ch;">The apprenticeship ends in August 2026. After that I start a Mastere en Intelligence Artificielle at Epitech, and I am finishing a CDA along the way. I like building things that reach real users, and I am moving deliberately toward AI engineering. On the side I run R2 Stickers, a small vinyl-cutting business in Ecully.</p>
+        </div>
+
+        <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1) .12s, transform .8s cubic-bezier(.2,.7,.2,1) .12s; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.07); border-radius:14px; overflow:hidden; font-family:'JetBrains Mono',monospace;">
+          <div style="background:#0a0c14; padding:20px 22px;"><div style="font-size:11px; letter-spacing:.18em; color:#5b6178; margin-bottom:8px;">LOCATION</div><div style="font-size:15px; color:#cdd3e6;">Lyon, Ecully</div></div>
+          <div style="background:#0a0c14; padding:20px 22px;"><div style="font-size:11px; letter-spacing:.18em; color:#5b6178; margin-bottom:8px;">ROLE</div><div style="font-size:15px; color:#cdd3e6;">Full-stack developer</div></div>
+          <div style="background:#0a0c14; padding:20px 22px;"><div style="font-size:11px; letter-spacing:.18em; color:#5b6178; margin-bottom:8px;">CURRENT</div><div style="font-size:15px; color:#9B6BFF;">Neatemys / alternance</div></div>
+          <div style="background:#0a0c14; padding:20px 22px;"><div style="font-size:11px; letter-spacing:.18em; color:#5b6178; margin-bottom:8px;">NEXT</div><div style="font-size:15px; color:#C6FF3A;">Mastere IA / Epitech</div></div>
+        </div>
+
+        <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1) .18s, transform .8s cubic-bezier(.2,.7,.2,1) .18s;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#5b6178; margin-bottom:22px;">// the plan</div>
+          <div style="position:relative; display:flex; justify-content:space-between; gap:14px;">
+            <div style="position:absolute; top:6px; left:6px; right:6px; height:1px; background:linear-gradient(90deg, #9B6BFF, rgba(155,107,255,.15));"></div>
+            <div style="position:relative; flex:1; min-width:0;"><span style="display:block; width:13px; height:13px; border-radius:50%; background:#9B6BFF; box-shadow:0 0 10px rgba(155,107,255,.7); margin-bottom:16px;"></span><div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; color:#8a90a6; margin-bottom:6px;">NOW</div><div style="font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.5; color:#cdd3e6;">Alternance · Neatemys</div></div>
+            <div style="position:relative; flex:1; min-width:0;"><span style="display:block; width:13px; height:13px; border-radius:50%; background:#0a0c14; border:2px solid rgba(255,255,255,.25); margin-bottom:16px;"></span><div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; color:#8a90a6; margin-bottom:6px;">AUG 2026</div><div style="font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.5; color:#cdd3e6;">Finish CDA + alternance</div></div>
+            <div style="position:relative; flex:1; min-width:0;"><span style="display:block; width:13px; height:13px; border-radius:50%; background:#C6FF3A; box-shadow:0 0 12px rgba(198,255,58,.8); animation:pulseDot 1.8s infinite; margin-bottom:16px;"></span><div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; color:#C6FF3A; margin-bottom:6px;">2026 / 27</div><div style="font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.5; color:#cdd3e6;">Mastere IA · Epitech</div></div>
+            <div style="position:relative; flex:1; min-width:0;"><span style="display:block; width:13px; height:13px; border-radius:50%; background:#0a0c14; border:2px solid rgba(255,255,255,.25); margin-bottom:16px;"></span><div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; color:#8a90a6; margin-bottom:6px;">GOAL</div><div style="font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.5; color:#cdd3e6;">AI engineer</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1) .1s, transform .8s cubic-bezier(.2,.7,.2,1) .1s; flex:1 1 320px; min-width:280px; display:flex; flex-direction:column; gap:22px; align-items:stretch;">
+
+        <div style="position:relative; height:clamp(300px,40vh,380px); border:1px solid rgba(155,107,255,.2); border-radius:18px; overflow:hidden; background:linear-gradient(165deg, rgba(155,107,255,.08), rgba(10,12,20,.6) 60%);">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="about-portrait" shape="rect" placeholder="click to upload · drop a photo" hint-size="100%,100%" style="position:absolute; inset:0; width:100%; height:100%;"></x-import>
+          <span style="position:absolute; z-index:4; top:14px; left:14px; pointer-events:none; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:#cdb6ff; background:rgba(8,9,14,.55); backdrop-filter:blur(6px); border:1px solid rgba(155,107,255,.3); padding:6px 11px; border-radius:999px;">portrait</span>
+          <div style="position:absolute; z-index:4; bottom:0; left:0; right:0; pointer-events:none; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 14px; font-family:'JetBrains Mono',monospace; font-size:11px; color:#8a90a6; background:linear-gradient(0deg, rgba(5,6,11,.82), transparent);"><span>portrait / drop to replace</span><span style="display:inline-flex; align-items:center; gap:6px; color:#C6FF3A;"><span style="width:6px; height:6px; border-radius:50%; background:#C6FF3A; box-shadow:0 0 6px #C6FF3A;"></span>slot ready</span></div>
+        </div>
+
+        <div style="border:1px solid rgba(155,107,255,.2); border-radius:18px; background:linear-gradient(165deg, rgba(155,107,255,.08), rgba(10,12,20,.6) 60%); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:26px; padding:clamp(34px,4vw,48px) 20px;">
+          <div style="position:relative; width:150px; height:150px; animation:floaty 7s ease-in-out infinite;">
+            <div style="position:absolute; top:50%; left:50%; width:212px; height:212px; transform:translate(-50%,-50%) rotateX(74deg); border-radius:50%; border:1px solid rgba(43,241,255,.35); box-shadow:0 0 14px rgba(43,241,255,.2);"></div>
+            <div style="position:absolute; top:50%; left:50%; width:212px; height:212px; transform:translate(-50%,-50%) rotateX(74deg); border-radius:50%; border-top:2px solid #2BF1FF; border-left:2px solid rgba(43,241,255,.5); border-right:none; border-bottom:none;"></div>
+            <div style="position:absolute; inset:0; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 36% 30%, #d6c7ff, #9B6BFF 45%, #5b34c9 78%, #371d82); box-shadow:0 0 50px rgba(155,107,255,.5), inset -12px -10px 32px rgba(0,0,0,.45);">
+              <div style="position:absolute; inset:0; background:repeating-linear-gradient(96deg, transparent 0 13px, rgba(255,255,255,.06) 13px 15px);"></div>
+            </div>
+          </div>
+          <div style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.7; color:#8a90a6;">based in <span style="color:#cdd3e6;">lyon</span><br><span style="color:#9B6BFF;">45.76&deg;N &middot; 4.83&deg;E</span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STACK ===================== -->
+  <section id="stack" data-screen-label="Stack" style="position:relative; max-width:1200px; margin:0 auto; padding:clamp(70px,11vh,130px) clamp(20px,5vw,64px); box-sizing:border-box;">
+    <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:clamp(28px,5vw,48px);">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#5b6178; margin-bottom:14px;"><span style="width:7px; height:7px; border-radius:50%; background:#2BF1FF; box-shadow:0 0 8px #2BF1FF; animation:pulseDot 1.8s infinite;"></span><span>02 /</span> <span style="color:#2BF1FF;">stack</span></div>
+        <h2 style="margin:0; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(40px,6.5vw,86px); line-height:.9; letter-spacing:-.01em; color:#EAECF5;">Skills</h2>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em; color:#5b6178; padding-bottom:10px;">system readout</div>
+    </div>
+    <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); border:1px solid rgba(255,255,255,.1); border-radius:14px; overflow:hidden; background:linear-gradient(180deg, rgba(13,15,24,.94), rgba(8,9,14,.94)); box-shadow:0 30px 70px rgba(0,0,0,.45);">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid rgba(255,255,255,.07); background:rgba(255,255,255,.02);">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div style="display:flex; gap:7px;"><span style="width:11px; height:11px; border-radius:50%; background:#9B6BFF;"></span><span style="width:11px; height:11px; border-radius:50%; background:#2BF1FF;"></span><span style="width:11px; height:11px; border-radius:50%; background:#C6FF3A;"></span></div>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#8a90a6;">ronaldo@lyon : ~/stack</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.16em; color:#C6FF3A;"><span style="width:7px; height:7px; border-radius:50%; background:#C6FF3A; box-shadow:0 0 8px #C6FF3A; animation:pulseDot 1.8s infinite;"></span>ONLINE</div>
+      </div>
+      <div style="padding:clamp(22px,3vw,32px) clamp(16px,3vw,30px); font-family:'JetBrains Mono',monospace;">
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) 0.06s, transform .7s cubic-bezier(.2,.7,.2,1) 0.06s; display:flex; gap:16px; margin-bottom:26px;">
+        <span data-linenum style="color:#3a4055; font-size:13px; min-width:22px; text-align:right; -webkit-user-select:none; user-select:none; padding-top:1px;">01</span>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:14px; line-height:1.4; margin-bottom:13px;"><span style="color:#9B6BFF;">$</span> <span style="color:#EAECF5;">ls</span> <span style="color:#2BF1FF;">backend/</span></div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;"><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(155,107,255,.28); background:rgba(155,107,255,.08); color:#c4a9ff;" style-hover="transform:translateY(-3px); background:rgba(155,107,255,.18); border-color:rgba(155,107,255,.75); box-shadow:0 0 16px rgba(155,107,255,.45);">Python</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(155,107,255,.28); background:rgba(155,107,255,.08); color:#c4a9ff;" style-hover="transform:translateY(-3px); background:rgba(155,107,255,.18); border-color:rgba(155,107,255,.75); box-shadow:0 0 16px rgba(155,107,255,.45);">Django 5</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(155,107,255,.28); background:rgba(155,107,255,.08); color:#c4a9ff;" style-hover="transform:translateY(-3px); background:rgba(155,107,255,.18); border-color:rgba(155,107,255,.75); box-shadow:0 0 16px rgba(155,107,255,.45);">DRF</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(155,107,255,.28); background:rgba(155,107,255,.08); color:#c4a9ff;" style-hover="transform:translateY(-3px); background:rgba(155,107,255,.18); border-color:rgba(155,107,255,.75); box-shadow:0 0 16px rgba(155,107,255,.45);">Celery</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(155,107,255,.28); background:rgba(155,107,255,.08); color:#c4a9ff;" style-hover="transform:translateY(-3px); background:rgba(155,107,255,.18); border-color:rgba(155,107,255,.75); box-shadow:0 0 16px rgba(155,107,255,.45);">PostgreSQL</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(155,107,255,.28); background:rgba(155,107,255,.08); color:#c4a9ff;" style-hover="transform:translateY(-3px); background:rgba(155,107,255,.18); border-color:rgba(155,107,255,.75); box-shadow:0 0 16px rgba(155,107,255,.45);">PostGIS</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(155,107,255,.28); background:rgba(155,107,255,.08); color:#c4a9ff;" style-hover="transform:translateY(-3px); background:rgba(155,107,255,.18); border-color:rgba(155,107,255,.75); box-shadow:0 0 16px rgba(155,107,255,.45);">Node</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(155,107,255,.28); background:rgba(155,107,255,.08); color:#c4a9ff;" style-hover="transform:translateY(-3px); background:rgba(155,107,255,.18); border-color:rgba(155,107,255,.75); box-shadow:0 0 16px rgba(155,107,255,.45);">Express</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(155,107,255,.28); background:rgba(155,107,255,.08); color:#c4a9ff;" style-hover="transform:translateY(-3px); background:rgba(155,107,255,.18); border-color:rgba(155,107,255,.75); box-shadow:0 0 16px rgba(155,107,255,.45);">Prisma</span></div>
+        </div>
+      </div>
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) 0.12s, transform .7s cubic-bezier(.2,.7,.2,1) 0.12s; display:flex; gap:16px; margin-bottom:26px;">
+        <span data-linenum style="color:#3a4055; font-size:13px; min-width:22px; text-align:right; -webkit-user-select:none; user-select:none; padding-top:1px;">02</span>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:14px; line-height:1.4; margin-bottom:13px;"><span style="color:#9B6BFF;">$</span> <span style="color:#EAECF5;">ls</span> <span style="color:#2BF1FF;">frontend/</span></div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;"><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(43,241,255,.28); background:rgba(43,241,255,.07); color:#8eeeff;" style-hover="transform:translateY(-3px); background:rgba(43,241,255,.16); border-color:rgba(43,241,255,.75); box-shadow:0 0 16px rgba(43,241,255,.42);">TypeScript</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(43,241,255,.28); background:rgba(43,241,255,.07); color:#8eeeff;" style-hover="transform:translateY(-3px); background:rgba(43,241,255,.16); border-color:rgba(43,241,255,.75); box-shadow:0 0 16px rgba(43,241,255,.42);">React</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(43,241,255,.28); background:rgba(43,241,255,.07); color:#8eeeff;" style-hover="transform:translateY(-3px); background:rgba(43,241,255,.16); border-color:rgba(43,241,255,.75); box-shadow:0 0 16px rgba(43,241,255,.42);">Next.js 14</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(43,241,255,.28); background:rgba(43,241,255,.07); color:#8eeeff;" style-hover="transform:translateY(-3px); background:rgba(43,241,255,.16); border-color:rgba(43,241,255,.75); box-shadow:0 0 16px rgba(43,241,255,.42);">Vite</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(43,241,255,.28); background:rgba(43,241,255,.07); color:#8eeeff;" style-hover="transform:translateY(-3px); background:rgba(43,241,255,.16); border-color:rgba(43,241,255,.75); box-shadow:0 0 16px rgba(43,241,255,.42);">TanStack Query</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(43,241,255,.28); background:rgba(43,241,255,.07); color:#8eeeff;" style-hover="transform:translateY(-3px); background:rgba(43,241,255,.16); border-color:rgba(43,241,255,.75); box-shadow:0 0 16px rgba(43,241,255,.42);">Tailwind</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(43,241,255,.28); background:rgba(43,241,255,.07); color:#8eeeff;" style-hover="transform:translateY(-3px); background:rgba(43,241,255,.16); border-color:rgba(43,241,255,.75); box-shadow:0 0 16px rgba(43,241,255,.42);">Alpine.js</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(43,241,255,.28); background:rgba(43,241,255,.07); color:#8eeeff;" style-hover="transform:translateY(-3px); background:rgba(43,241,255,.16); border-color:rgba(43,241,255,.75); box-shadow:0 0 16px rgba(43,241,255,.42);">HTMX</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(43,241,255,.28); background:rgba(43,241,255,.07); color:#8eeeff;" style-hover="transform:translateY(-3px); background:rgba(43,241,255,.16); border-color:rgba(43,241,255,.75); box-shadow:0 0 16px rgba(43,241,255,.42);">Django Cotton</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(43,241,255,.28); background:rgba(43,241,255,.07); color:#8eeeff;" style-hover="transform:translateY(-3px); background:rgba(43,241,255,.16); border-color:rgba(43,241,255,.75); box-shadow:0 0 16px rgba(43,241,255,.42);">Three.js / R3F</span></div>
+        </div>
+      </div>
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) 0.18s, transform .7s cubic-bezier(.2,.7,.2,1) 0.18s; display:flex; gap:16px; margin-bottom:26px;">
+        <span data-linenum style="color:#3a4055; font-size:13px; min-width:22px; text-align:right; -webkit-user-select:none; user-select:none; padding-top:1px;">03</span>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:14px; line-height:1.4; margin-bottom:13px;"><span style="color:#9B6BFF;">$</span> <span style="color:#EAECF5;">ls</span> <span style="color:#2BF1FF;">tooling/</span></div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;"><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); color:#aab0c6;" style-hover="transform:translateY(-3px); background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.4); box-shadow:0 0 16px rgba(255,255,255,.18);">Docker</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); color:#aab0c6;" style-hover="transform:translateY(-3px); background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.4); box-shadow:0 0 16px rgba(255,255,255,.18);">Kubernetes</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); color:#aab0c6;" style-hover="transform:translateY(-3px); background:rgba(255,255,255,.09); border-color:rgba(255,255,255,.4); box-shadow:0 0 16px rgba(255,255,255,.18);">Git</span></div>
+        </div>
+      </div>
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) 0.24s, transform .7s cubic-bezier(.2,.7,.2,1) 0.24s; display:flex; gap:16px; margin-bottom:26px;">
+        <span data-linenum style="color:#3a4055; font-size:13px; min-width:22px; text-align:right; -webkit-user-select:none; user-select:none; padding-top:1px;">04</span>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:14px; line-height:1.4; margin-bottom:13px;"><span style="color:#9B6BFF;">$</span> <span style="color:#EAECF5;">cat</span> <span style="color:#2BF1FF;">currently_learning.md</span> <span style="color:#5e8a4a;"># 2026</span></div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;"><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(198,255,58,.3); background:rgba(198,255,58,.08); color:#d6f58a;" style-hover="transform:translateY(-3px); background:rgba(198,255,58,.18); border-color:rgba(198,255,58,.8); box-shadow:0 0 16px rgba(198,255,58,.45);">AI / ML</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(198,255,58,.3); background:rgba(198,255,58,.08); color:#d6f58a;" style-hover="transform:translateY(-3px); background:rgba(198,255,58,.18); border-color:rgba(198,255,58,.8); box-shadow:0 0 16px rgba(198,255,58,.45);">local LLMs</span><span data-tag style="display:inline-flex; padding:7px 12px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; border:1px solid rgba(198,255,58,.3); background:rgba(198,255,58,.08); color:#d6f58a;" style-hover="transform:translateY(-3px); background:rgba(198,255,58,.18); border-color:rgba(198,255,58,.8); box-shadow:0 0 16px rgba(198,255,58,.45);">RAG</span></div>
+        </div>
+      </div>
+      <div data-reveal style="opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .3s, transform .7s cubic-bezier(.2,.7,.2,1) .3s; display:flex; gap:16px;">
+        <span data-linenum style="color:#3a4055; font-size:13px; min-width:22px; text-align:right; -webkit-user-select:none; user-select:none;">05</span>
+        <div style="font-size:14px; line-height:1.4;"><span style="color:#9B6BFF;">$</span> <span style="display:inline-block; width:9px; height:16px; background:#C6FF3A; vertical-align:-3px; margin-left:7px; box-shadow:0 0 8px rgba(198,255,58,.6); animation:blink 1.05s step-end infinite;"></span></div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WORK ===================== -->
+  <section id="work" data-work-sec data-screen-label="Work" style="position:relative;">
+    <div data-work-pin style="position:relative; padding:clamp(56px,9vh,104px) 0; box-sizing:border-box;">
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:16px; max-width:1200px; margin:0 auto clamp(26px,3.5vw,42px); padding:0 clamp(20px,5vw,64px); box-sizing:border-box;">
+        <div>
+          <div style="display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#5b6178; margin-bottom:14px;"><span style="width:7px; height:7px; border-radius:50%; background:#9B6BFF; box-shadow:0 0 8px #9B6BFF; animation:pulseDot 1.8s infinite;"></span><span>03 /</span> <span style="color:#9B6BFF;">selected work</span></div>
+          <h2 style="margin:0; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(40px,6.5vw,86px); line-height:.9; letter-spacing:-.01em; color:#EAECF5;">Projects</h2>
+        </div>
+        <a href="projects.dc.html" data-magnetic="1" style="display:inline-flex; align-items:center; gap:9px; padding:12px 22px; border-radius:999px; border:1px solid rgba(255,255,255,.22); background:transparent; color:#EAECF5; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase; white-space:nowrap; transition:transform .25s ease-out, background .25s ease, color .25s ease, border-color .25s ease;" style-hover="background:#EAECF5; color:#05060B; border-color:#EAECF5;">See all projects &rarr;</a>
+      </div>
+
+      <div data-work-scroller style="overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; scroll-padding-left:clamp(20px,5vw,64px); scrollbar-width:none;">
+        <div data-work-track style="display:flex; gap:24px; padding:12px clamp(20px,5vw,64px); width:max-content; will-change:transform;">
+
+          <article data-work-card data-accent="#9B6BFF" style="position:relative; flex:0 0 auto; width:min(440px,80vw); height:clamp(470px,76vh,720px); display:flex; flex-direction:column; padding:14px; border-radius:22px; border:1px solid rgba(155,107,255,.22); background:linear-gradient(165deg, rgba(155,107,255,.12), rgba(10,12,20,.55) 55%); overflow:hidden; scroll-snap-align:start; box-shadow:0 20px 50px rgba(0,0,0,.4); transition:transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s ease, opacity .45s ease, border-color .45s ease;">
+            <div style="position:relative; height:46%; flex:0 0 auto; border-radius:15px; overflow:hidden; border:1px solid rgba(155,107,255,.28);">
+              <div style="position:absolute; inset:0; background:linear-gradient(150deg, rgba(155,107,255,.34), rgba(10,12,20,.7) 72%);"></div>
+              <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px); background-size:26px 26px; -webkit-mask-image:radial-gradient(circle at 50% 42%, #000 26%, transparent 72%); mask-image:radial-gradient(circle at 50% 42%, #000 26%, transparent 72%);"></div>
+              <div style="position:absolute; inset:0; display:grid; place-items:center; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:rgba(255,255,255,.4);">image / 01</div>
+              <img data-work-img alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:2; transition:transform .55s cubic-bezier(.2,.7,.2,1);">
+              <span style="position:absolute; z-index:3; top:13px; left:13px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#cdb6ff; background:rgba(8,9,14,.55); backdrop-filter:blur(7px); border:1px solid rgba(155,107,255,.35); padding:6px 11px; border-radius:999px;">alternance / saas</span>
+              <button data-work-arrow aria-label="Open Neatemys" style="position:absolute; z-index:3; top:11px; right:11px; width:38px; height:38px; border-radius:50%; border:1px solid rgba(155,107,255,.5); background:rgba(8,9,14,.5); backdrop-filter:blur(7px); color:#cdb6ff; display:grid; place-items:center; cursor:none; transition:background .35s ease, color .35s ease, transform .4s cubic-bezier(.2,.7,.2,1);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></button>
+              <div style="position:absolute; z-index:3; bottom:4px; right:14px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(38px,5.5vw,60px); line-height:1; color:transparent; -webkit-text-stroke:1.5px rgba(155,107,255,.5); pointer-events:none;">01</div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; padding:20px 16px 8px;">
+              <h3 style="margin:0 0 12px; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(32px,4.2vw,46px); line-height:.95; color:#EAECF5;">Neatemys</h3>
+              <p style="margin:0; font-size:15px; line-height:1.6; color:#9aa1b8;">French SaaS for professional mediation and workplace psychological support. I built the payment and subscription flow, the offer selection, and a multi-tenant component system.</p>
+              <div style="margin-top:auto; padding-top:18px; border-top:1px solid rgba(255,255,255,.09); display:flex; flex-wrap:wrap; gap:8px;"><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">Django 5</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">Tailwind</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">Django Cotton</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">vanilla JS</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">Celery</span></div>
+            </div>
+          </article>
+
+          <article data-work-card data-accent="#2BF1FF" style="position:relative; flex:0 0 auto; width:min(440px,80vw); height:clamp(470px,76vh,720px); display:flex; flex-direction:column; padding:14px; border-radius:22px; border:1px solid rgba(43,241,255,.22); background:linear-gradient(165deg, rgba(43,241,255,.12), rgba(10,12,20,.55) 55%); overflow:hidden; scroll-snap-align:start; box-shadow:0 20px 50px rgba(0,0,0,.4); transition:transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s ease, opacity .45s ease, border-color .45s ease;">
+            <div style="position:relative; height:46%; flex:0 0 auto; border-radius:15px; overflow:hidden; border:1px solid rgba(43,241,255,.28);">
+              <div style="position:absolute; inset:0; background:linear-gradient(150deg, rgba(43,241,255,.32), rgba(10,12,20,.7) 72%);"></div>
+              <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px); background-size:26px 26px; -webkit-mask-image:radial-gradient(circle at 50% 42%, #000 26%, transparent 72%); mask-image:radial-gradient(circle at 50% 42%, #000 26%, transparent 72%);"></div>
+              <div style="position:absolute; inset:0; display:grid; place-items:center; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:rgba(255,255,255,.4);">image / 02</div>
+              <img data-work-img alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:2; transition:transform .55s cubic-bezier(.2,.7,.2,1);">
+              <span style="position:absolute; z-index:3; top:13px; left:13px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#8eeeff; background:rgba(8,9,14,.55); backdrop-filter:blur(7px); border:1px solid rgba(43,241,255,.35); padding:6px 11px; border-radius:999px;">cda / non-profit</span>
+              <button data-work-arrow aria-label="Open Youcus" style="position:absolute; z-index:3; top:11px; right:11px; width:38px; height:38px; border-radius:50%; border:1px solid rgba(43,241,255,.5); background:rgba(8,9,14,.5); backdrop-filter:blur(7px); color:#8eeeff; display:grid; place-items:center; cursor:none; transition:background .35s ease, color .35s ease, transform .4s cubic-bezier(.2,.7,.2,1);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></button>
+              <div style="position:absolute; z-index:3; bottom:4px; right:14px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(38px,5.5vw,60px); line-height:1; color:transparent; -webkit-text-stroke:1.5px rgba(43,241,255,.5); pointer-events:none;">02</div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; padding:20px 16px 8px;">
+              <h3 style="margin:0 0 12px; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(32px,4.2vw,46px); line-height:.95; color:#EAECF5;">Youcus</h3>
+              <p style="margin:0; font-size:15px; line-height:1.6; color:#9aa1b8;">A YouTube-overlay learning platform built for my RNCP CDA project. Runs as a cost-recovery non-profit at 2.99 EUR per month.</p>
+              <div style="margin-top:auto; padding-top:18px; border-top:1px solid rgba(255,255,255,.09); display:flex; flex-wrap:wrap; gap:8px;"><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">Express + TS</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">Prisma</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">MySQL</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">Vite + React</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">TanStack Query</span></div>
+            </div>
+          </article>
+
+          <article data-work-card data-accent="#C6FF3A" style="position:relative; flex:0 0 auto; width:min(440px,80vw); height:clamp(470px,76vh,720px); display:flex; flex-direction:column; padding:14px; border-radius:22px; border:1px solid rgba(198,255,58,.22); background:linear-gradient(165deg, rgba(198,255,58,.10), rgba(10,12,20,.55) 55%); overflow:hidden; scroll-snap-align:start; box-shadow:0 20px 50px rgba(0,0,0,.4); transition:transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s ease, opacity .45s ease, border-color .45s ease;">
+            <div style="position:relative; height:46%; flex:0 0 auto; border-radius:15px; overflow:hidden; border:1px solid rgba(198,255,58,.28);">
+              <div style="position:absolute; inset:0; background:linear-gradient(150deg, rgba(198,255,58,.28), rgba(10,12,20,.7) 72%);"></div>
+              <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px); background-size:26px 26px; -webkit-mask-image:radial-gradient(circle at 50% 42%, #000 26%, transparent 72%); mask-image:radial-gradient(circle at 50% 42%, #000 26%, transparent 72%);"></div>
+              <div style="position:absolute; inset:0; display:grid; place-items:center; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:rgba(255,255,255,.4);">image / 03</div>
+              <img data-work-img alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:2; transition:transform .55s cubic-bezier(.2,.7,.2,1);">
+              <span style="position:absolute; z-index:3; top:13px; left:13px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#d6f58a; background:rgba(8,9,14,.55); backdrop-filter:blur(7px); border:1px solid rgba(198,255,58,.35); padding:6px 11px; border-radius:999px;">real estate / 3d</span>
+              <button data-work-arrow aria-label="Open Diaspora Homes" style="position:absolute; z-index:3; top:11px; right:11px; width:38px; height:38px; border-radius:50%; border:1px solid rgba(198,255,58,.5); background:rgba(8,9,14,.5); backdrop-filter:blur(7px); color:#d6f58a; display:grid; place-items:center; cursor:none; transition:background .35s ease, color .35s ease, transform .4s cubic-bezier(.2,.7,.2,1);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></button>
+              <div style="position:absolute; z-index:3; bottom:4px; right:14px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(38px,5.5vw,60px); line-height:1; color:transparent; -webkit-text-stroke:1.5px rgba(198,255,58,.5); pointer-events:none;">03</div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; padding:20px 16px 8px;">
+              <h3 style="margin:0 0 12px; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(32px,4.2vw,46px); line-height:.95; color:#EAECF5;">Diaspora Homes</h3>
+              <p style="margin:0; font-size:15px; line-height:1.6; color:#9aa1b8;">A Kigali residential land platform for the francophone diaspora, with 3D tours and an agent-mediated managed service.</p>
+              <div style="margin-top:auto; padding-top:18px; border-top:1px solid rgba(255,255,255,.09); display:flex; flex-wrap:wrap; gap:8px;"><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">Django 5 + DRF</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">PostGIS</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">Next.js 14</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">React Three Fiber</span></div>
+            </div>
+          </article>
+
+          <article data-work-card data-accent="#A8B0C8" style="position:relative; flex:0 0 auto; width:min(440px,80vw); height:clamp(470px,76vh,720px); display:flex; flex-direction:column; padding:14px; border-radius:22px; border:1px solid rgba(255,255,255,.14); background:linear-gradient(165deg, rgba(255,255,255,.05), rgba(10,12,20,.55) 55%); overflow:hidden; scroll-snap-align:start; box-shadow:0 20px 50px rgba(0,0,0,.4); transition:transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s ease, opacity .45s ease, border-color .45s ease;">
+            <div style="position:relative; height:46%; flex:0 0 auto; border-radius:15px; overflow:hidden; border:1px solid rgba(255,255,255,.16);">
+              <div style="position:absolute; inset:0; background:linear-gradient(150deg, rgba(168,176,200,.22), rgba(10,12,20,.7) 72%);"></div>
+              <div style="position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px); background-size:26px 26px; -webkit-mask-image:radial-gradient(circle at 50% 42%, #000 26%, transparent 72%); mask-image:radial-gradient(circle at 50% 42%, #000 26%, transparent 72%);"></div>
+              <div style="position:absolute; inset:0; display:grid; place-items:center; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:rgba(255,255,255,.4);">image / 04</div>
+              <img data-work-img alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:2; transition:transform .55s cubic-bezier(.2,.7,.2,1);">
+              <span style="position:absolute; z-index:3; top:13px; left:13px; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#c3c9d8; background:rgba(8,9,14,.55); backdrop-filter:blur(7px); border:1px solid rgba(255,255,255,.2); padding:6px 11px; border-radius:999px;">founder / side</span>
+              <button data-work-arrow aria-label="Open R2 Stickers" style="position:absolute; z-index:3; top:11px; right:11px; width:38px; height:38px; border-radius:50%; border:1px solid rgba(255,255,255,.25); background:rgba(8,9,14,.5); backdrop-filter:blur(7px); color:#c3c9d8; display:grid; place-items:center; cursor:none; transition:background .35s ease, color .35s ease, transform .4s cubic-bezier(.2,.7,.2,1);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></button>
+              <div style="position:absolute; z-index:3; bottom:4px; right:14px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(38px,5.5vw,60px); line-height:1; color:transparent; -webkit-text-stroke:1.5px rgba(168,176,200,.55); pointer-events:none;">04</div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; padding:20px 16px 8px;">
+              <h3 style="margin:0 0 12px; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(32px,4.2vw,46px); line-height:.95; color:#EAECF5;">R2 Stickers</h3>
+              <p style="margin:0; font-size:15px; line-height:1.6; color:#9aa1b8;">A vinyl-cutting business in Ecully. Custom cut stickers and signage produced end to end.</p>
+              <div style="margin-top:auto; padding-top:18px; border-top:1px solid rgba(255,255,255,.09); display:flex; flex-wrap:wrap; gap:8px;"><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">VEVOR plotter</span><span style="color:#3a4055;">·</span><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8a91a6;">SignMaster</span></div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <div style="max-width:1200px; margin:clamp(22px,3vw,34px) auto 0; padding:0 clamp(20px,5vw,64px); box-sizing:border-box; display:flex; align-items:center; gap:20px;">
+        <div style="flex:1; height:2px; background:rgba(255,255,255,.08); border-radius:2px; overflow:hidden;"><div data-work-progress style="height:100%; width:8%; background:linear-gradient(90deg,#9B6BFF,#2BF1FF); box-shadow:0 0 10px rgba(155,107,255,.6); transition:width .12s linear;"></div></div>
+        <div style="display:flex; align-items:center; gap:9px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#5b6178; white-space:nowrap;">drag / scroll <span style="display:inline-block; animation:nudge 1.6s ease-in-out infinite;">&rarr;</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TIMELINE ===================== -->
+  <section id="timeline" data-screen-label="Timeline" style="position:relative; max-width:1120px; margin:0 auto; padding:clamp(70px,11vh,130px) clamp(20px,5vw,64px); box-sizing:border-box;">
+    <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:clamp(34px,6vw,56px);">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#5b6178; margin-bottom:14px;"><span style="width:7px; height:7px; border-radius:50%; background:#9B6BFF; box-shadow:0 0 8px #9B6BFF; animation:pulseDot 1.8s infinite;"></span><span>04 /</span> <span style="color:#9B6BFF;">mission log</span></div>
+        <h2 style="margin:0; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(40px,6.5vw,86px); line-height:.9; letter-spacing:-.01em; color:#EAECF5;">Experience</h2>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#5b6178; padding-bottom:10px;">experience</div>
+    </div>
+    <div style="position:relative; padding-left:34px;">
+      <div data-spine style="position:absolute; left:6px; top:6px; bottom:6px; width:1px; background:linear-gradient(180deg, #9B6BFF, rgba(155,107,255,.05));"></div>
+
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); position:relative; margin-bottom:clamp(42px,5vw,60px);">
+        <span style="position:absolute; left:-34px; top:5px; width:13px; height:13px; border-radius:50%; background:#05060B; border:2px solid #9B6BFF; box-shadow:0 0 12px rgba(155,107,255,.6);"></span>
+        <div style="display:flex; flex-wrap:wrap; gap:18px 44px;">
+          <div style="flex:0 0 auto; width:108px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em; color:#9B6BFF; padding-top:5px;">2023 - 2025</div>
+          <div style="flex:1 1 360px; min-width:240px;">
+            <h3 style="margin:0 0 12px; font-size:clamp(20px,2.4vw,28px); font-weight:400; font-family:'Instrument Serif',serif; font-style:italic; color:#EAECF5;">Full-stack developer, Neatemys</h3>
+            <p style="margin:0; font-size:15px; line-height:1.7; color:#9aa1b8;">Built the end-to-end mediation journey in Django (file creation, payment, questionnaires, slot booking, mediator assignment, and dashboard). Rebuilt the frontend from Bootstrap to Tailwind with a reusable Django Cotton component system, migrated jQuery to vanilla JS, and automated async tasks with Celery alongside unit and functional tests.</p>
+          </div>
+          <div style="flex:0 1 220px; min-width:190px; font-family:'JetBrains Mono',monospace; font-size:12px;">
+            <div style="margin-bottom:7px;"><span style="color:#5b6178;">TYPE</span> <span style="color:#cdd3e6;">Alternance &middot; Full-stack</span></div>
+            <div style="margin-bottom:18px;"><span style="color:#5b6178;">LOC</span> <span style="color:#cdd3e6;">Lyon, France</span></div>
+            <div style="display:flex; flex-wrap:wrap; gap:7px;">
+              <span style="font-size:11.5px; color:#c4a9ff; border:1px solid rgba(155,107,255,.35); background:rgba(155,107,255,.08); border-radius:5px; padding:5px 10px;">Django</span>
+              <span style="font-size:11.5px; color:#c4a9ff; border:1px solid rgba(155,107,255,.35); background:rgba(155,107,255,.08); border-radius:5px; padding:5px 10px;">Tailwind</span>
+              <span style="font-size:11.5px; color:#c4a9ff; border:1px solid rgba(155,107,255,.35); background:rgba(155,107,255,.08); border-radius:5px; padding:5px 10px;">Cotton</span>
+              <span style="font-size:11.5px; color:#c4a9ff; border:1px solid rgba(155,107,255,.35); background:rgba(155,107,255,.08); border-radius:5px; padding:5px 10px;">Celery</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .08s, transform .7s cubic-bezier(.2,.7,.2,1) .08s; position:relative;">
+        <span style="position:absolute; left:-34px; top:5px; width:13px; height:13px; border-radius:50%; background:#05060B; border:2px solid #2BF1FF; box-shadow:0 0 12px rgba(43,241,255,.5);"></span>
+        <div style="display:flex; flex-wrap:wrap; gap:18px 44px;">
+          <div style="flex:0 0 auto; width:108px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em; color:#2BF1FF; padding-top:5px;">2022 - 2023</div>
+          <div style="flex:1 1 360px; min-width:240px;">
+            <h3 style="margin:0 0 12px; font-size:clamp(20px,2.4vw,28px); font-weight:400; font-family:'Instrument Serif',serif; font-style:italic; color:#EAECF5;">Full-stack developer, LumApps</h3>
+            <p style="margin:0; font-size:15px; line-height:1.7; color:#9aa1b8;">Built marketplace widgets for an enterprise intranet SaaS in React and TypeScript: a timezone widget with geolocation, a Spotify widget via the Spotify SDK and API, and an air-quality widget backed by a Flask endpoint consuming OpenWeather. Managed API calls with React Query, fixed bugs, and improved the marketplace experience.</p>
+          </div>
+          <div style="flex:0 1 220px; min-width:190px; font-family:'JetBrains Mono',monospace; font-size:12px;">
+            <div style="margin-bottom:7px;"><span style="color:#5b6178;">TYPE</span> <span style="color:#cdd3e6;">Alternance &middot; Full-stack</span></div>
+            <div style="margin-bottom:18px;"><span style="color:#5b6178;">LOC</span> <span style="color:#cdd3e6;">Lyon, France</span></div>
+            <div style="display:flex; flex-wrap:wrap; gap:7px;">
+              <span style="font-size:11.5px; color:#8eeeff; border:1px solid rgba(43,241,255,.35); background:rgba(43,241,255,.07); border-radius:5px; padding:5px 10px;">React</span>
+              <span style="font-size:11.5px; color:#8eeeff; border:1px solid rgba(43,241,255,.35); background:rgba(43,241,255,.07); border-radius:5px; padding:5px 10px;">TypeScript</span>
+              <span style="font-size:11.5px; color:#8eeeff; border:1px solid rgba(43,241,255,.35); background:rgba(43,241,255,.07); border-radius:5px; padding:5px 10px;">React Query</span>
+              <span style="font-size:11.5px; color:#8eeeff; border:1px solid rgba(43,241,255,.35); background:rgba(43,241,255,.07); border-radius:5px; padding:5px 10px;">Flask</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== EDUCATION ===================== -->
+  <section id="education" data-screen-label="Education" style="position:relative; max-width:1200px; margin:0 auto; padding:clamp(70px,11vh,130px) clamp(20px,5vw,64px); box-sizing:border-box;">
+    <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:clamp(28px,5vw,48px);">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#5b6178; margin-bottom:14px;"><span style="width:7px; height:7px; border-radius:50%; background:#C6FF3A; box-shadow:0 0 8px #C6FF3A; animation:pulseDot 1.8s infinite;"></span><span>05 /</span> <span style="color:#C6FF3A;">edu</span></div>
+        <h2 style="margin:0; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(40px,6.5vw,86px); line-height:.9; letter-spacing:-.01em; color:#EAECF5;">Education</h2>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#5b6178; padding-bottom:10px;">credentials</div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:18px;">
+      <div style="display:flex; flex-wrap:wrap; gap:18px; align-items:stretch;">
+
+        <article data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease, border-color .4s ease; position:relative; flex:1 1 340px; min-width:0; overflow:hidden; border:1px solid rgba(43,241,255,.25); border-radius:18px; padding:clamp(26px,2.6vw,34px); background:linear-gradient(165deg, rgba(43,241,255,.07), rgba(10,12,20,.55) 62%);" style-hover="transform:translateY(-8px); border-color:rgba(43,241,255,.6); box-shadow:0 26px 56px rgba(0,0,0,.45), 0 0 42px rgba(43,241,255,.22);">
+          <div style="position:absolute; bottom:-26px; right:8px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(110px,15vw,168px); line-height:1; color:transparent; -webkit-text-stroke:1.5px rgba(43,241,255,.13); pointer-events:none;">N6</div>
+          <div style="position:relative; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-bottom:22px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#8eeeff; border:1px solid rgba(43,241,255,.4); padding:6px 12px; border-radius:6px;">RNCP / NIVEAU 6</span>
+            <span style="display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#2BF1FF;"><span style="width:7px; height:7px; border-radius:50%; background:#2BF1FF; box-shadow:0 0 8px #2BF1FF; animation:pulseDot 1.8s infinite;"></span>in progress</span>
+          </div>
+          <h3 style="position:relative; margin:0 0 12px; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(26px,3vw,38px); line-height:1; color:#EAECF5;">Concepteur Developpeur d'Applications</h3>
+          <div style="position:relative; font-family:'JetBrains Mono',monospace; font-size:13px; color:#8eeeff; margin-bottom:18px;">iSCOD / Oktogone <span style="color:#5b6178;">&middot;</span> work-study</div>
+          <p style="position:relative; margin:0; padding-top:18px; border-top:1px solid rgba(255,255,255,.09); font-size:14.5px; line-height:1.65; color:#9aa1b8;">Formalising the full-stack practice behind the production work: design, build, test, and ship complete applications.</p>
+        </article>
+
+        <article data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .08s, transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease, border-color .4s ease; position:relative; flex:1 1 340px; min-width:0; overflow:hidden; border:1px solid rgba(198,255,58,.32); border-radius:18px; padding:clamp(26px,2.6vw,34px); background:linear-gradient(165deg, rgba(198,255,58,.08), rgba(10,12,20,.55) 62%); box-shadow:0 18px 44px rgba(0,0,0,.35); transform:translateY(-10px);" style-hover="transform:translateY(-18px); border-color:rgba(198,255,58,.7); box-shadow:0 32px 62px rgba(0,0,0,.5), 0 0 46px rgba(198,255,58,.28);">
+          <div style="position:absolute; bottom:-26px; right:8px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:clamp(110px,15vw,168px); line-height:1; color:transparent; -webkit-text-stroke:1.5px rgba(198,255,58,.14); pointer-events:none;">N7</div>
+          <div style="position:relative; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-bottom:22px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#d6f58a; border:1px solid rgba(198,255,58,.4); padding:6px 12px; border-radius:6px;">RNCP / NIVEAU 7</span>
+            <span style="display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#C6FF3A;"><span style="width:7px; height:7px; border-radius:50%; background:#C6FF3A; box-shadow:0 0 8px #C6FF3A; animation:pulseDot 1.8s infinite;"></span>incoming <span style="color:#5b6178;">&middot;</span> 2026</span>
+          </div>
+          <h3 style="position:relative; margin:0 0 12px; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(26px,3vw,38px); line-height:1; color:#EAECF5;">Mastere en Intelligence Artificielle</h3>
+          <div style="position:relative; font-family:'JetBrains Mono',monospace; font-size:13px; color:#d6f58a; margin-bottom:18px;">Epitech <span style="color:#5b6178;">&middot;</span> 2026 / 27</div>
+          <p style="position:relative; margin:0; padding-top:18px; border-top:1px solid rgba(255,255,255,.09); font-size:14.5px; line-height:1.65; color:#9aa1b8;">The next clearance level. Moving deliberately from full-stack engineering into applied AI and machine learning.</p>
+        </article>
+
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:18px; align-items:stretch;">
+        <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .12s, transform .7s cubic-bezier(.2,.7,.2,1) .12s; flex:1 1 300px; min-width:0; border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:clamp(22px,2.4vw,30px);">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#5b6178; margin-bottom:18px;">// also &middot; coursework</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#aab0c6; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); border-radius:5px; padding:7px 12px;">VISIPLUS Academy</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#aab0c6; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); border-radius:5px; padding:7px 12px;">Commercial English</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#aab0c6; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); border-radius:5px; padding:7px 12px;">Cybersecurity</span>
+          </div>
+        </div>
+        <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .18s, transform .7s cubic-bezier(.2,.7,.2,1) .18s; flex:1 1 300px; min-width:0; border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:clamp(22px,2.4vw,30px); display:flex; flex-direction:column; justify-content:center;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:#5b6178; margin-bottom:26px;">academic clearance</div>
+          <div style="position:relative;">
+            <div data-gauge style="height:3px; border-radius:3px; background:linear-gradient(90deg,#2BF1FF,#C6FF3A);"></div>
+            <span style="position:absolute; top:1.5px; left:0; transform:translate(-3px,-50%); width:13px; height:13px; border-radius:50%; background:#0a0c14; border:2px solid #2BF1FF; box-shadow:0 0 10px rgba(43,241,255,.6);"></span>
+            <span style="position:absolute; top:1.5px; right:0; transform:translate(3px,-50%); width:13px; height:13px; border-radius:50%; background:#0a0c14; border:2px solid #C6FF3A; box-shadow:0 0 10px rgba(198,255,58,.6);"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:16px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em;"><span style="color:#2BF1FF;">NIV. 6</span><span style="color:#C6FF3A;">NIV. 7</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== AI JOURNEY ===================== -->
+  <section id="ai" data-screen-label="AI journey" style="position:relative; padding:clamp(90px,15vh,180px) clamp(20px,5vw,64px); box-sizing:border-box; overflow:hidden; background:radial-gradient(110% 80% at 80% 50%, rgba(155,107,255,.1), transparent 60%);">
+    <div style="position:absolute; top:50%; right:-12%; transform:translateY(-50%); width:min(50vw,620px); height:min(50vw,620px); pointer-events:none; perspective:1000px; opacity:.7;">
+      <div style="position:absolute; inset:0; transform:rotateX(70deg);">
+        <div style="position:absolute; inset:8%; border-radius:50%; border:1px solid rgba(155,107,255,.18); animation:spin 50s linear infinite;"><span style="position:absolute; top:-6px; left:50%; width:12px; height:12px; border-radius:50%; background:#9B6BFF; box-shadow:0 0 16px #9B6BFF; transform:translateX(-50%) rotateX(-70deg);"></span></div>
+        <div style="position:absolute; inset:30%; border-radius:50%; border:1px solid rgba(43,241,255,.15); animation:spinR 28s linear infinite;"><span style="position:absolute; top:-5px; left:50%; width:9px; height:9px; border-radius:50%; background:#2BF1FF; box-shadow:0 0 12px #2BF1FF; transform:translateX(-50%) rotateX(-70deg);"></span></div>
+      </div>
+      <div style="position:absolute; top:50%; left:50%; width:14%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle at 38% 34%, #fff, #9B6BFF 60%, #5b34c9); box-shadow:0 0 60px 14px rgba(155,107,255,.4); transform:translate(-50%,-50%); animation:corona 6s ease-in-out infinite;"></div>
+    </div>
+    <div style="position:relative; z-index:2; max-width:1200px; margin:0 auto;">
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#5b6178; margin-bottom:18px;"><span style="width:7px; height:7px; border-radius:50%; background:#C6FF3A; box-shadow:0 0 8px #C6FF3A; animation:pulseDot 1.8s infinite;"></span><span>06 /</span> <span style="color:#C6FF3A;">trajectory</span></div>
+      <h2 data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1) .05s, transform .8s cubic-bezier(.2,.7,.2,1) .05s; margin:0 0 24px; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(40px,6.8vw,86px); letter-spacing:-.01em; line-height:.92; max-width:15ch; color:#EAECF5;">From full-stack to <span style="color:#9B6BFF;">AI engineer</span></h2>
+      <p data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1) .1s, transform .8s cubic-bezier(.2,.7,.2,1) .1s; margin:0 0 clamp(36px,5vw,56px); max-width:60ch; font-size:clamp(16px,1.9vw,21px); line-height:1.7; color:#9aa1b8;">The Mastere IA at Epitech is the next deliberate step, but the work has already started. I am running models locally and building toward AI engineering, not just reading about it.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;">
+        <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); border:1px solid rgba(255,255,255,.1); border-radius:16px; padding:26px; background:rgba(10,12,20,.5);">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#9B6BFF; margin-bottom:14px;">01</div>
+          <h4 style="margin:0 0 8px; font-size:18px; font-weight:400; font-family:'Instrument Serif',serif; font-style:italic; color:#EAECF5;">Local LLMs</h4>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:#9aa1b8;">Running open models locally with Ollama, testing what they can and cannot do.</p>
+        </div>
+        <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .07s, transform .7s cubic-bezier(.2,.7,.2,1) .07s; border:1px solid rgba(255,255,255,.1); border-radius:16px; padding:26px; background:rgba(10,12,20,.5);">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#2BF1FF; margin-bottom:14px;">02</div>
+          <h4 style="margin:0 0 8px; font-size:18px; font-weight:400; font-family:'Instrument Serif',serif; font-style:italic; color:#EAECF5;">Image generation</h4>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:#9aa1b8;">Hands-on with image-generation models, learning the pipeline end to end.</p>
+        </div>
+        <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .14s, transform .7s cubic-bezier(.2,.7,.2,1) .14s; border:1px solid rgba(198,255,58,.3); border-radius:16px; padding:26px; background:linear-gradient(160deg, rgba(198,255,58,.07), rgba(10,12,20,.5));">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#C6FF3A; margin-bottom:14px;">03</div>
+          <h4 style="margin:0 0 8px; font-size:18px; font-weight:400; font-family:'Instrument Serif',serif; font-style:italic; color:#EAECF5;">Local RAG assistant</h4>
+          <p style="margin:0; font-size:14.5px; line-height:1.6; color:#9aa1b8;">Building a retrieval-augmented assistant that runs locally. The chat on this page is the front for it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GALLERY ===================== -->
+  <section id="gallery" data-screen-label="Gallery" style="position:relative; max-width:1200px; margin:0 auto; padding:clamp(70px,11vh,130px) clamp(20px,5vw,64px); box-sizing:border-box;">
+    <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:14px; margin-bottom:clamp(28px,5vw,48px);">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#5b6178; margin-bottom:14px;"><span style="width:7px; height:7px; border-radius:50%; background:#2BF1FF; box-shadow:0 0 8px #2BF1FF; animation:pulseDot 1.8s infinite;"></span><span>08 /</span> <span style="color:#2BF1FF;">lens</span></div>
+        <h2 style="margin:0; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(40px,6.5vw,86px); line-height:.9; letter-spacing:-.01em; color:#EAECF5;">Photography</h2>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:flex-end; gap:14px; padding-bottom:6px;">
+        <div style="text-align:right; font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#5b6178; line-height:1.7;">a second lens on the world.<br>click any frame to enlarge.</div>
+        <a href="gallery.dc.html" data-magnetic="1" style="display:inline-flex; align-items:center; gap:9px; padding:12px 22px; border-radius:999px; border:1px solid rgba(255,255,255,.22); background:transparent; color:#EAECF5; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase; white-space:nowrap; transition:transform .25s ease-out, background .25s ease, color .25s ease, border-color .25s ease;" style-hover="background:#EAECF5; color:#05060B; border-color:#EAECF5;">See gallery &rarr;</a>
+      </div>
+    </div>
+    <div style="column-width:270px; column-gap:16px;">
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); break-inside:avoid; margin:0 0 16px;">
+        <div style="position:relative; height:222px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.09); background:radial-gradient(130% 100% at 50% 120%, #ffc06b, #e0633a 22%, #8a2f5e 52%, #1a1430 82%); transition:transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease, border-color .4s ease;" style-hover="transform:translateY(-5px); border-color:rgba(43,241,255,.4); box-shadow:0 20px 44px rgba(0,0,0,.45), 0 0 30px rgba(43,241,255,.15);">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-1" shape="rect" placeholder=" " hint-size="100%,100%" style="position:absolute; inset:0; width:100%; height:100%;"></x-import>
+        </div>
+      </div>
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .05s, transform .7s cubic-bezier(.2,.7,.2,1) .05s; break-inside:avoid; margin:0 0 16px;">
+        <div style="position:relative; height:300px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.09); background:radial-gradient(circle at 62% 40%, #c08bff, #6a3bb0 38%, #2a1850 72%, #0a0814); transition:transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease, border-color .4s ease;" style-hover="transform:translateY(-5px); border-color:rgba(43,241,255,.4); box-shadow:0 20px 44px rgba(0,0,0,.45), 0 0 30px rgba(43,241,255,.15);">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-2" shape="rect" placeholder=" " hint-size="100%,100%" style="position:absolute; inset:0; width:100%; height:100%;"></x-import>
+        </div>
+      </div>
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .1s, transform .7s cubic-bezier(.2,.7,.2,1) .1s; break-inside:avoid; margin:0 0 16px;">
+        <div style="position:relative; height:190px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.09); background:linear-gradient(180deg, #08101f 35%, #1f8a7a 72%, #7ef2c8 98%); transition:transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease, border-color .4s ease;" style-hover="transform:translateY(-5px); border-color:rgba(43,241,255,.4); box-shadow:0 20px 44px rgba(0,0,0,.45), 0 0 30px rgba(43,241,255,.15);">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-3" shape="rect" placeholder=" " hint-size="100%,100%" style="position:absolute; inset:0; width:100%; height:100%;"></x-import>
+        </div>
+      </div>
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .15s, transform .7s cubic-bezier(.2,.7,.2,1) .15s; break-inside:avoid; margin:0 0 16px;">
+        <div style="position:relative; height:262px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.09); background:radial-gradient(circle at 72% 30%, rgba(255,255,255,.95), rgba(170,190,255,.4) 5%, transparent 13%), linear-gradient(160deg,#0b1024,#05060b); transition:transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease, border-color .4s ease;" style-hover="transform:translateY(-5px); border-color:rgba(43,241,255,.4); box-shadow:0 20px 44px rgba(0,0,0,.45), 0 0 30px rgba(43,241,255,.15);">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-4" shape="rect" placeholder=" " hint-size="100%,100%" style="position:absolute; inset:0; width:100%; height:100%;"></x-import>
+        </div>
+      </div>
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .2s, transform .7s cubic-bezier(.2,.7,.2,1) .2s; break-inside:avoid; margin:0 0 16px;">
+        <div style="position:relative; height:180px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.09); background:radial-gradient(70% 60% at 50% 80%, rgba(190,150,255,.45), transparent 60%), linear-gradient(180deg, #241d40, #0e0a1e); transition:transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease, border-color .4s ease;" style-hover="transform:translateY(-5px); border-color:rgba(43,241,255,.4); box-shadow:0 20px 44px rgba(0,0,0,.45), 0 0 30px rgba(43,241,255,.15);">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-5" shape="rect" placeholder=" " hint-size="100%,100%" style="position:absolute; inset:0; width:100%; height:100%;"></x-import>
+        </div>
+      </div>
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .7s cubic-bezier(.2,.7,.2,1) .25s, transform .7s cubic-bezier(.2,.7,.2,1) .25s; break-inside:avoid; margin:0 0 16px;">
+        <div style="position:relative; height:320px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.09); background:radial-gradient(circle at 42% 58%, #ff7ccd, #7a1e57 42%, #1a0a20 82%); transition:transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease, border-color .4s ease;" style-hover="transform:translateY(-5px); border-color:rgba(43,241,255,.4); box-shadow:0 20px 44px rgba(0,0,0,.45), 0 0 30px rgba(43,241,255,.15);">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-6" shape="rect" placeholder=" " hint-size="100%,100%" style="position:absolute; inset:0; width:100%; height:100%;"></x-import>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact" data-screen-label="Contact" style="position:relative; max-width:1200px; margin:0 auto; padding:clamp(80px,12vh,150px) clamp(20px,5vw,64px) clamp(50px,7vh,90px); box-sizing:border-box;">
+    <div style="display:flex; flex-wrap:wrap; gap:clamp(20px,2.4vw,30px); align-items:stretch;">
+
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1) 0s, transform .8s cubic-bezier(.2,.7,.2,1) 0s; flex:1.1 1 360px; min-width:280px; display:flex; flex-direction:column;">
+        <div style="display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#5b6178; margin-bottom:18px;"><span style="width:7px; height:7px; border-radius:50%; background:#9B6BFF; box-shadow:0 0 8px #9B6BFF; animation:pulseDot 1.8s infinite;"></span><span>08 /</span> <span style="color:#9B6BFF;">contact</span></div>
+        <h2 style="margin:0; font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(44px,6.5vw,86px); letter-spacing:-.01em; line-height:.9; color:#EAECF5;">Let us build<br>something.</h2>
+        <div style="margin-top:auto; padding-top:clamp(34px,6vh,64px); display:flex; flex-direction:column; gap:12px; align-items:flex-start;">
+          <a href="https://github.com/rronaldo007" target="_blank" rel="noopener" data-magnetic="1" style="display:inline-flex; align-items:center; gap:12px; width:100%; max-width:430px; box-sizing:border-box; padding:15px 20px; border-radius:12px; font-family:'JetBrains Mono',monospace; font-size:14px; transition:transform .25s ease-out, border-color .2s, background .2s, box-shadow .2s; border:1px solid rgba(255,255,255,.14); color:#EAECF5;" style-hover="border-color:rgba(155,107,255,.5); background:rgba(155,107,255,.07);"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.4.5 0 5.9 0 12.5c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.8-1.6 8.2-6.1 8.2-11.4C24 5.9 18.6.5 12 .5z"/></svg>github.com/rronaldo007</a>
+          <a href="https://linkedin.com/in/rukundo-ronaldo" target="_blank" rel="noopener" data-magnetic="1" style="display:inline-flex; align-items:center; gap:12px; width:100%; max-width:430px; box-sizing:border-box; padding:15px 20px; border-radius:12px; font-family:'JetBrains Mono',monospace; font-size:14px; transition:transform .25s ease-out, border-color .2s, background .2s, box-shadow .2s; border:1px solid rgba(255,255,255,.14); color:#EAECF5;" style-hover="border-color:rgba(43,241,255,.5); background:rgba(43,241,255,.07);"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.8 0 0 .77 0 1.73v20.54C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>linkedin.com/in/rukundo-ronaldo</a>
+          <a href="Ronaldo-Rukundo-CV.pdf" download data-magnetic="1" style="display:inline-flex; align-items:center; gap:12px; width:100%; max-width:430px; box-sizing:border-box; padding:15px 20px; border-radius:12px; font-family:'JetBrains Mono',monospace; font-size:14px; transition:transform .25s ease-out, border-color .2s, background .2s, box-shadow .2s; border:none; background:#C6FF3A; color:#0b1004; font-weight:700;" style-hover="box-shadow:0 0 30px rgba(198,255,58,.45);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>Download CV</a>
+        </div>
+      </div>
+
+      <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1) .1s, transform .8s cubic-bezier(.2,.7,.2,1) .1s; flex:1 1 360px; min-width:280px; position:relative; border:1px solid rgba(155,107,255,.18); border-radius:18px; overflow:hidden; background:linear-gradient(165deg, rgba(155,107,255,.06), rgba(8,9,14,.6) 60%); min-height:clamp(340px,46vh,440px); display:grid; place-items:center;">
+        <div style="position:absolute; inset:0; background:radial-gradient(circle at 55% 50%, rgba(155,107,255,.24), rgba(43,241,255,.1) 45%, transparent 72%); filter:blur(34px);"></div>
+        <div style="position:absolute; top:0; left:0; width:2px; height:2px; border-radius:50%; box-shadow:{{ starShadow }}; animation:twinkle 4s ease-in-out infinite;"></div>
+        <div style="position:relative; width:min(60%,210px); aspect-ratio:1; perspective:780px;">
+          <div style="position:absolute; inset:0; transform-style:preserve-3d; transform:rotateX(6deg);">
+            <div style="position:absolute; top:50%; left:50%; width:150%; aspect-ratio:1; transform:translate(-50%,-50%) rotateX(76deg); border-radius:50%; border:3px solid rgba(43,241,255,.3); -webkit-clip-path:inset(0 0 50% 0); clip-path:inset(0 0 50% 0);"></div>
+            <div style="position:absolute; top:50%; left:50%; width:152%; aspect-ratio:1; transform:translate(-50%,-50%) rotateX(76deg); transform-style:preserve-3d; animation:spin 11s linear infinite;"><div style="position:absolute; top:-6px; left:50%; width:12px; height:12px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #fff, #cdd6ff 60%, #6b76a8); box-shadow:0 0 8px #aab8ff; transform:translateX(-50%) rotateX(-76deg);"></div></div>
+            <div style="position:absolute; inset:15%; border-radius:50%; overflow:hidden; background:radial-gradient(circle at 36% 30%, #d6c7ff, #9B6BFF 46%, #5b34c9 80%, #371d82); box-shadow:0 0 50px rgba(155,107,255,.5), inset -12px -10px 30px rgba(0,0,0,.45);"><div style="position:absolute; inset:0; background:repeating-linear-gradient(94deg, transparent 0 11px, rgba(255,255,255,.06) 11px 13px);"></div></div>
+            <div style="position:absolute; top:50%; left:50%; width:150%; aspect-ratio:1; transform:translate(-50%,-50%) rotateX(76deg); border-radius:50%; border:3px solid #2BF1FF; -webkit-clip-path:inset(50% 0 0 0); clip-path:inset(50% 0 0 0); box-shadow:0 0 12px rgba(43,241,255,.5);"></div>
+          </div>
+        </div>
+        <span style="position:absolute; top:16px; left:16px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:#8eeeff; background:rgba(8,9,14,.5); backdrop-filter:blur(6px); border:1px solid rgba(43,241,255,.3); padding:6px 12px; border-radius:999px;">&middot; orbit</span>
+        <div style="position:absolute; bottom:14px; right:16px; text-align:right; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.6; color:#8a90a6;">based in <span style="color:#cdd3e6;">lyon</span><br><span style="color:#9B6BFF;">45.76&deg;N &middot; 4.83&deg;E</span></div>
+      </div>
+    </div>
+
+    <div data-reveal style="opacity:0; transform:translateY(34px); transition:opacity .8s cubic-bezier(.2,.7,.2,1) .15s, transform .8s cubic-bezier(.2,.7,.2,1) .15s; margin-top:clamp(40px,6vh,72px); padding-top:24px; border-top:1px solid rgba(255,255,255,.07); display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.08em; color:#5b6178;">
+      <span>RONALDO RUKUNDO / LYON</span>
+      <span>STATUS <b style="color:#C6FF3A; font-weight:500;">ONLINE</b></span>
+      <span>BUILT WITH INTENT, 2026</span>
+    </div>
+  </section>
+
+  <!-- ===================== CHAT ===================== -->
+  <div style="position:fixed; right:clamp(16px,3vw,32px); bottom:clamp(16px,3vw,32px); z-index:80; display:flex; flex-direction:column; align-items:flex-end; gap:14px;">
+    <sc-if value="{{ chatOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="width:min(360px,86vw); height:460px; display:flex; flex-direction:column; background:rgba(11,13,22,.92); backdrop-filter:blur(14px); border:1px solid rgba(155,107,255,.22); border-radius:18px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,.6), 0 0 50px rgba(155,107,255,.12);">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:15px 17px; border-bottom:1px solid rgba(255,255,255,.07);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:#C6FF3A; box-shadow:0 0 10px #C6FF3A; animation:pulseDot 1.8s infinite;"></span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#cdd3e6;">assistant</span>
+          </div>
+          <button onClick="{{ toggleChat }}" aria-label="Close chat" style="background:none; border:none; color:#8A90A6; cursor:none; font-size:18px; line-height:1; padding:4px;">&times;</button>
+        </div>
+        <div style="flex:1; overflow-y:auto; padding:18px 16px; display:flex; flex-direction:column; gap:12px;">
+          <sc-for list="{{ messages }}" as="m" hint-placeholder-count="2">
+            <div style="{{ m.ws }}"><div style="{{ m.bs }}">{{ m.text }}</div></div>
+          </sc-for>
+        </div>
+        <div style="display:flex; gap:8px; padding:12px; border-top:1px solid rgba(255,255,255,.07);">
+          <input value="{{ input }}" onInput="{{ onInput }}" onKeyDown="{{ onKey }}" placeholder="Ask about Ronaldo" style="flex:1; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:11px 13px; color:#EAECF5; font-family:'JetBrains Mono',monospace; font-size:13px; outline:none; cursor:none;">
+          <button onClick="{{ send }}" aria-label="Send" data-magnetic="1" style="display:grid; place-items:center; width:42px; border:none; border-radius:10px; background:#9B6BFF; color:#0b0716; cursor:none; transition:transform .25s ease-out;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          </button>
+        </div>
+      </div>
+    </sc-if>
+    <button onClick="{{ toggleChat }}" data-magnetic="1" aria-label="Toggle chat assistant" style="position:relative; width:58px; height:58px; border-radius:50%; border:1px solid rgba(155,107,255,.35); background:radial-gradient(circle at 35% 30%, #1b1430, #0b0d16); color:#e3d4ff; display:grid; place-items:center; cursor:none; box-shadow:0 12px 40px rgba(0,0,0,.5), 0 0 28px rgba(155,107,255,.25); transition:transform .25s ease-out; animation:floaty 4s ease-in-out infinite;">
+      <span style="position:absolute; inset:-4px; border-radius:50%; border:1px solid rgba(155,107,255,.25); border-top-color:#9B6BFF; animation:spin 5s linear infinite;"></span>
+      <span style="position:absolute; top:1px; right:1px; width:9px; height:9px; border-radius:50%; background:#C6FF3A; box-shadow:0 0 8px #C6FF3A; animation:pulseDot 1.8s infinite; z-index:3;"></span>
+      <span style="position:relative; width:24px; height:24px; display:block;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; inset:0; opacity:{{ robotOpacity }}; transform:rotate({{ robotRot }}); transition:opacity .35s ease, transform .45s cubic-bezier(.2,.7,.2,1);"><line x1="12" y1="3" x2="12" y2="5.4"></line><circle cx="12" cy="2.2" r="1" fill="currentColor" stroke="none"></circle><rect x="4.5" y="5.4" width="15" height="13.2" rx="3.6"></rect><line x1="2.5" y1="9.6" x2="2.5" y2="13"></line><line x1="21.5" y1="9.6" x2="21.5" y2="13"></line><circle cx="9.2" cy="11" r="1.15" fill="currentColor" stroke="none"></circle><circle cx="14.8" cy="11" r="1.15" fill="currentColor" stroke="none"></circle><line x1="9.4" y1="15.1" x2="14.6" y2="15.1"></line></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; inset:0; opacity:{{ xOpacity }}; transform:rotate({{ xRot }}); transition:opacity .35s ease, transform .45s cubic-bezier(.2,.7,.2,1);"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+      </span>
+    </button>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    typed: '', phrase: 0, deleting: false,
+    scrolled: false, active: 'about', menuOpen: false,
+    chatOpen: false, input: '',
+    messages: [
+      { role: 'assistant', text: 'Console ready. Ask me anything about Ronaldo. (this assistant is not connected to a model yet)' }
+    ],
+  };
+  get phrases() { return ['full_stack_developer', 'django / react / typescript', 'status: learning_AI', 'cda / rncp niveau 6']; }
+
+  componentDidMount() {
+    this._root = document.getElementById('dc-root') || document;
+    this.type();
+    this.initCursor();
+    this.initReveal();
+    this.initNav();
+    this.initWork();
+    this.initNavIndicator();
+    this.initGsap();
+  }
+
+  componentDidUpdate() {
+    if (this.state.active !== this._lastActive) { this._lastActive = this.state.active; this.moveNavActive(); }
+  }
+
+  initNavIndicator() {
+    const root = this._root || document;
+    const cont = root.querySelector('#nav-links');
+    const ind = root.querySelector('[data-nav-ind]');
+    if (!cont || !ind) return;
+    this._navInd = ind;
+    const move = (el) => { if (!el) return; ind.style.opacity = '1'; ind.style.transform = 'translateX(' + el.offsetLeft + 'px)'; ind.style.width = el.offsetWidth + 'px'; };
+    this._navMove = move;
+    root.querySelectorAll('[data-navlink]').forEach((el) => {
+      el.addEventListener('mouseenter', () => { this._navHover = true; move(el); });
+    });
+    cont.addEventListener('mouseleave', () => { this._navHover = false; this.moveNavActive(); });
+    this.moveNavActive();
+    setTimeout(() => this.moveNavActive(), 350);
+    this._navResize = () => this.moveNavActive();
+    window.addEventListener('resize', this._navResize);
+  }
+
+  moveNavActive() {
+    if (this._navHover || !this._navMove) return;
+    const root = this._root || document;
+    this._navMove(root.querySelector('[data-navlink][data-id="' + this.state.active + '"]'));
+  }
+
+  initGsap(attempt) {
+    attempt = attempt || 0;
+    const root = this._root || document;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const wipe = root.querySelector('[data-wipe]');
+    const g = window.gsap;
+    if (!g && !reduce && attempt < 16) { this._gsapWait = setTimeout(() => this.initGsap(attempt + 1), 80); return; }
+    if (reduce || !g) { if (wipe) wipe.style.display = 'none'; return; }
+    const ST = window.ScrollTrigger;
+    if (ST) g.registerPlugin(ST);
+    const q = (s) => root.querySelector(s);
+    const qa = (s) => root.querySelectorAll(s);
+
+    const tl = g.timeline();
+    if (wipe) tl.to(wipe, { yPercent: -100, duration: .9, ease: 'power4.inOut', onComplete: () => { wipe.style.display = 'none'; } });
+    const heroKids = qa('[data-hero] > *');
+    if (heroKids.length) tl.from(heroKids, { y: 30, opacity: 0, duration: .8, stagger: .12, ease: 'power3.out' }, '-=.35');
+    const sys = q('[data-hero-sys]');
+    if (sys) tl.from(sys, { opacity: 0, scale: .92, duration: 1.1, ease: 'power3.out' }, '-=.95');
+    const navItems = qa('[data-navlink]');
+    if (navItems.length) tl.from(navItems, { y: -12, opacity: 0, duration: .5, stagger: .05, ease: 'power3.out' }, '-=1');
+
+    if (!ST) return;
+    const hero = q('#top'); const heroEl = q('[data-hero]');
+    if (hero && heroEl) g.to(heroEl, { yPercent: -10, opacity: .25, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+    const spine = q('[data-spine]'); const tline = q('#timeline');
+    if (spine && tline) g.from(spine, { scaleY: 0, transformOrigin: 'top', ease: 'none', scrollTrigger: { trigger: tline, start: 'top 75%', end: 'bottom 85%', scrub: true } });
+    const gauge = q('[data-gauge]');
+    if (gauge) g.from(gauge, { scaleX: 0, transformOrigin: 'left', duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: gauge, start: 'top 88%' } });
+    ST.refresh();
+  }
+
+  hexA(hex, a) {
+    const h = hex.replace('#', '');
+    const r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+    return `rgba(${r},${g},${b},${a})`;
+  }
+
+  initWork() {
+    const root = this._root || document;
+    const sec = root.querySelector('[data-work-sec]');
+    const pin = root.querySelector('[data-work-pin]');
+    const scroller = root.querySelector('[data-work-scroller]');
+    const track = root.querySelector('[data-work-track]');
+    const prog = root.querySelector('[data-work-progress]');
+    const cards = [...root.querySelectorAll('[data-work-card]')];
+    if (!sec || !track) return;
+    this._work = { sec, pin, scroller, track, prog, cards };
+
+    cards.forEach((card) => {
+      const acc = card.getAttribute('data-accent') || '#9B6BFF';
+      const img = card.querySelector('[data-work-img]');
+      const arrow = card.querySelector('[data-work-arrow]');
+      const ocol = arrow ? arrow.style.color : '';
+      const obg = arrow ? arrow.style.background : '';
+      card.addEventListener('mouseenter', () => {
+        if (window.innerWidth <= 860) return;
+        cards.forEach(c => { if (c !== card) c.style.opacity = '0.5'; });
+        card.style.transform = 'translateY(-12px)';
+        card.style.boxShadow = `0 30px 64px rgba(0,0,0,.5), 0 0 50px ${this.hexA(acc, 0.45)}`;
+        card.style.borderColor = this.hexA(acc, 0.65);
+        if (img) img.style.transform = 'scale(1.05)';
+        if (arrow) { arrow.style.background = acc; arrow.style.color = '#0b0716'; arrow.style.transform = 'rotate(45deg)'; }
+      });
+      card.addEventListener('mouseleave', () => {
+        cards.forEach(c => { c.style.opacity = '1'; });
+        card.style.transform = 'translateY(0)';
+        card.style.boxShadow = '0 20px 50px rgba(0,0,0,.4)';
+        card.style.borderColor = this.hexA(acc, 0.22);
+        if (img) img.style.transform = 'scale(1)';
+        if (arrow) { arrow.style.background = obg; arrow.style.color = ocol; arrow.style.transform = 'rotate(0deg)'; }
+      });
+    });
+
+    this.setupWorkMode();
+    this._onResizeWork = () => this.setupWorkMode();
+    window.addEventListener('resize', this._onResizeWork);
+  }
+
+  setupWorkMode() {
+    if (!this._work) return;
+    const { sec, pin, scroller, track, prog } = this._work;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mobile = window.innerWidth <= 860;
+    // tear down previous listeners
+    if (this._workWheel) { scroller.removeEventListener('wheel', this._workWheel); this._workWheel = null; }
+    if (this._workElScroll) { scroller.removeEventListener('scroll', this._workElScroll); this._workElScroll = null; }
+
+    // always a native horizontal scroller (robust everywhere)
+    sec.style.height = '';
+    pin.style.position = 'relative';
+    pin.style.top = ''; pin.style.bottom = ''; pin.style.left = '';
+    pin.style.width = ''; pin.style.height = ''; pin.style.overflow = '';
+    pin.style.display = ''; pin.style.flexDirection = ''; pin.style.justifyContent = '';
+    scroller.style.overflowX = 'auto';
+    track.style.transform = 'none';
+
+    // progress indicator driven by the scroller's own scroll
+    this._workElScroll = () => {
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      const p = max > 0 ? scroller.scrollLeft / max : 0;
+      if (prog) prog.style.width = (8 + p * 92) + '%';
+    };
+    scroller.addEventListener('scroll', this._workElScroll, { passive: true });
+    this._workElScroll();
+
+    // desktop + motion: convert vertical wheel into horizontal travel (soft pin)
+    if (!reduce && !mobile) {
+      this._workWheel = (e) => {
+        const max = scroller.scrollWidth - scroller.clientWidth;
+        if (max <= 1) return;
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // already horizontal
+        const dy = e.deltaY;
+        const atStart = scroller.scrollLeft <= 0;
+        const atEnd = scroller.scrollLeft >= max - 1;
+        if ((dy > 0 && !atEnd) || (dy < 0 && !atStart)) {
+          e.preventDefault();
+          // disable snap while actively wheeling so increments accumulate,
+          // then re-enable so it settles onto the nearest card
+          scroller.style.scrollSnapType = 'none';
+          scroller.scrollLeft += dy;
+          clearTimeout(this._snapRe);
+          this._snapRe = setTimeout(() => { scroller.style.scrollSnapType = 'x proximity'; }, 150);
+        }
+      };
+      scroller.addEventListener('wheel', this._workWheel, { passive: false });
+    }
+  }
+
+  scroller() {
+    const p = document.getElementById('page');
+    if (p && p.scrollHeight > p.clientHeight + 4) return p;
+    return window;
+  }
+  currentY() { const s = this.scroller(); return s === window ? (window.scrollY || window.pageYOffset) : s.scrollTop; }
+  scrollToY(y, smooth) {
+    const s = this.scroller();
+    const o = { top: y, behavior: smooth ? 'smooth' : 'auto' };
+    if (s === window) window.scrollTo(o); else s.scrollTo(o);
+  }
+  goTo = (id) => (e) => {
+    if (e) e.preventDefault();
+    const root = this._root || document;
+    const el = root.querySelector('#' + id);
+    if (!el) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const y = this.currentY() + el.getBoundingClientRect().top - 66;
+    this.scrollToY(y, !reduce);
+  };
+
+  initReveal() {
+    const root = this._root || document;
+    const els = root.querySelectorAll('[data-reveal]');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      els.forEach(el => { el.style.opacity = 1; el.style.transform = 'none'; });
+      return;
+    }
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = 1;
+          e.target.style.transform = 'none';
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    els.forEach(el => io.observe(el));
+  }
+  componentWillUnmount() {
+    clearTimeout(this._to);
+    if (this._mm) window.removeEventListener('mousemove', this._mm);
+    if (this._onScroll) window.removeEventListener('scroll', this._onScroll, { capture: true });
+    if (this._onResize) window.removeEventListener('resize', this._onResize);
+    if (this._onResizeWork) window.removeEventListener('resize', this._onResizeWork);
+    if (this._work && this._workWheel) this._work.scroller.removeEventListener('wheel', this._workWheel);
+    clearTimeout(this._snapT);
+    cancelAnimationFrame(this._raf);
+  }
+
+  initNav() {
+    const root = this._root || document;
+    this._secs = ['about', 'stack', 'work', 'timeline', 'education', 'ai', 'gallery', 'contact'];
+    const measure = () => {
+      const vh = window.innerHeight;
+      let active = this._secs[0];
+      for (const id of this._secs) {
+        const el = root.querySelector('#' + id);
+        if (el && el.getBoundingClientRect().top <= vh * 0.36) active = id;
+      }
+      const scrolled = this.currentY() > vh * 0.55;
+      const prog = root.querySelector('[data-progress]');
+      if (prog) { const sc = this.scroller(); const max = sc === window ? (document.documentElement.scrollHeight - window.innerHeight) : (sc.scrollHeight - sc.clientHeight); prog.style.width = (max > 0 ? Math.min(1, this.currentY() / max) * 100 : 0) + '%'; }
+      if (active !== this.state.active || scrolled !== this.state.scrolled) this.setState({ active, scrolled });
+    };
+    this._onScroll = () => { if (this._st) return; this._st = requestAnimationFrame(() => { this._st = null; measure(); }); };
+    window.addEventListener('scroll', this._onScroll, { passive: true, capture: true });
+    this._onResize = () => measure();
+    window.addEventListener('resize', this._onResize);
+    measure();
+  }
+
+  toggleMenu = () => this.setState(s => ({ menuOpen: !s.menuOpen }));
+  closeMenu = () => this.setState({ menuOpen: false });
+
+  type() {
+    const full = this.phrases[this.state.phrase];
+    let { typed, deleting } = this.state;
+    if (!deleting) {
+      typed = full.slice(0, typed.length + 1);
+      if (typed === full) {
+        this.setState({ typed });
+        this._to = setTimeout(() => this.setState({ deleting: true }, () => this.type()), 1500);
+        return;
+      }
+    } else {
+      typed = full.slice(0, typed.length - 1);
+      if (typed === '') {
+        this.setState({ typed, deleting: false, phrase: (this.state.phrase + 1) % this.phrases.length },
+          () => { this._to = setTimeout(() => this.type(), 350); });
+        return;
+      }
+    }
+    this.setState({ typed }, () => { this._to = setTimeout(() => this.type(), deleting ? 40 : 70); });
+  }
+
+  initCursor() {
+    const root = this._root || document;
+    const dot = root.querySelector('#cc-dot');
+    const ring = root.querySelector('#cc-ring');
+    if (!dot || !ring) return;
+    let mx = -100, my = -100, rx = -100, ry = -100;
+    this._mm = (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = `translate(${mx}px,${my}px)`;
+    };
+    window.addEventListener('mousemove', this._mm);
+    const loop = () => {
+      rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
+      ring.style.transform = `translate(${rx}px,${ry}px)`;
+      this._raf = requestAnimationFrame(loop);
+    };
+    loop();
+    // hover grow + magnetic
+    root.querySelectorAll('a,button,[data-magnetic]').forEach((el) => {
+      const brs = el.querySelectorAll('[data-br]');
+      el.addEventListener('mouseenter', () => {
+        ring.style.width = '58px'; ring.style.height = '58px'; ring.style.margin = '-29px 0 0 -29px'; ring.style.borderColor = 'rgba(155,107,255,.9)';
+        brs.forEach(b => { b.style.opacity = '1'; b.style.transform = 'translateX(0)'; });
+      });
+      el.addEventListener('mouseleave', () => {
+        ring.style.width = '34px'; ring.style.height = '34px'; ring.style.margin = '-17px 0 0 -17px'; ring.style.borderColor = 'rgba(255,255,255,.6)';
+        brs.forEach(b => { b.style.opacity = '0'; b.style.transform = b.getAttribute('data-br') === 'l' ? 'translateX(5px)' : 'translateX(-5px)'; });
+      });
+    });
+    root.querySelectorAll('[data-magnetic]').forEach((el) => {
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        const x = e.clientX - (r.left + r.width / 2);
+        const y = e.clientY - (r.top + r.height / 2);
+        el.style.transform = `translate(${x * 0.25}px,${y * 0.4}px)`;
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = 'translate(0,0)'; });
+    });
+  }
+
+  toggleChat = () => this.setState(s => ({ chatOpen: !s.chatOpen }));
+  onInput = (e) => this.setState({ input: e.target.value });
+  send = () => {
+    const t = this.state.input.trim();
+    if (!t) return;
+    this.setState(s => ({
+      input: '',
+      messages: [...s.messages, { role: 'user', text: t }, { role: 'assistant', text: 'Not connected to a model yet. This is where the AI reply will appear once the assistant is wired up.' }],
+    }));
+  };
+  onKey = (e) => { if (e.key === 'Enter') { e.preventDefault(); this.send(); } };
+
+  makeStars(n, w, h) {
+    const out = [];
+    for (let k = 0; k < n; k++) {
+      const x = Math.round(Math.random() * w), y = Math.round(Math.random() * h);
+      const o = (Math.random() * 0.7 + 0.12).toFixed(2);
+      out.push(`${x}px ${y}px 0 0 rgba(255,255,255,${o})`);
+    }
+    return out.join(',');
+  }
+
+  renderVals() {
+    if (!this._stars) this._stars = this.makeStars(120, 1600, 1000);
+    const mine = 'align-self:flex-end; max-width:82%;';
+    const theirs = 'align-self:flex-start; max-width:88%;';
+    const ubub = 'background:#9B6BFF; color:#0b0716; padding:9px 13px; border-radius:14px 14px 4px 14px; font-size:13px; line-height:1.5;';
+    const abub = 'background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); color:#cdd3e6; padding:9px 13px; border-radius:14px 14px 14px 4px; font-size:13px; line-height:1.55; font-family:\'JetBrains Mono\',monospace;';
+    const messages = this.state.messages.map(m => ({
+      text: m.text,
+      ws: m.role === 'user' ? mine : theirs,
+      bs: m.role === 'user' ? ubub : abub,
+    }));
+    const items = [['about', 'about', '01'], ['stack', 'stack', '02'], ['work', 'work', '03'], ['timeline', 'log', '04'], ['education', 'edu', '05'], ['ai', 'ai', '06'], ['gallery', 'gallery', '07'], ['contact', 'contact', '08']];
+    const active = this.state.active;
+    const navItems = items.map((it, i) => ({
+      id: it[0], href: '#' + it[0], label: it[1], num: it[2],
+      active: active === it[0],
+      fg: active === it[0] ? '#ffffff' : '#9aa1b8',
+      numColor: active === it[0] ? 'rgba(255,255,255,.8)' : '#6f6790',
+      serifColor: active === it[0] ? '#c9b6ff' : '#EAECF5',
+      menuDelay: (0.05 + i * 0.06).toFixed(2) + 's',
+      onClick: this.goTo(it[0]),
+      onClickMenu: (e) => { this.closeMenu(); this.goTo(it[0])(e); },
+    }));
+    return {
+      typed: this.state.typed,
+      starShadow: this._stars,
+      navItems,
+      goToTop: this.goTo('top'),
+      goToAbout: this.goTo('about'),
+      navBgOpacity: this.state.scrolled ? 1 : 0,
+      menuOpen: this.state.menuOpen,
+      toggleMenu: this.toggleMenu,
+      closeMenu: this.closeMenu,
+      chatOpen: this.state.chatOpen,
+      robotOpacity: this.state.chatOpen ? '0' : '1',
+      robotRot: this.state.chatOpen ? '-90deg' : '0deg',
+      xOpacity: this.state.chatOpen ? '1' : '0',
+      xRot: this.state.chatOpen ? '0deg' : '90deg',
+      input: this.state.input,
+      messages,
+      toggleChat: this.toggleChat,
+      onInput: this.onInput,
+      send: this.send,
+      onKey: this.onKey,
+    };
+  }
+}
+</script>
+</body>
+</html>
