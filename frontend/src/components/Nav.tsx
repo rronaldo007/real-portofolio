@@ -19,11 +19,18 @@ export function Nav({ sections, settings }: { sections: Section[]; settings: Sit
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll while the overlay is open.
+  // Lock body scroll + allow Escape-to-close *only* while the overlay is open.
+  // (Don't touch body.overflow when closed — the Preloader owns it at load.)
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
     };
   }, [open]);
 

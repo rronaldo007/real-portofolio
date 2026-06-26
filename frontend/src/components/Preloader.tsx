@@ -25,12 +25,18 @@ export function Preloader() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (reduce) {
+      // reduced-motion: skip the count-up, dismiss quickly (one-time sync).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setProgress(100);
       const t = setTimeout(() => {
         setGone(true);
         document.body.style.overflow = "";
       }, 150);
-      return () => clearTimeout(t);
+      // Always release the scroll lock on unmount, even mid-animation.
+      return () => {
+        clearTimeout(t);
+        document.body.style.overflow = "";
+      };
     }
 
     let p = 0;
@@ -42,7 +48,10 @@ export function Preloader() {
         setTimeout(() => setExiting(true), 280);
       }
     }, 95);
-    return () => clearInterval(tick);
+    return () => {
+      clearInterval(tick);
+      document.body.style.overflow = "";
+    };
   }, []);
 
   // After the wipe-up animation finishes, unmount and restore scroll.

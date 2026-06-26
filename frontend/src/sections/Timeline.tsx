@@ -2,11 +2,7 @@ import type { Experience, Section } from "@/lib/types";
 import { ACCENT_HEX } from "@/lib/types";
 import { SectionHeader, SectionShell } from "@/components/SectionHeader";
 import { Reveal } from "@/components/Reveal";
-
-function rgba(hex: string, a: number) {
-  const n = parseInt(hex.slice(1), 16);
-  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
-}
+import { rgba } from "@/lib/accent";
 
 function Row({ x, last, delay }: { x: Experience; last: boolean; delay: number }) {
   const hex = ACCENT_HEX[x.accent];
@@ -65,7 +61,7 @@ export function Timeline({ section, experiences }: { section: Section; experienc
       <div className="relative" style={{ paddingLeft: 34 }}>
         <div style={{ position: "absolute", left: 6, top: 6, bottom: 6, width: 1, background: "linear-gradient(180deg, #9B6BFF, rgba(155,107,255,.05))" }} />
         {experiences.map((x, i) => (
-          <Row key={i} x={x} last={i === experiences.length - 1} delay={i * 0.08} />
+          <Row key={`${x.company}-${x.when}`} x={x} last={i === experiences.length - 1} delay={i * 0.08} />
         ))}
       </div>
     </SectionShell>

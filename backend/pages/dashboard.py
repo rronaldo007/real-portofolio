@@ -53,7 +53,7 @@ def dashboard_callback(request, context):
     profile = SiteProfile.objects.first()
 
     # Greeting line
-    context["greeting_name"] = (profile.name.split()[0] if profile else "Rukundo")
+    context["greeting_name"] = ((profile.name.split() or ["Rukundo"])[0] if profile else "Rukundo")
     context["greeting_sub"] = (
         f"{drafts} brouillon{'s' if drafts != 1 else ''} en attente · "
         f"{unread} message{'s' if unread != 1 else ''} non lu{'s' if unread != 1 else ''}."

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./providers";
 import { Preloader } from "@/components/Preloader";
 
 // Three type voices, self-hosted by next/font (no external request, no FOUT).
@@ -41,7 +40,7 @@ export default function RootLayout({
     >
       <body>
         <Preloader />
-        <Providers>{children}</Providers>
+        {children}
       </body>
     </html>
   );

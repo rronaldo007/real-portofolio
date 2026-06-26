@@ -47,7 +47,7 @@ export function Gallery({ section, photos }: { section: Section; photos: Photo[]
       <div style={{ columnWidth: 270, columnGap: 16 }}>
         {hasPhotos
           ? photos.filter((p) => p.src).map((p, i) => (
-              <Frame key={i} height={[222, 300, 190, 262, 180, 320][i % 6]} delay={(i % 6) * 0.05}>
+              <Frame key={p.src ?? i} height={[222, 300, 190, 262, 180, 320][i % 6]} delay={(i % 6) * 0.05}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.src!} alt={p.caption} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 {(p.caption || p.taken) && (

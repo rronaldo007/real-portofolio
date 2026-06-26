@@ -310,7 +310,7 @@ CORS_ALLOWED_ORIGINS = [
 # frontend so the live site updates immediately (see pages/signals.py). Both must
 # be set for the ping to fire; it is best-effort and never blocks the save.
 FRONTEND_REVALIDATE_URL = os.environ.get(
-    "FRONTEND_REVALIDATE_URL", "http://localhost:8000/api/revalidate"
+    "FRONTEND_REVALIDATE_URL", "http://localhost:8000/revalidate"
 )
 FRONTEND_REVALIDATE_SECRET = os.environ.get(
     "FRONTEND_REVALIDATE_SECRET", "dev-revalidate-secret"

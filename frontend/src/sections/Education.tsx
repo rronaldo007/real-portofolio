@@ -2,11 +2,7 @@ import type { Education as Edu, Section } from "@/lib/types";
 import { ACCENT_HEX } from "@/lib/types";
 import { SectionHeader, SectionShell } from "@/components/SectionHeader";
 import { Reveal } from "@/components/Reveal";
-
-function rgba(hex: string, a: number) {
-  const n = parseInt(hex.slice(1), 16);
-  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
-}
+import { rgba } from "@/lib/accent";
 
 // Derive the big ghost watermark ("N6"/"N7") from the RNCP level text.
 function levelMark(rncp: string) {
@@ -71,13 +67,13 @@ export function Education({ section, education }: { section: Section; education:
       <div className="flex flex-col" style={{ gap: 18 }}>
         <div className="flex flex-wrap items-stretch" style={{ gap: 18 }}>
           {education.map((e, i) => (
-            <Card key={i} edu={e} delay={i * 0.08} />
+            <Card key={`${e.title}-${e.institution}`} edu={e} delay={i * 0.08} />
           ))}
         </div>
         {/* coursework + clearance gauge */}
         <div className="flex flex-wrap items-stretch" style={{ gap: 18 }}>
           <Reveal delay={0.12} style={{ flex: "1 1 300px", minWidth: 0, border: "1px solid rgba(255,255,255,.08)", borderRadius: 18, padding: "clamp(22px,2.4vw,30px)" }}>
-            <div className="font-mono uppercase" style={{ fontSize: 12, letterSpacing: "0.18em", color: "#5b6178", marginBottom: 18 }}>// also · coursework</div>
+            <div className="font-mono uppercase" style={{ fontSize: 12, letterSpacing: "0.18em", color: "#5b6178", marginBottom: 18 }}>{"// also · coursework"}</div>
             <div className="flex flex-wrap" style={{ gap: 8 }}>
               {["VISIPLUS Academy", "Commercial English", "Cybersecurity"].map((c) => (
                 <span key={c} className="font-mono" style={{ fontSize: 12.5, color: "#aab0c6", border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.04)", borderRadius: 5, padding: "7px 12px" }}>

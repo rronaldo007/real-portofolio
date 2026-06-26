@@ -9,11 +9,12 @@ const nextConfig: NextConfig = {
   // /admin/login/?next=... redirect loop, so disable it for proxied paths.
   skipTrailingSlashRedirect: true,
 
-  // Serve the Django admin's static/media from this origin via rewrites (no
-  // cookies needed there). The /admin HTML itself is proxied by a Route Handler
-  // (app/admin/[[...path]]/route.ts) because Next rewrites strip Set-Cookie,
-  // which breaks the admin's CSRF + session. The public API stays on the backend
-  // directly (server-side fetch), and this app keeps its own /api/revalidate.
+  // :8000 is the single front door — proxy the API, admin static, and media to
+  // the backend so the browser only ever uses this origin. The /admin HTML is
+  // proxied by a Route Handler (app/admin/[[...path]]/route.ts) because Next
+  // rewrites strip Set-Cookie, which breaks the admin's CSRF + session. This
+  // app's own revalidation route lives at /revalidate (not under /api) so /api/*
+  // is free to proxy.
   async rewrites() {
     return [
       { source: "/static/:path*", destination: `${BACKEND}/static/:path*` },

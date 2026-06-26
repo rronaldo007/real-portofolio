@@ -44,6 +44,7 @@ export function SolarSystem() {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let raf = 0;
+    let running = false; // animate only while the hero is on-screen
     let t = reduce ? 8 : 0; // posed frame when reduced-motion
     let stars: { x: number; y: number; r: number; ph: number }[] = [];
     let dpr = 1;
@@ -72,6 +73,8 @@ export function SolarSystem() {
         r: 0.4 + frac(i * 3.17 + 1) * 1.2,
         ph: (i % 10) * 0.7,
       }));
+      // Resizing clears the canvas — repaint at once if visible (or posed/reduced).
+      if (running || reduce) draw();
     };
 
     const planetBody = (x: number, y: number, r: number, color: string, shade: string) => {
@@ -104,7 +107,7 @@ export function SolarSystem() {
       } catch {
         /* never let one bad frame kill the loop */
       }
-      if (!reduce) raf = requestAnimationFrame(frame);
+      if (!reduce && running) raf = requestAnimationFrame(frame);
     };
 
     const draw = () => {
@@ -213,9 +216,36 @@ export function SolarSystem() {
 
     resize();
     window.addEventListener("resize", resize);
-    raf = requestAnimationFrame(frame);
-    return () => {
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(frame);
+    };
+    const stop = () => {
+      running = false;
       cancelAnimationFrame(raf);
+    };
+
+    // Pause the loop while the hero is off-screen (frees the main thread so
+    // scrolling stays smooth); when it scrolls back in, draw one frame at once
+    // so the hero shows immediately instead of waiting for the next tick.
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          draw();
+          if (!reduce) start();
+        } else {
+          stop();
+        }
+      },
+      { threshold: 0 },
+    );
+    io.observe(cv);
+
+    return () => {
+      stop();
+      io.disconnect();
       window.removeEventListener("resize", resize);
     };
   }, []);

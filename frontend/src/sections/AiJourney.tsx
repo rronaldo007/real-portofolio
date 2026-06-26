@@ -41,7 +41,7 @@ export function AiJourney({ section }: { section: Section }) {
           From full-stack to <span style={{ color: "#9B6BFF" }}>AI engineer</span>
         </Reveal>
         <Reveal delay={0.1} as="p" style={{ margin: "0 0 clamp(36px,5vw,56px)", maxWidth: "60ch", fontSize: "clamp(16px,1.9vw,21px)", lineHeight: 1.7, color: "#9aa1b8" }}>
-          The Mastère in AI at ISCOD is the next deliberate step, but the work has already started — I run models locally and build toward AI engineering, not just read about it.
+          The Mastère in AI at Epitech is the next deliberate step, but the work has already started — I run models locally and build toward AI engineering, not just read about it.
         </Reveal>
         <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 16 }}>
           {CARDS.map((c, i) => (

@@ -1,6 +1,7 @@
 import { proxyToBackend } from "@/lib/proxy";
 
-// Serve the Django admin at this app's /admin (backend runs on an internal port).
+// Proxy the public API at this app's /api so :8000 is the single browser origin.
+// (Server-side rendering still fetches the backend directly via BACKEND_ORIGIN.)
 export const dynamic = "force-dynamic";
 
 export const GET = proxyToBackend;

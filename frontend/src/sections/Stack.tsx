@@ -26,7 +26,7 @@ function Tag({ g, label }: { g: Group; label: string }) {
 function Line({ n, g, delay }: { n: string; g: Group; delay: number }) {
   return (
     <Reveal delay={delay} className="flex" style={{ gap: 16, marginBottom: 26 }}>
-      <span className="font-mono" style={{ color: "#3a4055", fontSize: 13, minWidth: 22, textAlign: "right", userSelect: "none", paddingTop: 1 }} data-linenum>
+      <span className="font-mono" style={{ color: "#3a4055", fontSize: 13, minWidth: 22, textAlign: "right", userSelect: "none", paddingTop: 1 }}>
         {n}
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -83,7 +83,7 @@ export function Stack({ section, skills }: { section: Section; skills: Skill[] }
           ))}
           {/* blinking prompt */}
           <div className="flex" style={{ gap: 16 }}>
-            <span className="font-mono" style={{ color: "#3a4055", fontSize: 13, minWidth: 22, textAlign: "right" }} data-linenum>
+            <span className="font-mono" style={{ color: "#3a4055", fontSize: 13, minWidth: 22, textAlign: "right" }}>
               {String(groups.length + 1).padStart(2, "0")}
             </span>
             <div className="font-mono" style={{ fontSize: 14, lineHeight: 1.4 }}>

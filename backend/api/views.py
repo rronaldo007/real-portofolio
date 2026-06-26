@@ -32,7 +32,7 @@ from .serializers import (
 
 def _published_projects():
     return (
-        Project.objects.filter(status=Project.Status.PUBLISHED)
+        Project.objects.filter(status=Project.Status.PUBLISHED, show_in_index=True)
         .prefetch_related("shots", "metrics")
     )
 

@@ -84,16 +84,16 @@ export function About({ section, settings, portrait }: { section: Section; setti
             <Meta label="LOCATION" value={settings.location || "Lyon, Ecully"} />
             <Meta label="ROLE" value={settings.tagline || "Full-stack developer"} />
             <Meta label="CURRENT" value={settings.availability || "Recherche alternance"} color="#9B6BFF" />
-            <Meta label="NEXT" value="Mastère IA · ISCOD" color="#C6FF3A" />
+            <Meta label="NEXT" value="Mastère IA · Epitech" color="#C6FF3A" />
           </Reveal>
 
           <Reveal delay={0.18}>
-            <div className="font-mono uppercase" style={{ fontSize: 12, letterSpacing: "0.22em", color: "#5b6178", marginBottom: 22 }}>// the plan</div>
+            <div className="font-mono uppercase" style={{ fontSize: 12, letterSpacing: "0.22em", color: "#5b6178", marginBottom: 22 }}>{"// the plan"}</div>
             <div className="relative flex justify-between" style={{ gap: 14 }}>
               <div style={{ position: "absolute", top: 6, left: 6, right: 6, height: 1, background: "linear-gradient(90deg, #9B6BFF, rgba(155,107,255,.15))" }} />
               <Step when="NOW" label="Projets full-stack · Video Planner" color="#8a90a6" dot="#9B6BFF" />
               <Step when="2025" label="Bachelor Dev Web · ISCOD" color="#8a90a6" dot="#9B6BFF" ring />
-              <Step when="2026" label="Mastère IA · ISCOD" color="#C6FF3A" dot="#C6FF3A" pulse />
+              <Step when="2026" label="Mastère IA · Epitech" color="#C6FF3A" dot="#C6FF3A" pulse />
               <Step when="GOAL" label="Ingénieur IA / Data" color="#8a90a6" dot="#9B6BFF" ring />
             </div>
           </Reveal>

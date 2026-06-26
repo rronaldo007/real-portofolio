@@ -121,7 +121,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
         {/* gallery */}
         {project.shots.length > 0 && (
           <div style={{ marginTop: "clamp(50px,8vh,90px)" }}>
-            <div className="font-mono uppercase" style={{ fontSize: 12, letterSpacing: "0.22em", color: "#5b6178", marginBottom: 18 }}>// gallery</div>
+            <div className="font-mono uppercase" style={{ fontSize: 12, letterSpacing: "0.22em", color: "#5b6178", marginBottom: 18 }}>{"// gallery"}</div>
             <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 14 }}>
               {project.shots.map((s, n) => (
                 <div key={n} className="relative" style={{ aspectRatio: "4 / 3", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(255,255,255,.09)", background: `linear-gradient(150deg, ${rgba(hex, 0.3)}, rgba(10,12,20,.6) 72%)` }}>
@@ -139,7 +139,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
         )}
 
         {/* prev / next */}
-        {all.length > 1 && (
+        {i >= 0 && all.length > 1 && (
           <div className="flex justify-between font-mono" style={{ marginTop: "clamp(50px,8vh,90px)", paddingTop: 26, borderTop: "1px solid rgba(255,255,255,.09)", gap: 16 }}>
             <Link href={`/projects/${prev.slug}`} className="flex flex-col" style={{ gap: 6, color: "#9aa1b8" }}>
               <span style={{ fontSize: 11, letterSpacing: "0.16em", color: "#5b6178" }}>← PREV</span>

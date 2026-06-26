@@ -6,11 +6,7 @@ import type { Project, Section } from "@/lib/types";
 import { ACCENT_HEX } from "@/lib/types";
 import { Eyebrow } from "@/components/SectionHeader";
 import { Reveal } from "@/components/Reveal";
-
-function rgba(hex: string, a: number) {
-  const n = parseInt(hex.slice(1), 16);
-  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
-}
+import { rgba } from "@/lib/accent";
 
 function Card({ project, index }: { project: Project; index: number }) {
   const hex = ACCENT_HEX[project.accent];

@@ -22,12 +22,12 @@ export function Hero({ settings }: { settings: SiteSettings }) {
     "full_stack_developer",
     "python / django / drf",
     "status: learning_AI",
-    "mastère_IA · iscod_2026",
+    "mastère_IA · epitech_2026",
   ];
 
   const chips = [
     { label: "SHIPPING — VIDEO PLANNER", hex: "#C6FF3A", glow: "rgba(198,255,58," },
-    { label: "LEARNING — MASTÈRE IA · ISCOD 2026", hex: "#9B6BFF", glow: "rgba(155,107,255," },
+    { label: "LEARNING — MASTÈRE IA · EPITECH 2026", hex: "#9B6BFF", glow: "rgba(155,107,255," },
     { label: "BACKEND PYTHON · DJANGO / DRF", hex: "#2BF1FF", glow: "rgba(43,241,255," },
   ];
 

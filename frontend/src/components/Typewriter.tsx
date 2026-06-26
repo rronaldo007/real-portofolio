@@ -11,6 +11,8 @@ export function Typewriter({ phrases }: { phrases: string[] }) {
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // reduced-motion: show the first phrase static (one-time sync).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setText(phrases[0] ?? "");
       return;
     }
