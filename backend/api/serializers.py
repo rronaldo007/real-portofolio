@@ -22,12 +22,17 @@ from pages.models import (
 
 
 def _abs(request, url):
-    """Return an absolute URL for a possibly-relative media/asset path."""
-    if not url:
-        return None
-    if url.startswith("http://") or url.startswith("https://"):
-        return url
-    return request.build_absolute_uri(url) if request else url
+    """Return the media/asset URL unchanged (relative paths stay relative).
+
+    In the single-origin v2 deploy the public Next origin serves the API and
+    proxies ``/media`` + ``/static`` to Django, so a relative ``/media/...`` path
+    resolves correctly in the browser. We must NOT absolutize it: the request
+    reaches Django over the internal loopback (127.0.0.1:8001), so
+    ``build_absolute_uri`` would bake in that unreachable host (and the proxied
+    https scheme), producing dead image URLs. External http(s) URLs are already
+    absolute and pass through as-is. ``request`` is kept for signature stability.
+    """
+    return url or None
 
 
 class _ContextMixin:
