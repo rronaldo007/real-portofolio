@@ -339,7 +339,14 @@ class SiteProfile(TimeStamped):
     )
 
     # Resume / CV
-    resume_url = models.URLField(blank=True)
+    # CharField, not URLField: the CV is served by the frontend from /cv/… as a
+    # site-relative path (the intended default), which URLField rejects. Accepts
+    # either a relative path (/cv/Rukundo-Ronaldo-CV.pdf) or a full external URL.
+    resume_url = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text="Site-relative path (e.g. /cv/Rukundo-Ronaldo-CV.pdf) or a full URL.",
+    )
 
     class Meta:
         verbose_name = "Site profile"
