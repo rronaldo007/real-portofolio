@@ -42,7 +42,11 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # Origins allowed to POST (admin login, contact form) over HTTPS. With DEBUG=False
 # on a real domain, Django needs the https:// origin here or login/POST gets a 403.
 CSRF_TRUSTED_ORIGINS = [
-    o for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o
+    o for o in os.environ.get(
+        "DJANGO_CSRF_TRUSTED_ORIGINS",
+        # The admin is reached at the frontend origin (Next proxies /admin to here).
+        "http://localhost:8000,http://127.0.0.1:8000",
+    ).split(",") if o
 ]
 
 
@@ -58,11 +62,15 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
+    "rest_framework",
+    "corsheaders",
     "pages",
+    "api",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -85,7 +93,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "pages.context_processors.site",
             ],
         },
     },
@@ -173,8 +180,10 @@ UNFOLD = {
     "SITE_TITLE": "Rukundo Ronaldo — Admin",
     "SITE_HEADER": "Rukundo Ronaldo",
     "SITE_SUBHEADER": "Portfolio",
+    # Force dark mode (hides the light/dark switch) — matches the v2 aesthetic.
+    "THEME": "dark",
     "SHOW_HISTORY": True,
-    "SHOW_VIEW_ON_SITE": True,
+    "SHOW_VIEW_ON_SITE": False,
     "STYLES": [lambda request: static("css/admin.css")],
     "DASHBOARD_CALLBACK": "pages.dashboard.dashboard_callback",
     "SIDEBAR": {
@@ -202,6 +211,10 @@ UNFOLD = {
                     {"title": "Testimonials", "icon": "format_quote",
                      "link": reverse_lazy("admin:pages_testimonial_changelist"),
                      "badge": "pages.dashboard.testimonial_count"},
+                    {"title": "Sections (v2)", "icon": "view_agenda",
+                     "link": reverse_lazy("admin:pages_section_changelist")},
+                    {"title": "Gallery (v2)", "icon": "photo_library",
+                     "link": reverse_lazy("admin:pages_photo_changelist")},
                     {"title": "Messages", "icon": "inbox",
                      "link": reverse_lazy("admin:pages_contactmessage_changelist"),
                      "badge": "pages.dashboard.message_count"},
@@ -273,3 +286,32 @@ UNFOLD = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Django REST Framework — read-only JSON API consumed by the Next.js frontend (v2).
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ],
+    "DEFAULT_PAGINATION_CLASS": None,
+}
+
+# CORS — the Next.js frontend runs on a different origin in dev (and possibly prod).
+# Origins come from env in production; localhost:3000 is the Next dev server default.
+CORS_ALLOWED_ORIGINS = [
+    o for o in os.environ.get(
+        "DJANGO_CORS_ALLOWED_ORIGINS",
+        "http://localhost:8000,http://127.0.0.1:8000",
+    ).split(",") if o
+]
+
+# On-demand revalidation: when content changes in the admin, ping the Next.js
+# frontend so the live site updates immediately (see pages/signals.py). Both must
+# be set for the ping to fire; it is best-effort and never blocks the save.
+FRONTEND_REVALIDATE_URL = os.environ.get(
+    "FRONTEND_REVALIDATE_URL", "http://localhost:8000/api/revalidate"
+)
+FRONTEND_REVALIDATE_SECRET = os.environ.get(
+    "FRONTEND_REVALIDATE_SECRET", "dev-revalidate-secret"
+)

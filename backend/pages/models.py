@@ -1,5 +1,4 @@
 from django.db import models
-from django.urls import reverse
 from django.utils.text import slugify
 
 
@@ -14,6 +13,15 @@ class TimeStamped(models.Model):
 def _csv_list(value):
     """Split a comma-separated string into a clean list."""
     return [p.strip() for p in (value or "").split(",") if p.strip()]
+
+
+class Accent(models.TextChoices):
+    """The four neon accents of the v2 "Mission Control" design system."""
+
+    VIOLET = "violet", "Violet"
+    CYAN = "cyan", "Cyan"
+    LIME = "lime", "Lime"
+    PINK = "pink", "Pink"
 
 
 class Project(TimeStamped):
@@ -60,6 +68,20 @@ class Project(TimeStamped):
         help_text="Gradient style for the card background",
     )
 
+    # v2 "Mission Control" fields
+    accent = models.CharField(
+        max_length=8, choices=Accent.choices, default=Accent.VIOLET,
+        help_text="Neon accent used by the v2 design",
+    )
+    category = models.CharField(
+        max_length=80, blank=True, help_text="v2 card category, e.g. “Full-stack · SaaS”"
+    )
+    lead = models.CharField(
+        max_length=240, blank=True,
+        help_text="v2 punchy one-liner; falls back to short_description",
+    )
+    highlights = models.TextField(blank=True, help_text="v2 case-study highlights, one per line")
+
     # Case study
     case_study_body = models.TextField(blank=True, help_text="Markdown")
 
@@ -86,12 +108,33 @@ class Project(TimeStamped):
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
-    def get_absolute_url(self):
-        return reverse("pages:project_detail", kwargs={"slug": self.slug})
-
     @property
     def tech_list(self):
         return _csv_list(self.tech_stack)
+
+    @property
+    def highlight_list(self):
+        return [line.strip() for line in self.highlights.splitlines() if line.strip()]
+
+
+class ProjectShot(models.Model):
+    """A screenshot in a project's v2 case-study gallery."""
+
+    project = models.ForeignKey(Project, related_name="shots", on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="projects/shots/", blank=True)
+    image_url = models.URLField(blank=True, help_text="Fallback if no file uploaded")
+    caption = models.CharField(max_length=160, blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return self.caption or f"Shot #{self.pk}"
+
+    @property
+    def src(self):
+        return self.image.url if self.image else self.image_url
 
 
 class ProjectMetric(models.Model):
@@ -123,6 +166,7 @@ class Experience(TimeStamped):
     description = models.TextField(blank=True)
     highlights = models.TextField(blank=True, help_text="One highlight per line")
     stack = models.CharField(max_length=300, blank=True, help_text="Comma-separated")
+    accent = models.CharField(max_length=8, choices=Accent.choices, default=Accent.VIOLET)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -160,6 +204,17 @@ class Education(TimeStamped):
         null=True, blank=True, help_text="Leave empty for “Present”"
     )
     description = models.TextField(blank=True)
+    # v2 "clearance card" fields
+    rncp_level = models.CharField(
+        max_length=24, blank=True, help_text="e.g. “RNCP 7” — shown as a clearance level"
+    )
+    status_label = models.CharField(
+        max_length=40, blank=True, help_text="e.g. “En cours”, “Visé 2026”"
+    )
+    accent = models.CharField(max_length=8, choices=Accent.choices, default=Accent.CYAN)
+    is_target = models.BooleanField(
+        default=False, help_text="Highlight as the formation being targeted"
+    )
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -246,6 +301,11 @@ class SiteProfile(TimeStamped):
 
     # Profile
     name = models.CharField(max_length=120, default="Rukundo Ronaldo")
+    # v2 logo mark "R²" + map telemetry coordinates
+    logo_text = models.CharField(max_length=8, default="R")
+    logo_super = models.CharField(max_length=4, default="2")
+    lat = models.CharField(max_length=16, blank=True, default="45.7640")
+    lon = models.CharField(max_length=16, blank=True, default="4.8357")
     photo = models.ImageField(
         upload_to="profile/", blank=True,
         help_text="Portrait shown in the À propos section (uploaded file). Takes priority over Photo URL.",
@@ -264,6 +324,7 @@ class SiteProfile(TimeStamped):
 
     # Contact & socials
     email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=32, blank=True, help_text="Display format, e.g. 06 16 20 34 95")
     github_url = models.URLField(blank=True)
     linkedin_url = models.URLField(blank=True)
     twitter_url = models.URLField(blank=True)
@@ -302,3 +363,53 @@ class SiteProfile(TimeStamped):
     def load(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class Section(TimeStamped):
+    """A v2 home section — drives both the nav pill and the section header.
+
+    The frontend reads ``number``/``nav_label``/``title``/``accent`` to render the
+    "NN / SECTION" eyebrow and the sliding-indicator nav, and toggles visibility
+    with ``is_enabled``.
+    """
+
+    key = models.SlugField(
+        unique=True,
+        help_text="Stable id, e.g. about, stack, work, log, edu, ai, gallery, contact",
+    )
+    nav_label = models.CharField(max_length=24)
+    number = models.PositiveIntegerField(help_text="Shown as the eyebrow index, e.g. 01")
+    title = models.CharField(max_length=120, blank=True)
+    accent = models.CharField(max_length=8, choices=Accent.choices, default=Accent.VIOLET)
+    is_enabled = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.number:02d} · {self.nav_label}"
+
+
+class Photo(TimeStamped):
+    """A standalone gallery photo (the v2 mosaic + lightbox)."""
+
+    image = models.ImageField(upload_to="gallery/", blank=True)
+    image_url = models.URLField(blank=True, help_text="Fallback if no file uploaded")
+    caption = models.CharField(max_length=160, blank=True)
+    taken = models.CharField(max_length=24, blank=True, help_text="e.g. “Lyon · 2025”")
+    span = models.CharField(
+        max_length=8, blank=True,
+        help_text="Mosaic span: '', 'cw' (col-wide), 'rh' (row-tall), 'cwrh' (both)",
+    )
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "-created_at"]
+
+    def __str__(self):
+        return self.caption or f"Photo #{self.pk}"
+
+    @property
+    def src(self):
+        return self.image.url if self.image else self.image_url

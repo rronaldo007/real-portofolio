@@ -8,8 +8,11 @@ from .models import (
     ContactMessage,
     Education,
     Experience,
+    Photo,
     Project,
     ProjectMetric,
+    ProjectShot,
+    Section,
     Skill,
     SiteProfile,
     Testimonial,
@@ -57,6 +60,13 @@ class ProjectMetricInline(TabularInline):
     ordering = ("order",)
 
 
+class ProjectShotInline(TabularInline):
+    model = ProjectShot
+    extra = 0
+    fields = ("image", "image_url", "caption", "order")
+    ordering = ("order",)
+
+
 @admin.register(Project)
 class ProjectAdmin(ModelAdmin):
     list_display = ("cover", "project_cell", "stack_tags", "year", "status_pill", "featured", "order")
@@ -67,7 +77,7 @@ class ProjectAdmin(ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     ordering = ("order", "-year")
     list_per_page = 25
-    inlines = [ProjectMetricInline]
+    inlines = [ProjectMetricInline, ProjectShotInline]
 
     fieldsets = (
         (
@@ -83,6 +93,15 @@ class ProjectAdmin(ModelAdmin):
                     ("live_url", "repo_url"),
                     "tech_stack",
                 ),
+            },
+        ),
+        (
+            "Mission Control (v2)",
+            {
+                "classes": ["tab"],
+                "fields": ("accent", "category", "lead", "highlights"),
+                "description": "Drives the v2 “Mission Control” design (accent glow, "
+                               "card category, punchy lead, case-study highlights).",
             },
         ),
         (
@@ -169,7 +188,7 @@ class ExperienceAdmin(ModelAdmin):
                 )
             },
         ),
-        ("Detail", {"fields": ("highlights", "stack", "order")}),
+        ("Detail", {"fields": ("highlights", "stack", "accent", "order")}),
     )
 
 
@@ -191,6 +210,13 @@ class EducationAdmin(ModelAdmin):
                     "description",
                     "order",
                 )
+            },
+        ),
+        (
+            "Habilitation (v2)",
+            {
+                "fields": (("rncp_level", "status_label"), ("accent", "is_target")),
+                "description": "v2 “clearance card” fields.",
             },
         ),
     )
@@ -254,10 +280,12 @@ class ContactMessageAdmin(ModelAdmin):
 @admin.register(SiteProfile)
 class SiteProfileAdmin(ModelAdmin):
     fieldsets = (
-        ("Profile", {"classes": ["tab"], "fields": ("name", "photo", "photo_url", "tagline", "bio",
-                                                     "location", "timezone", "availability")}),
+        ("Profile", {"classes": ["tab"], "fields": ("name", ("logo_text", "logo_super"),
+                                                     "photo", "photo_url", "tagline", "bio",
+                                                     "location", "timezone", "availability",
+                                                     ("lat", "lon"))}),
         ("Hero copy", {"classes": ["tab"], "fields": ("hero_prefix", "hero_heading", "hero_sub")}),
-        ("Contact & socials", {"classes": ["tab"], "fields": ("email", "github_url",
+        ("Contact & socials", {"classes": ["tab"], "fields": ("email", "phone", "github_url",
                                                               "linkedin_url", "twitter_url",
                                                               "dribbble_url")}),
         ("Theme & branding", {"classes": ["tab"], "fields": ("accent_color", "default_theme",
@@ -271,6 +299,49 @@ class SiteProfileAdmin(ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(Section)
+class SectionAdmin(ModelAdmin):
+    """The v2 home sections — drive the nav pill + section headers."""
+
+    list_display = ("number", "nav_label", "title", "accent_pill", "is_enabled", "order")
+    list_editable = ("is_enabled", "order")
+    list_filter = ("is_enabled", "accent")
+    ordering = ("order",)
+    fieldsets = (
+        ("Section", {"fields": (("key", "number"), ("nav_label", "title"),
+                                ("accent", "is_enabled"), "order")}),
+    )
+
+    @display(description="Accent")
+    def accent_pill(self, obj):
+        colors = {"violet": "#9B6BFF", "cyan": "#2BF1FF", "lime": "#C6FF3A", "pink": "#FF7AD9"}
+        return _pill(obj.get_accent_display(), colors.get(obj.accent, "#9B6BFF"))
+
+
+@admin.register(Photo)
+class PhotoAdmin(ModelAdmin):
+    """The v2 gallery mosaic photos."""
+
+    list_display = ("thumb", "caption", "taken", "span", "order")
+    list_editable = ("order",)
+    search_fields = ("caption", "taken")
+    ordering = ("order",)
+    fieldsets = (
+        ("Photo", {"fields": ("image", "image_url", "caption", "taken", "span", "order")}),
+    )
+
+    @display(description="")
+    def thumb(self, obj):
+        src = obj.src
+        if not src:
+            return "—"
+        return format_html(
+            '<span style="display:block;width:44px;height:30px;border-radius:5px;'
+            'background:#1d1c1a center/cover url({});border:1px solid rgba(245,242,236,.12);"></span>',
+            src,
+        )
 
 
 @admin.register(LogEntry)
