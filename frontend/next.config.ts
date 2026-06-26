@@ -4,6 +4,9 @@ import type { NextConfig } from "next";
 const BACKEND = process.env.BACKEND_ORIGIN ?? "http://127.0.0.1:8001";
 
 const nextConfig: NextConfig = {
+  // Self-contained server bundle for Docker (.next/standalone/server.js).
+  output: "standalone",
+
   // Django requires trailing slashes (APPEND_SLASH) on /admin/ URLs. Next's
   // default trailing-slash redirect fights that and causes an infinite
   // /admin/login/?next=... redirect loop, so disable it for proxied paths.

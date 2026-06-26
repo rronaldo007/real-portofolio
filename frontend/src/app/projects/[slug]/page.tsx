@@ -7,6 +7,8 @@ import { ACCENT_HEX } from "@/lib/types";
 import type { Project } from "@/lib/types";
 import { SubNav } from "@/components/SubNav";
 
+export const dynamic = "force-dynamic";
+
 async function load(slug: string): Promise<Project | null> {
   try {
     return await getProject(slug);

@@ -38,6 +38,10 @@ function renderSection(s: Section, data: Bootstrap) {
   }
 }
 
+// Rendered at request time (fetches the backend) — keeps the prod build
+// independent of a running backend; on-demand revalidation keeps it fresh.
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const data = await getBootstrap();
   const { sections, settings } = data;

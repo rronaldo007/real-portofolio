@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "Sélection de projets — applications fullstack, SaaS et side-projects.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ProjectsPage() {
   const projects = await getProjects();
 

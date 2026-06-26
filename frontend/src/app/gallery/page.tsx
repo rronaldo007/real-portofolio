@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Art & photographie — un second regard sur le monde.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function GalleryPage() {
   const photos = await getPhotos();
   const count = (photos.filter((p) => p.src).length || 12);
