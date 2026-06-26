@@ -1,0 +1,133 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% comment %}
+  Inline-styled dashboard. Unfold ships a *purged* Tailwind bundle that omits
+  responsive variants (lg:grid-cols-4, lg:col-span-2, …) and some utilities the
+  custom dashboard used, which broke the grid + borders. Inline styles avoid the
+  dependency entirely. Forced-dark, so colours are written directly.
+{% endcomment %}
+
+{% block content %}
+{% spaceless %}
+<style>
+  .ed-serif { font-family:'Instrument Serif',Georgia,serif; font-style:italic; letter-spacing:-0.015em; }
+  .ed-card {
+    border:1px solid rgba(245,242,236,.10);
+    border-radius:14px;
+    background:#1a1916;
+    padding:22px;
+    box-sizing:border-box;
+  }
+  .ed-mono { font-family:'Geist Mono',ui-monospace,monospace; }
+  .ed-label { font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#8a8378; }
+  .ed-h2 { font-size:13px; font-weight:600; color:#f5f2ec; margin:0 0 16px; }
+  .ed-quick { display:flex; align-items:flex-start; gap:12px; padding:13px; border-radius:10px;
+    border:1px solid rgba(245,242,236,.08); background:rgba(245,242,236,.02); text-decoration:none;
+    transition:border-color .2s ease, background .2s ease; }
+  .ed-quick:hover { border-color:#c084fc; background:rgba(192,132,252,.06); }
+  .ed-msym { font-family:'Material Symbols Outlined'; font-weight:normal; font-style:normal;
+    line-height:1; color:#c084fc; }
+</style>
+
+{# ─── Greeting ─── #}
+<div style="margin-bottom:32px;">
+  <h1 class="ed-serif" style="font-size:34px; line-height:1; color:#f5f2ec; margin:0;">Bonjour, {{ greeting_name }}.</h1>
+  <p style="font-size:13px; color:#8a8378; margin:8px 0 0;">{{ greeting_sub }}</p>
+</div>
+
+{# ─── Stat cards (auto-responsive) ─── #}
+<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px; margin-bottom:16px;">
+  {% for s in stats %}
+  <div class="ed-card">
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px;">
+      <span class="ed-mono ed-label">{{ s.label }}</span>
+      <span class="ed-msym material-symbols-outlined" style="font-size:20px;">{{ s.icon }}</span>
+    </div>
+    <div class="ed-serif" style="font-size:42px; line-height:1; color:#f5f2ec;">{{ s.value }}</div>
+    <div class="ed-mono" style="font-size:12px; color:#8a8378; margin-top:8px;">{{ s.sub }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+{# ─── Chart + quick actions ─── #}
+<div style="display:flex; flex-wrap:wrap; gap:16px; margin-bottom:16px;">
+  <div class="ed-card" style="flex:2 1 380px; min-width:0;">
+    <h2 class="ed-h2">Projets par année</h2>
+    <div style="display:flex; align-items:flex-end; gap:8px; height:176px; border-bottom:1px dashed rgba(245,242,236,.12); padding-bottom:8px;">
+      {% for bar in chart %}
+      <div style="flex:1; border-radius:4px 4px 0 0; background:rgba(192,132,252,.7); height:{{ bar.height }}%; min-height:6px;" title="{{ bar.label }} · {{ bar.value }}"></div>
+      {% endfor %}
+    </div>
+    <div class="ed-mono" style="display:flex; justify-content:space-between; margin-top:8px; font-size:10px; color:#6d6760;">
+      {% for bar in chart %}<span>{{ bar.label }}</span>{% endfor %}
+    </div>
+  </div>
+
+  <div class="ed-card" style="flex:1 1 260px; min-width:0;">
+    <h2 class="ed-h2">Raccourcis</h2>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      {% for q in quick_links %}
+      <a href="{{ q.link }}" class="ed-quick">
+        <span class="ed-msym material-symbols-outlined" style="font-size:18px;">{{ q.icon }}</span>
+        <span style="display:flex; flex-direction:column;">
+          <b style="font-size:13px; font-weight:500; color:#e7e3d9;">{{ q.title }}</b>
+          <span style="font-size:11px; color:#8a8378;">{{ q.desc }}</span>
+        </span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{# ─── Recent activity + theme & site ─── #}
+<div style="display:flex; flex-wrap:wrap; gap:16px;">
+  <div class="ed-card" style="flex:2 1 380px; min-width:0;">
+    <h2 class="ed-h2">Activité récente</h2>
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      {% for log in recent_activity %}
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <span style="margin-top:6px; width:8px; height:8px; border-radius:50%; flex-shrink:0; background:{% if log.is_addition %}#6ee7b7{% elif log.is_deletion %}#f87171{% else %}#c084fc{% endif %};"></span>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:13px; color:#d6d2c8;">
+            <b style="font-weight:500; color:#f5f2ec;">{{ log.object_repr }}</b>
+            <span style="color:#8a8378;">{% if log.is_addition %}créé{% elif log.is_deletion %}supprimé{% else %}modifié{% endif %} · {{ log.content_type }}</span>
+          </div>
+          <div class="ed-mono" style="font-size:10px; color:#6d6760; margin-top:2px;">
+            {{ log.action_time|date:"d M Y · H:i" }}{% if log.user %} · {{ log.user }}{% endif %}
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p style="font-size:13px; color:#8a8378;">Aucune activité pour l’instant. Modifiez du contenu pour la voir ici.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="ed-card" style="flex:1 1 260px; min-width:0;">
+    <h2 class="ed-h2">Thème &amp; site</h2>
+    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div>
+        <div class="ed-mono ed-label" style="margin-bottom:10px;">Accent</div>
+        <div style="display:flex; gap:8px;">
+          {% for sw in theme_panel.swatches %}
+          <span style="width:24px; height:24px; border-radius:50%; background:{{ sw }};{% if sw == theme_panel.accent %} outline:2px solid #c084fc; outline-offset:2px;{% endif %}" title="{{ sw }}"></span>
+          {% endfor %}
+        </div>
+      </div>
+      <div>
+        <div class="ed-mono ed-label" style="margin-bottom:8px;">Mode par défaut</div>
+        <span style="font-size:13px; color:#e7e3d9;">{{ theme_panel.default_theme }}</span>
+      </div>
+      <div>
+        <div class="ed-mono ed-label" style="margin-bottom:8px;">Direction</div>
+        <span style="font-size:13px; color:#e7e3d9;">{{ theme_panel.variant }}</span>
+      </div>
+      <a href="{{ theme_panel.edit_link }}" style="color:#c084fc; font-size:12px; text-decoration:none;">Modifier le thème →</a>
+    </div>
+  </div>
+</div>
+{% endspaceless %}
+{% endblock %}

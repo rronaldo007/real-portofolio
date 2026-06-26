@@ -1,36 +1,47 @@
 # syntax=docker/dockerfile:1
+# Combined production image: the Next.js frontend (public, $PORT) and the Django
+# backend (internal, 127.0.0.1:8001) in one container, so the whole v2 app runs
+# as a single Sevalla service. Next proxies /api /admin /static /media to Django.
 
-FROM python:3.13-slim AS base
+# --- 1. Build the Next.js frontend (standalone output) ---
+FROM node:20-slim AS frontend
+WORKDIR /fe
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend/ ./
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm run build
 
-# - no .pyc files, unbuffered stdout/stderr for clean container logs
+# --- 2. Runtime: Python (Django + Gunicorn) + the node binary (Next) ---
+FROM python:3.13-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    BACKEND_ORIGIN=http://127.0.0.1:8001
 
+# node runtime for the standalone server (npm isn't needed at runtime)
+COPY --from=node:20-slim /usr/local/bin/node /usr/local/bin/node
+
+# Django at /app so the DB stays at /app/data (the existing persistent disk).
 WORKDIR /app
-
-# Install dependencies first so the layer caches across code changes.
-COPY requirements.txt .
+COPY backend/requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
+COPY backend/ ./
+RUN DJANGO_SECRET_KEY=build-only DJANGO_DEBUG=False python manage.py collectstatic --noinput
 
-# Copy the project.
-COPY . .
+# Next standalone bundle at /opt/web (static + public copied alongside the server)
+COPY --from=frontend /fe/.next/standalone /opt/web
+COPY --from=frontend /fe/.next/static /opt/web/.next/static
+COPY --from=frontend /fe/public /opt/web/public
 
-# Collect static files into STATIC_ROOT (WhiteNoise serves them at runtime).
-# A dummy key is fine here — collectstatic touches no secrets or the DB.
-RUN DJANGO_SECRET_KEY=build-only DJANGO_DEBUG=False \
-    python manage.py collectstatic --noinput
+COPY start.sh /start.sh
 
-# Run as an unprivileged user. Create the data/ dir (SQLite + volume mount point)
-# and hand /app to that user so a named volume inherits the right ownership.
-RUN useradd --create-home --uid 1000 appuser \
+RUN useradd --uid 1000 --create-home appuser \
     && mkdir -p /app/data \
-    && chown -R appuser:appuser /app
+    && chown -R appuser:appuser /app /opt/web
 USER appuser
 
 EXPOSE 8000
-
-# Apply migrations, then serve with Gunicorn. Bind to $PORT when the host injects
-# one (Sevalla/Heroku-style), falling back to 8000 for local Docker.
-CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 3"]
+CMD ["bash", "/start.sh"]

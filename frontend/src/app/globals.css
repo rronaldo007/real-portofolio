@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+/* ===================================================================
+   v2 "Mission Control" design tokens
+   Dark, cinematic, near-black with four neon accents used as glow.
+   Three type voices: italic serif (titles) / grotesque (body) / mono (data).
+   =================================================================== */
+@theme {
+  --color-bg: #05060b;
+  --color-bg-2: #0b0e17;
+  --color-ink: #eaf0ff;
+  --color-ink-2: #c3cbe0;
+  --color-dim: #7e89a8;
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line-strong: rgba(255, 255, 255, 0.16);
+
+  --color-violet: #9b6bff;
+  --color-cyan: #2bf1ff;
+  --color-lime: #c6ff3a;
+  --color-pink: #ff7ad9;
+
+  --font-serif: var(--font-instrument-serif), serif;
+  --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(155, 107, 255, 0.35);
+  color: #fff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* The per-section/per-project accent: components read var(--accent) and the
+   four utility classes set it, so one element can recolour its own glow. */
+:root {
+  --accent: #9b6bff;
+}
+.accent-violet { --accent: #9b6bff; }
+.accent-cyan { --accent: #2bf1ff; }
+.accent-lime { --accent: #c6ff3a; }
+.accent-pink { --accent: #ff7ad9; }
+
+/* Shared keyframes ported from the v2 design reference */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spinR { to { transform: rotate(-360deg); } }
+@keyframes corona {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
+  50% { transform: translate(-50%, -50%) scale(1.06); opacity: 1; }
+}
+@keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes twinkle { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+@keyframes pulseDot {
+  0% { box-shadow: 0 0 0 0 rgba(198, 255, 58, 0.55); }
+  70% { box-shadow: 0 0 0 7px rgba(198, 255, 58, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(198, 255, 58, 0); }
+}
+@keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes scrollcue {
+  0% { transform: translateY(0); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(13px); opacity: 0; }
+}
+@keyframes driftSlow {
+  0%, 100% { transform: translateY(-50%) translateX(0); }
+  50% { transform: translateY(-52%) translateX(-14px); }
+}
+@keyframes menuIn {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+[data-work-scroller]::-webkit-scrollbar { display: none; height: 0; }
+
+/* /projects index rows — accent-tinted hover driven by per-row CSS vars */
+.prow {
+  transition: background 0.35s ease, padding-left 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.35s ease;
+}
+.prow:hover {
+  padding-left: 14px;
+  background: var(--ra-bg);
+  border-color: var(--ra-bd) !important;
+}
+.prow .parr {
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.35s ease;
+}
+.prow:hover .parr {
+  transform: translateX(6px);
+}
+@media (max-width: 760px) {
+  .pmeta { display: none !important; }
+}
+
+/* /gallery mosaic tiles + lightbox */
+.gtile {
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+.gtile .gzoom {
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.gtile:hover {
+  transform: translateY(-5px);
+  border-color: rgba(43, 241, 255, 0.4) !important;
+  box-shadow: 0 22px 46px rgba(0, 0, 0, 0.5), 0 0 28px rgba(43, 241, 255, 0.14);
+  z-index: 2;
+}
+.gtile:hover .gzoom { transform: scale(1.07); }
+.gtile .gidx { opacity: 0; transition: opacity 0.3s ease; }
+.gtile:hover .gidx { opacity: 1; }
+@keyframes lbin {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+@media (max-width: 680px) {
+  .gmosaic { grid-template-columns: repeat(2, 1fr) !important; }
+  [data-gtile] { grid-column: span 1 !important; grid-row: span 2 !important; }
+}
+
+/* Contact social links — per-network accent hover (vars set inline) */
+.slink {
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+.slink:hover {
+  transform: translateY(-2px);
+  border-color: var(--sl) !important;
+  background: var(--sl-soft) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 26px var(--sl-glow);
+}
+.slink .slchip {
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+.slink:hover .slchip {
+  border-color: var(--sl) !important;
+  background: var(--sl-soft) !important;
+}
+.slink .slarr {
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.25s ease;
+  opacity: 0.5;
+}
+.slink:hover .slarr {
+  transform: translate(3px, -3px);
+  opacity: 1;
+}
+.slink-cta {
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.25s ease;
+}
+.slink-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(198, 255, 58, 0.28), 0 0 30px rgba(198, 255, 58, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001s !important;
+  }
+  html { scroll-behavior: auto; }
+}
