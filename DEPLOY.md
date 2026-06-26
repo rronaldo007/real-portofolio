@@ -50,11 +50,11 @@ afterward (they default to violet).
 3. Deploy the **frontend** service with `BACKEND_ORIGIN` set; confirm the site,
    then `…/admin` (login proxies through), `…/api/bootstrap/`.
 
-## Known caveats
+## Notes
 
-- **CV download:** `SiteProfile.resume_url` is `/static/cv/...pdf`, but WhiteNoise
-  hashes static filenames in production (`...<hash>.pdf`), so that path 404s.
-  Fix before relying on the button: upload the CV via the admin as media and set
-  `resume_url` to `/media/...`, or use an absolute external URL.
+- **CV download:** the PDF is served by the frontend from `frontend/public/cv/`
+  and `SiteProfile.resume_url` is the site-relative `/cv/Rukundo-Ronaldo-CV.pdf`
+  (no backend, no hashing — works in dev and prod). To update the CV, replace
+  that file (and the matching ones in `backend/static/cv/` if you keep them).
 - **First deploy is untested against Sevalla** — the build is validated locally,
   but service-to-service networking / env may need one round of tweaks.

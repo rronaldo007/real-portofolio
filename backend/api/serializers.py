@@ -160,7 +160,10 @@ class SiteSettingsSerializer(_ContextMixin, serializers.ModelSerializer):
         ]
 
     def get_cv(self, obj):
-        return _abs(self._request, obj.resume_url)
+        # Returned verbatim — NOT absolutized to the backend. A site-relative path
+        # (e.g. /cv/...pdf, served from the frontend's public/) resolves against
+        # the public origin in the browser; an absolute URL is used as-is.
+        return obj.resume_url or None
 
     def get_photo(self, obj):
         return _abs(self._request, obj.photo_src)
