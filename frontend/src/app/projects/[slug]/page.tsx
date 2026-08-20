@@ -165,7 +165,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                       <figure style={{ flex: "1.1 1 340px", minWidth: 0, margin: 0 }}>
                         <div className="relative" style={{ borderRadius: 14, overflow: "hidden", border: `1px solid ${rgba(hex, 0.22)}`, background: `linear-gradient(150deg, ${rgba(hex, 0.22)}, rgba(10,12,20,.6) 72%)` }}>
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={sec.src} alt={sec.caption || sec.title} style={{ display: "block", width: "100%", height: "auto" }} />
+                          {/* tall diagrams would otherwise run for thousands of pixels */}
+                        <img src={sec.src} alt={sec.caption || sec.title} style={{ display: "block", width: "100%", height: "auto", maxHeight: "70vh", objectFit: "contain" }} />
                         </div>
                         {sec.caption && (
                           <figcaption className="font-mono" style={{ marginTop: 10, fontSize: 11.5, letterSpacing: "0.08em", color: "#5b6178" }}>
