@@ -25,6 +25,7 @@ function Card({ project, index }: { project: Project; index: number }) {
         overflow: "hidden",
         scrollSnapAlign: "start",
         boxShadow: "0 20px 50px rgba(0,0,0,.4)",
+        cursor: "pointer",
       }}
     >
       {/* image panel */}
@@ -43,12 +44,13 @@ function Card({ project, index }: { project: Project; index: number }) {
             {project.category}
           </span>
         )}
-        <Link href={`/projects/${project.slug}`} aria-label={`Ouvrir ${project.name}`} className="grid place-items-center" style={{ position: "absolute", zIndex: 3, top: 11, right: 11, width: 38, height: 38, borderRadius: "50%", border: `1px solid ${rgba(hex, 0.5)}`, background: "rgba(8,9,14,.5)", backdropFilter: "blur(7px)", color: hex }}>
+        {/* decorative: the whole card is the link (see the overlay below) */}
+        <span aria-hidden className="grid place-items-center" style={{ position: "absolute", zIndex: 3, top: 11, right: 11, width: 38, height: 38, borderRadius: "50%", border: `1px solid ${rgba(hex, 0.5)}`, background: "rgba(8,9,14,.5)", backdropFilter: "blur(7px)", color: hex, pointerEvents: "none" }}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="7" y1="17" x2="17" y2="7" />
             <polyline points="7 7 17 7 17 17" />
           </svg>
-        </Link>
+        </span>
         <div className="font-mono" style={{ position: "absolute", zIndex: 3, bottom: 4, right: 14, fontWeight: 700, fontSize: "clamp(38px,5.5vw,60px)", lineHeight: 1, color: "transparent", WebkitTextStroke: `1.5px ${rgba(hex, 0.5)}`, pointerEvents: "none" }}>
           {nn}
         </div>
@@ -69,6 +71,13 @@ function Card({ project, index }: { project: Project; index: number }) {
           ))}
         </div>
       </div>
+
+      {/* the whole card is clickable */}
+      <Link
+        href={`/projects/${project.slug}`}
+        aria-label={`Ouvrir ${project.name}`}
+        style={{ position: "absolute", inset: 0, zIndex: 4, borderRadius: 22 }}
+      />
     </article>
   );
 }
