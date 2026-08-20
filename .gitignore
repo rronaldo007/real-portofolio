@@ -7,11 +7,6 @@ Thumbs.db
 .idea/
 *.swp
 
-# Auto-generated
-**/.claude/STATUS.md
-**/.claude/settings.local.json
-**/.claude/scheduled_tasks.lock
-
 # Python / Django (app now lives under backend/)
 .venv/
 __pycache__/
