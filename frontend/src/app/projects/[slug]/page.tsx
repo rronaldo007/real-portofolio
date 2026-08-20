@@ -180,7 +180,8 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
                   {images.length > 0 && (
                     <div
                       className="grid"
-                      style={{ marginTop: "clamp(24px,3vw,36px)", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 14 }}
+                      // a lone extra image must not span the whole section
+                      style={{ marginTop: "clamp(24px,3vw,36px)", gridTemplateColumns: images.length === 1 ? "repeat(auto-fit,minmax(0,min(100%,340px)))" : "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 14 }}
                     >
                       {images.map((m, k) => (
                         <figure key={k} style={{ margin: 0 }}>

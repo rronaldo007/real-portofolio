@@ -5,7 +5,9 @@ import { rgba } from "@/lib/accent";
  *  Deliberately small — the copy comes from the admin, not from user input. */
 function inline(text: string, key: string): ReactNode[] {
   const out: ReactNode[] = [];
-  const re = /\*\*(.+?)\*\*|`(.+?)`|\[(.+?)\]\((.+?)\)/g;
+  // Links live inside bold often enough that the marks must nest, so bold and
+  // italic re-run this function on their own contents.
+  const re = /\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\[(.+?)\]\((.+?)\)/g;
   let last = 0;
   let n = 0;
   let m: RegExpExecArray | null;
@@ -14,23 +16,29 @@ function inline(text: string, key: string): ReactNode[] {
     if (m[1] !== undefined) {
       out.push(
         <strong key={`${key}-b${n}`} style={{ color: "#eaecf5", fontWeight: 600 }}>
-          {m[1]}
+          {inline(m[1], `${key}-b${n}`)}
         </strong>,
       );
     } else if (m[2] !== undefined) {
+      out.push(
+        <em key={`${key}-i${n}`} style={{ fontStyle: "italic" }}>
+          {inline(m[2], `${key}-i${n}`)}
+        </em>,
+      );
+    } else if (m[3] !== undefined) {
       out.push(
         <code
           key={`${key}-c${n}`}
           className="font-mono"
           style={{ fontSize: "0.9em", color: "#cdd3e6", background: "rgba(255,255,255,.06)", borderRadius: 5, padding: "2px 6px" }}
         >
-          {m[2]}
+          {m[3]}
         </code>,
       );
     } else {
       out.push(
-        <a key={`${key}-a${n}`} href={m[4]} target="_blank" rel="noopener" style={{ color: "inherit", textDecoration: "underline" }}>
-          {m[3]}
+        <a key={`${key}-a${n}`} href={m[5]} target="_blank" rel="noopener" style={{ color: "inherit", textDecoration: "underline" }}>
+          {inline(m[4], `${key}-a${n}`)}
         </a>,
       );
     }
@@ -101,6 +109,21 @@ export function Markdown({ text, hex }: { text: string; hex: string }) {
         >
           {heading[2]}
         </h3>,
+      );
+      continue;
+    }
+    const quote = /^>\s?(.*)$/.exec(line);
+    if (quote) {
+      flushBullets();
+      flushPara();
+      const key = `q${blocks.length}`;
+      blocks.push(
+        <blockquote
+          key={key}
+          style={{ margin: "0 0 18px", borderLeft: `3px solid ${rgba(hex, 0.5)}`, paddingLeft: 16, fontSize: 15.5, lineHeight: 1.7, color: "#aab0c6" }}
+        >
+          {inline(quote[1], key)}
+        </blockquote>,
       );
       continue;
     }
