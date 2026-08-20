@@ -13,6 +13,7 @@ from pages.models import (
     Photo,
     Project,
     ProjectMetric,
+    ProjectSection,
     ProjectShot,
     Section,
     SiteProfile,
@@ -58,6 +59,17 @@ class ProjectShotSerializer(_ContextMixin, serializers.ModelSerializer):
         return _abs(self._request, obj.src)
 
 
+class ProjectSectionSerializer(_ContextMixin, serializers.ModelSerializer):
+    src = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProjectSection
+        fields = ["title", "body", "src", "caption"]
+
+    def get_src(self, obj):
+        return _abs(self._request, obj.src)
+
+
 class ProjectMetricSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectMetric
@@ -74,6 +86,7 @@ class ProjectSerializer(_ContextMixin, serializers.ModelSerializer):
     highlights = serializers.ListField(source="highlight_list", child=serializers.CharField())
     is_featured = serializers.BooleanField(source="featured")
     cover = serializers.SerializerMethodField()
+    sections = ProjectSectionSerializer(many=True, read_only=True)
     shots = ProjectShotSerializer(many=True, read_only=True)
     metrics = ProjectMetricSerializer(many=True, read_only=True)
 
@@ -82,7 +95,7 @@ class ProjectSerializer(_ContextMixin, serializers.ModelSerializer):
         fields = [
             "slug", "name", "category", "year", "accent", "summary", "lead",
             "overview", "role", "stack", "highlights", "cover", "live_url",
-            "repo_url", "badge", "is_featured", "shots", "metrics",
+            "repo_url", "badge", "is_featured", "sections", "shots", "metrics",
         ]
 
     def get_year(self, obj):

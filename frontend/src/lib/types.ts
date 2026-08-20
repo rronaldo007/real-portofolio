@@ -46,6 +46,13 @@ export interface ProjectMetric {
   unit: string;
 }
 
+export interface ProjectSection {
+  title: string;
+  body: string;
+  src: string | null;
+  caption: string;
+}
+
 export interface Project {
   slug: string;
   name: string;
@@ -63,6 +70,7 @@ export interface Project {
   repo_url: string;
   badge: string;
   is_featured: boolean;
+  sections: ProjectSection[];
   shots: ProjectShot[];
   metrics: ProjectMetric[];
 }

@@ -137,6 +137,32 @@ class ProjectShot(models.Model):
         return self.image.url if self.image else self.image_url
 
 
+class ProjectSection(models.Model):
+    """One titled chapter of a case study: a heading, a body and a screenshot.
+
+    The v2 project page renders these in order, alternating the image side, so a
+    project can be documented properly instead of collapsing into one blob.
+    """
+
+    project = models.ForeignKey(Project, related_name="sections", on_delete=models.CASCADE)
+    title = models.CharField(max_length=120)
+    body = models.TextField(blank=True, help_text="Markdown: ## headings, - bullets, **bold**, `code`")
+    image = models.ImageField(upload_to="projects/sections/", blank=True)
+    image_url = models.URLField(blank=True, help_text="Fallback if no file uploaded")
+    caption = models.CharField(max_length=160, blank=True, help_text="Shown under the screenshot")
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return f"{self.project.title} — {self.title}"
+
+    @property
+    def src(self):
+        return self.image.url if self.image else self.image_url
+
+
 class ProjectMetric(models.Model):
     """A concrete outcome shown in the case-study hero (e.g. “14 teams”)."""
 

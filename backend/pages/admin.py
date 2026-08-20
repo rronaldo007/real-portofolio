@@ -11,6 +11,7 @@ from .models import (
     Photo,
     Project,
     ProjectMetric,
+    ProjectSection,
     ProjectShot,
     Section,
     Skill,
@@ -60,6 +61,13 @@ class ProjectMetricInline(TabularInline):
     ordering = ("order",)
 
 
+class ProjectSectionInline(TabularInline):
+    model = ProjectSection
+    extra = 0
+    fields = ("title", "body", "image", "image_url", "caption", "order")
+    ordering = ("order",)
+
+
 class ProjectShotInline(TabularInline):
     model = ProjectShot
     extra = 0
@@ -77,7 +85,7 @@ class ProjectAdmin(ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     ordering = ("order", "-year")
     list_per_page = 25
-    inlines = [ProjectMetricInline, ProjectShotInline]
+    inlines = [ProjectSectionInline, ProjectMetricInline, ProjectShotInline]
 
     fieldsets = (
         (
