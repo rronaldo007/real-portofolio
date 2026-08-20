@@ -19,7 +19,6 @@ function Card({ edu, delay }: { edu: Edu; delay: number }) {
       as="article"
       className="relative overflow-hidden"
       style={{
-        flex: "1 1 340px",
         minWidth: 0,
         border: `1px solid ${rgba(hex, edu.is_target ? 0.32 : 0.25)}`,
         borderRadius: 18,
@@ -65,7 +64,12 @@ export function Education({ section, education }: { section: Section; education:
     <SectionShell id={section.key}>
       <SectionHeader section={section} caption="credentials" />
       <div className="flex flex-col" style={{ gap: 18 }}>
-        <div className="flex flex-wrap items-stretch" style={{ gap: 18 }}>
+        {/* grid, not flex-wrap: a lone card on the last row must keep a column's
+            width instead of stretching across the whole section */}
+        <div
+          className="grid items-stretch"
+          style={{ gap: 18, gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))" }}
+        >
           {education.map((e, i) => (
             <Card key={`${e.title}-${e.institution}`} edu={e} delay={i * 0.08} />
           ))}
