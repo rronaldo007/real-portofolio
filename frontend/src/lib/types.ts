@@ -46,11 +46,20 @@ export interface ProjectMetric {
   unit: string;
 }
 
+export interface SectionMedia {
+  kind: "image" | "document";
+  src: string | null;
+  caption: string;
+  name: string;
+  size: string;
+}
+
 export interface ProjectSection {
   title: string;
   body: string;
   src: string | null;
   caption: string;
+  media: SectionMedia[];
 }
 
 export interface Project {

@@ -141,43 +141,90 @@ export default async function ProjectDetail({ params }: { params: Promise<{ slug
         {/* documented sections */}
         {project.sections.length > 0 && (
           <div style={{ marginTop: "clamp(56px,9vh,100px)" }}>
-            {project.sections.map((sec, n) => (
-              <section
-                key={n}
-                className="flex flex-wrap"
-                style={{
-                  gap: "clamp(26px,3.5vw,52px)",
-                  alignItems: "flex-start",
-                  marginBottom: "clamp(48px,7vh,88px)",
-                  flexDirection: n % 2 ? "row-reverse" : "row",
-                }}
-              >
-                <div style={{ flex: "1 1 320px", minWidth: 0 }}>
-                  <div className="flex items-center font-mono uppercase" style={{ gap: 10, fontSize: 11, letterSpacing: "0.2em", color: "#5b6178", marginBottom: 12 }}>
-                    <span style={{ color: hex }}>{String(n + 1).padStart(2, "0")}</span>
-                    <span style={{ flex: "0 0 26px", height: 1, background: rgba(hex, 0.5) }} />
-                  </div>
-                  <h2 className="font-serif italic" style={{ margin: "0 0 16px", fontWeight: 400, fontSize: "clamp(26px,3vw,36px)", lineHeight: 1.1, color: "#eaecf5" }}>
-                    {sec.title}
-                  </h2>
-                  {sec.body && <Markdown text={sec.body} hex={hex} />}
-                </div>
-
-                {sec.src && (
-                  <figure style={{ flex: "1.1 1 340px", minWidth: 0, margin: 0 }}>
-                    <div className="relative" style={{ borderRadius: 14, overflow: "hidden", border: `1px solid ${rgba(hex, 0.22)}`, background: `linear-gradient(150deg, ${rgba(hex, 0.22)}, rgba(10,12,20,.6) 72%)` }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={sec.src} alt={sec.caption || sec.title} style={{ display: "block", width: "100%", height: "auto" }} />
+            {project.sections.map((sec, n) => {
+              const images = sec.media.filter((m) => m.kind === "image" && m.src);
+              const docs = sec.media.filter((m) => m.kind === "document" && m.src);
+              return (
+                <section key={n} style={{ marginBottom: "clamp(48px,7vh,88px)" }}>
+                  <div
+                    className="flex flex-wrap"
+                    style={{ gap: "clamp(26px,3.5vw,52px)", alignItems: "flex-start", flexDirection: n % 2 ? "row-reverse" : "row" }}
+                  >
+                    <div style={{ flex: "1 1 320px", minWidth: 0 }}>
+                      <div className="flex items-center font-mono uppercase" style={{ gap: 10, fontSize: 11, letterSpacing: "0.2em", color: "#5b6178", marginBottom: 12 }}>
+                        <span style={{ color: hex }}>{String(n + 1).padStart(2, "0")}</span>
+                        <span style={{ flex: "0 0 26px", height: 1, background: rgba(hex, 0.5) }} />
+                      </div>
+                      <h2 className="font-serif italic" style={{ margin: "0 0 16px", fontWeight: 400, fontSize: "clamp(26px,3vw,36px)", lineHeight: 1.1, color: "#eaecf5" }}>
+                        {sec.title}
+                      </h2>
+                      {sec.body && <Markdown text={sec.body} hex={hex} />}
                     </div>
-                    {sec.caption && (
-                      <figcaption className="font-mono" style={{ marginTop: 10, fontSize: 11.5, letterSpacing: "0.08em", color: "#5b6178" }}>
-                        {sec.caption}
-                      </figcaption>
+
+                    {sec.src && (
+                      <figure style={{ flex: "1.1 1 340px", minWidth: 0, margin: 0 }}>
+                        <div className="relative" style={{ borderRadius: 14, overflow: "hidden", border: `1px solid ${rgba(hex, 0.22)}`, background: `linear-gradient(150deg, ${rgba(hex, 0.22)}, rgba(10,12,20,.6) 72%)` }}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={sec.src} alt={sec.caption || sec.title} style={{ display: "block", width: "100%", height: "auto" }} />
+                        </div>
+                        {sec.caption && (
+                          <figcaption className="font-mono" style={{ marginTop: 10, fontSize: 11.5, letterSpacing: "0.08em", color: "#5b6178" }}>
+                            {sec.caption}
+                          </figcaption>
+                        )}
+                      </figure>
                     )}
-                  </figure>
-                )}
-              </section>
-            ))}
+                  </div>
+
+                  {/* extra images: full-width grid under the section */}
+                  {images.length > 0 && (
+                    <div
+                      className="grid"
+                      style={{ marginTop: "clamp(24px,3vw,36px)", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 14 }}
+                    >
+                      {images.map((m, k) => (
+                        <figure key={k} style={{ margin: 0 }}>
+                          {/* diagrams come in wildly different ratios: a fixed box
+                              with contain keeps the grid even and stays legible */}
+                          <a href={m.src as string} target="_blank" rel="noopener" title={m.caption || "Ouvrir en grand"} style={{ display: "block", aspectRatio: "4 / 3", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(255,255,255,.1)", background: "#f4f5fa", padding: 10 }}>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={m.src as string} alt={m.caption || sec.title} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                          </a>
+                          {m.caption && (
+                            <figcaption className="font-mono" style={{ marginTop: 8, fontSize: 11, letterSpacing: "0.06em", color: "#5b6178" }}>
+                              {m.caption}
+                            </figcaption>
+                          )}
+                        </figure>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* downloadable documents */}
+                  {docs.length > 0 && (
+                    <div className="flex flex-col" style={{ marginTop: "clamp(20px,2.5vw,30px)", gap: 10 }}>
+                      {docs.map((m, k) => (
+                        <a
+                          key={k}
+                          href={m.src as string}
+                          target="_blank"
+                          rel="noopener"
+                          className="inline-flex items-center font-mono"
+                          style={{ gap: 12, padding: "13px 16px", borderRadius: 10, border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.03)", color: "#cdd3e6", fontSize: 13 }}
+                        >
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke={hex} strokeWidth="1.8" style={{ flex: "0 0 auto" }}>
+                            <path d="M14 3v5h5M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+                            <path d="M12 12v5m0 0-2-2m2 2 2-2" />
+                          </svg>
+                          <span style={{ flex: 1, minWidth: 0 }}>{m.caption || m.name}</span>
+                          {m.size && <span style={{ color: "#5b6178", fontSize: 11.5 }}>{m.size}</span>}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              );
+            })}
           </div>
         )}
 

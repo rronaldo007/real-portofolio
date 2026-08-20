@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from django.utils.text import slugify
 
@@ -161,6 +162,67 @@ class ProjectSection(models.Model):
     @property
     def src(self):
         return self.image.url if self.image else self.image_url
+
+
+class SectionMedia(models.Model):
+    """An extra screenshot, diagram or downloadable document inside a section.
+
+    A section keeps its single lead image for the two-column layout; anything
+    added here is rendered below it — images as a grid, documents as a list of
+    download links.
+    """
+
+    section = models.ForeignKey(ProjectSection, related_name="media", on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="projects/sections/", blank=True)
+    image_url = models.URLField(blank=True, help_text="Fallback if no image file uploaded")
+    document = models.FileField(
+        upload_to="projects/documents/", blank=True,
+        help_text="PDF or any file offered for download (takes precedence over the image)",
+    )
+    caption = models.CharField(max_length=160, blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+        verbose_name_plural = "section media"
+
+    def __str__(self):
+        return self.caption or os.path.basename(self.src or "") or f"Media #{self.pk}"
+
+    @property
+    def kind(self):
+        return "document" if self.document else "image"
+
+    @property
+    def src(self):
+        if self.document:
+            return self.document.url
+        if self.image:
+            return self.image.url
+        return self.image_url
+
+    @property
+    def name(self):
+        """Filename shown on a download link."""
+        if self.document:
+            return os.path.basename(self.document.name)
+        return self.caption
+
+    @property
+    def size(self):
+        """Human-readable size, empty when the file is gone from disk."""
+        f = self.document or self.image
+        if not f:
+            return ""
+        try:
+            n = f.size
+        except (OSError, ValueError):
+            return ""
+        for unit in ("o", "ko", "Mo"):
+            if n < 1024 or unit == "Mo":
+                return f"{n:.0f} {unit}" if unit == "o" else f"{n:.1f} {unit}"
+            n /= 1024
+        return ""
 
 
 class ProjectMetric(models.Model):

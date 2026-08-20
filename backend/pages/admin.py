@@ -13,6 +13,7 @@ from .models import (
     ProjectMetric,
     ProjectSection,
     ProjectShot,
+    SectionMedia,
     Section,
     Skill,
     SiteProfile,
@@ -73,6 +74,25 @@ class ProjectShotInline(TabularInline):
     extra = 0
     fields = ("image", "image_url", "caption", "order")
     ordering = ("order",)
+
+
+class SectionMediaInline(TabularInline):
+    model = SectionMedia
+    extra = 0
+    fields = ("image", "image_url", "document", "caption", "order")
+    ordering = ("order",)
+
+
+@admin.register(ProjectSection)
+class ProjectSectionAdmin(ModelAdmin):
+    """Sections are listed inline on the project, but edited here so their
+    media can be attached (Django has no nested inlines)."""
+
+    list_display = ("title", "project", "order")
+    list_filter = ("project",)
+    search_fields = ("title", "body")
+    ordering = ("project", "order")
+    inlines = [SectionMediaInline]
 
 
 @admin.register(Project)

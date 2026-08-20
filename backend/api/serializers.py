@@ -15,6 +15,7 @@ from pages.models import (
     ProjectMetric,
     ProjectSection,
     ProjectShot,
+    SectionMedia,
     Section,
     SiteProfile,
     Skill,
@@ -59,12 +60,27 @@ class ProjectShotSerializer(_ContextMixin, serializers.ModelSerializer):
         return _abs(self._request, obj.src)
 
 
+class SectionMediaSerializer(_ContextMixin, serializers.ModelSerializer):
+    src = serializers.SerializerMethodField()
+    kind = serializers.CharField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    size = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = SectionMedia
+        fields = ["kind", "src", "caption", "name", "size"]
+
+    def get_src(self, obj):
+        return _abs(self._request, obj.src)
+
+
 class ProjectSectionSerializer(_ContextMixin, serializers.ModelSerializer):
     src = serializers.SerializerMethodField()
+    media = SectionMediaSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProjectSection
-        fields = ["title", "body", "src", "caption"]
+        fields = ["title", "body", "src", "caption", "media"]
 
     def get_src(self, obj):
         return _abs(self._request, obj.src)
