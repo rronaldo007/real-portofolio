@@ -33,7 +33,7 @@ function Row({ x, last, delay }: { x: Experience; last: boolean; delay: number }
         </div>
         <div className="font-mono" style={{ flex: "0 1 220px", minWidth: 190, fontSize: 12 }}>
           <div style={{ marginBottom: 7 }}>
-            <span style={{ color: "#5b6178" }}>TYPE</span> <span style={{ color: "#cdd3e6" }}>{/freelance/i.test(x.title) ? "Freelance" : "Alternance"} · Full-stack</span>
+            <span style={{ color: "#5b6178" }}>TYPE</span> <span style={{ color: "#cdd3e6" }}>{/freelance/i.test(x.title) ? "Freelance" : "Alternance · Full-stack"}</span>
           </div>
           {x.location && (
             <div style={{ marginBottom: 18 }}>
