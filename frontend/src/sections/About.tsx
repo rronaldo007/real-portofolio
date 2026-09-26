@@ -83,8 +83,8 @@ export function About({ section, settings, portrait }: { section: Section; setti
           <Reveal delay={0.12} className="grid" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 1, background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.07)", borderRadius: 14, overflow: "hidden" }}>
             <Meta label="LOCATION" value={settings.location || "Lyon, Ecully"} />
             <Meta label="ROLE" value={settings.tagline || "Full-stack developer"} />
-            <Meta label="CURRENT" value={settings.availability || "Recherche alternance"} color="#9B6BFF" />
-            <Meta label="NEXT" value="Mastère IA · Epitech" color="#C6FF3A" />
+            <Meta label="CURRENT" value={settings.availability || "Disponible · développeur full-stack"} color="#9B6BFF" />
+            <Meta label="NEXT" value="Poste développeur full-stack" color="#C6FF3A" />
           </Reveal>
 
           <Reveal delay={0.18}>
@@ -92,8 +92,8 @@ export function About({ section, settings, portrait }: { section: Section; setti
             <div className="relative flex justify-between" style={{ gap: 14 }}>
               <div style={{ position: "absolute", top: 6, left: 6, right: 6, height: 1, background: "linear-gradient(90deg, #9B6BFF, rgba(155,107,255,.15))" }} />
               <Step when="NOW" label="Projets full-stack · Video Planner" color="#8a90a6" dot="#9B6BFF" />
-              <Step when="2025" label="Bachelor Dev Web · ISCOD" color="#8a90a6" dot="#9B6BFF" ring />
-              <Step when="2026" label="Mastère IA · Epitech" color="#C6FF3A" dot="#C6FF3A" pulse />
+              <Step when="2026" label="Titre CDA · ISCOD" color="#8a90a6" dot="#9B6BFF" ring />
+              <Step when="NEXT" label="Poste full-stack" color="#C6FF3A" dot="#C6FF3A" pulse />
               <Step when="GOAL" label="Ingénieur IA / Data" color="#8a90a6" dot="#9B6BFF" ring />
             </div>
           </Reveal>
